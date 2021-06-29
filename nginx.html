@@ -196,8 +196,8 @@ If you don't have <code>ufw</code> installed, you can skip this section.
 
 <h3>Option 1: Disable the firewall entirely...</h3>
 
-<p>It's usually easier to just entirely disable the firewall.
-I recommend this in 99% of the cases.
+<p>It's usually easier to just entirely disable the firewall as we set up different services.
+But be sure to see <a href="ufw.html">the article on how to fully configure the firewall</a> later.
 </p>
 
 <pre><code>systemctl stop ufw
@@ -205,7 +205,8 @@ systemctl disable ufw</code></pre>
 
 <h3>Option 2: Or enable the proper ports.</h3>
 
-<p>If you want to keep and customize the firewall for later, we can get away with just enabling the ports needed for a webserver:
+<p>We can also simply manually disable the blocking of connections over HTTP and HTTPS.
+This keeps the firewall otherwise active.
 </p>
 
 <pre><code>ufw allow http,https</code></pre>
