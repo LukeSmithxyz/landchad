@@ -208,11 +208,10 @@ systemctl disable ufw</code></pre>
 <p>If you want to keep and customize the firewall for later, we can get away with just enabling the ports needed for a webserver:
 </p>
 
-<pre><code>ufw allow 80
-ufw allow 443</code></pre>
+<pre><code>ufw allow http,https</code></pre>
 
 <p>
-Port number 80 is the canonical webserver port, while 443 is the port used for encrypted connections.
+This will open port 80 and port 443. Port 80 is the canonical webserver port, while 443 is the port used for encrypted connections.
 We will certainly need that for the next page.
 </p>
 
