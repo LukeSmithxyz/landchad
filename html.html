@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Make a Simple Webpage &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Make a Simple Webpage</h1></header>
+    <nav></nav>
+    <main>
+        <p>
+        We now have a webpage that's actually on the real-live internet!
+        You've already made it!
+        Now the only issue is putting what you want on your website.
+        </p>
+
+        <p>
+        In this little series, we'll overview the basics of HTML and CSS,
+        the two important languages that will allow you to make a stylish multi-page website.
+        We will start with HTML.
+        </p>
+
+        <h2>HTML</h2>
+
+        <p>
+        HTML is the <strong>h</strong>yper<strong>t</strong>ext <strong>m</strong>arkup <strong>l</strong>anguage.
+        It is the "language" that all webpages are written in so that all browsers can read and display them properly.
+        </p>
+        <p>
+        A <dfn>markup language</dfn> <em>not</em> the same as a programming language:
+        Programming languages specify orders for a computer, while markup languages are ways of specifying the styling of text.
+        Markup languages are necessary because computers run on mere text, not colors, sizes, headers and other styling things.
+        </p>
+
+        <p>
+        Let's understand what HTML is.
+        In <a href="nginx.html">a previous article</a>, we put this text in your website's <code>index.html</code>.
+        </p>
+
+        <h3>Paragraphs</h3>
+
+<p>
+Note how this HTML file appears as a webpage:
+</p>
+
+
+
+<table>
+    <tr>
+        <td>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;h1&gt;My website!&lt;/h1&gt;
+&lt;p&gt;This is my website. Thanks for stopping by!&lt;/p&gt;
+&lt;p&gt;Now my website is live!&lt;/p&gt;</code></pre>
+        </td>
+        <td>
+<img src=pix/nginx-website.png alt="The webpage as it appears.">
+        </td>
+    </tr>
+</table>
+
+<p>
+The content between the <code>&lt;p&gt;</code> and <code>&lt;/p&gt;</code> tag(s) is formatted as different paragraphs.
+If you don't use these <code>&lt;p&gt;</code> tags, the text will not be formatted as separate paragraphs even if you write it as
+multiple lines.
+Observe if we add lines to the end of this file:
+</p>
+
+<table>
+    <tr>
+        <td>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;h1&gt;My website!&lt;/h1&gt;
+&lt;p&gt;This is my website. Thanks for stopping by!&lt;/p&gt;
+&lt;p&gt;Now my website is live!&lt;/p&gt;
+Here is some more text.
+There are no paragraph tags on this stuff.
+So it will all appear as one paragraph.
+Despite being on multiple lines.
+
+
+Even this!</code></pre>
+        </td>
+        <td>
+<img src=pix/html-01.png alt="On p tags">
+        </td>
+    </tr>
+</table>
+
+<p>
+This will seem strange at first, but this is the use of HTML as a markup
+language: it allows you to style your document with tags and write it in whatever way is convenient.
+</p>
+
+<p>
+Let's learn more about what HTML can do.
+</p>
+
+
+<h3>Headings</h3>
+
+<p>
+In addition to paragraphs (<code>&lt;p&gt;</code>), we can specify headings with inside <code>&lt;h1&gt;&lt;/h1&gt;</code> tags.
+Heading tags are for your page's title and section headings in the document:
+</p>
+
+<ul>
+    <li><code>&lt;h<strong>1</strong>&gt;&lt;/h<strong>1</strong>&gt;</code> &ndash; Main and largest headings</li>
+    <li><code>&lt;h<strong>2</strong>&gt;&lt;/h<strong>2</strong>&gt;</code> &ndash; Subheadings (smaller)</li>
+    <li><code>&lt;h<strong>3</strong>&gt;&lt;/h<strong>3</strong>&gt;</code> &ndash; Sub-subheadings (yet smaller)</li>
+    <li><code>&lt;h<strong>4</strong>&gt;&lt;/h<strong>4</strong>&gt;</code> &ndash; Etc., etc.</li>
+</ul>
+
+
+<table>
+    <tr>
+        <td>
+<pre><code>&lt;h1&gt;This is a top-level heading.&lt;/h1&gt;
+
+&lt;p&gt;Here is some paragraph text.&lt;/p&gt;
+
+&lt;p&gt;And here is some more...&lt;/p&gt;
+
+&lt;h2&gt;This is a subheading (h2)&lt;/h2&gt;
+
+&lt;p&gt;And another paragraph.&lt;/p&gt;
+
+&lt;h2&gt;And here is another subheading (Also an h2)&lt;/h2&gt;
+
+&lt;p&gt;Etc. etc...&lt;/p&gt;</code></pre>
+        </td>
+        <td>
+<img src=pix/html-02.png alt="On p and h# tags">
+        </td>
+    </tr>
+</table>
+
+<h4>A preview to CSS</h4>
+
+<p>
+It is very imporant to use headings like this for your pages.
+
+Notice that on this website, headings come in different colors, text-alignment and sizes for emphasis.
+If we use these heading tags, when we clear CSS, we can easily style all <code>&lt;h2&gt;</code>, for example,
+to be the size and color and alignment we want.
+</p>
+
+&lt;<++>&gt;
+&lt;<++>&gt;
+&lt;<++>&gt;
+        <h2>A look at a decent template</h2>
+
+        <p>
+        It's a good habit to include the same core things in every HTML page.
+        I have a template file that I use for this website that includes all the basics.
+        When I make a new page, I just copy the template and add the content.
+        Here is what the template looks like:
+        </p>
+<code><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=en&gt;
+    &lt;head&gt;
+        &lt;title&gt;<strong>Your page title</strong>&lt;/title&gt;
+        &lt;meta charset="utf-8"/&gt;
+        &lt;link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /&gt;
+        &lt;link rel='stylesheet' type='text/css' href='style.css'&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+        &lt;link rel='alternate' type='application/rss+xml' title='<strong>Site Title</strong> RSS' href='/rss.xml'&gt;
+    &lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;&lt;h1&gt;<strong>Your page title</strong>&lt;/h1&gt;&lt;/header&gt;
+
+    &lt;nav&gt;&lt;/nav&gt;
+
+    &lt;main&gt;
+
+    <strong>Put all your page content here in the &lt;main&gt; tag.</strong>
+
+    &lt;/main&gt;
+
+    &lt;footer&gt;&lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <h3>The
+    </h3>
+
+        <h3>HTML can be broken...</h3>
+
+        <p>
+        HTML is interpreted by browsers very liberally.
+        If you make mistakes in HTML, browsers will do their best to be forgiving and try to figure out what you meant.
+        </p>
+
+        <p>
+        For example, paragraphs are formatted by the <code>&lt;p&gt;</code> tag and when the paragraph ends,
+        <code>&lt;/p&gt;</code> should be included.
+        However, if you forget or neglect to include a <code>&lt;/p&gt;</code> to close the tag, this isn't a big deal, as if your browser sees another <code>&lt;p&gt;</code> to start a new paragraph, it will consider the previous paragraphy closed and both paragraphs will be formatted correctly.
+        In fact, there are some people nowadays that only ever use the opening tag and never close them!
+        </p>
+
+        <h3>...but not always.</h3>
+
+        <p>
+        That works fine with <code>&lt;p&gt;</code>, but for other tags like <code>&lt;b&gt;</code>, it won't work.
+        Your browser can't guess where you want the bolding to end, so if you fail to close a <code>&lt;b&gt;</code> with <code>&lt;/b&gt;</code>,
+        the whole rest of your document will show up bold!
+        </p>
+
+
+    <span class=next><a href="html2.html">Next: Text formatting in HTML</a></span>
+
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>

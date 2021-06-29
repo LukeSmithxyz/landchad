@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Replace existing navs and footers with content of nav and footer files.
+
+navfile="/home/luke/.local/src/landchad/.nav.html"
+footerfile="/home/luke/.local/src/landchad/.footer.html"
+
+files="$(for x in $(find /home/luke/.local/src/landchad -type f -iname '*.html'); do
+	echo "$x"
+done)"
+
+escnav="$(sed "s|^\s\+||;s|/|\\\\/|g;s|\"|\\\\\"|g" "$navfile" 2>/dev/null | tr -d '\n')"
+escfooter="$(sed "s|^\s\+||;s|/|\\\\/|g;s|\"|\\\\\"|g" "$footerfile" 2>/dev/null | tr -d '\n')"
+
+sed -s -i "s/<nav>.*<\/nav>/<nav>$escnav<\/nav>/; s/<footer>.*<\/footer>/<footer>$escfooter<\/footer>/" $files
+
+# Multiline:
+# sed -n -s -i "1h; 1!H; \${ g; s/<nav>.*<\/nav>/<nav>\n$escnav\n\t<\/nav>/g; s/<footer>.*<\/footer>/<footer>\n$escfooter\n\t<\/footer>/p }" $files

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+
+<channel>
+<title>LandChad.net: Web Guides for Internet Landchads!</title>
+<description>Tutorials on minimalist webpage creation and server maintenance.</description>
+<language>en-us</language>
+<link>https://landchad.net/rss.xml</link>
+<atom:link href="https://landchad.net/rss.xml" rel="self" type="application/rss+xml" />
+<image>
+<title>LandChad.net Web Guides for Internet LandChads</title>
+<url>https://landchad.net/pix/chad.gif</url>
+<link>https://landchad.net/rss.xml</link>
+</image>
+
+<item>
+	<title>Cryptocurrency Tutorials Completed</title>
+	<guid>https://landchad.net/index.html#crypto</guid>
+	<link>https://landchad.net/index.html#crypto</link>
+	<pubDate> Tue, 29 Jun 2021 08:10:31 -0400</pubDate>
+	<description><![CDATA[<p>There is now a set of basic tutorials on cryptocurrency wallets and concepts up.
+		The goal here is to allow people to receive tips for sites using all free and open source and peer-to-peer technology.</p>
+
+	<p>More tutorials on crypto management and exchanging may be added later, but these focus simply on basic concepts and setting up wallets. They include:</p>
+
+	<ul>
+		<li><a href="https://landchad.net/crypto.html">The Case for Crypto for Normal People</a></li>
+		<li><a href="https://landchad.net/bitcoin.html">Accepting Bitcoin</a></li>
+		<li><a href="https://landchad.net/monero.html">Accepting Monero</a></li>
+		<li><a href="https://landchad.net/openalias.html">Setting up OpenAlias for your site</a></li>
+		<li><a href="https://landchad.net/bat.html">Enrolling in the Basic Attention Token project</a></li>
+	</ul>]]></description>
+</item>
+
+<item>
+	<title>Welcome to LandChad.net!</title>
+	<guid>https://landchad.net</guid>
+	<link>https://landchad.net</link>
+	<pubDate> Mon, 28 Jun 2021 08:21:44 -0400</pubDate>
+	<description><![CDATA[<p>Welcome to LandChad.net!</p>
+<p>This website is for step-by-step tutorials that allow people to host and maintain their own website and other web services on the cheap or free.</p>
+<p>There is already a full basic tutorial on website creation on the site <a href="https://landchad.net/index.html#basic">here</a>.
+Following the tutorials can take as little as an hour, but will help you set up a VPS, and NginX server and encrypt your new webpage with Certbot.</p>
+<p>Next I plan adding general info on HTML and CSS and how to manage a website.</p>
+<p>More stuff like running your own email server and more will be added shortly as more articles are finalized.</p>
+]]></description>
+</item>
+
+
+</channel>
+</rss>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>XMPP Server (Prosody) &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>XMPP Server (Prosody)</h1></header>
+    <nav></nav>
+    <main>
+
+        <p>XMPP is a fantastically simple protocol that's usually used as a messenger.
+        It's highly extensible,
+        better than IRC,
+        lighter and more decentralized and Matrix
+        and Telegram and normie social media can't hold a candle to it.
+        </p>
+
+        <p>
+        XMPP is so decentralized and extensible that there are many <em>different</em> XMPP servers.
+        Here, let's set up an <a href="https://prosody.im/">Prosody</a> XMPP server.
+        </p>
+
+        <h2>Installation</h2>
+
+        <p>
+        Prosody is in the Debian repositories, so we can easily install it on our server with the following command:
+        </p>
+
+        <pre><code>apt install prosody</code></pre>
+
+
+<h2>Configuration</h2>
+
+<p>
+The Prosody configuration file is in <code>/etc/prosody/prosody.cfg.lua</code>.
+To set it all up, we will be changing several things.
+</p>
+
+<h3>Setting Admins</h3>
+
+<p>
+Let's go ahead and set who our admin(s) will be.
+Find the line that says <code>admins = { }</code> and to this we can specify one or more server admins.
+</p>
+
+<pre><code># To add one admin:
+admins = { "chad@landchad.net" }
+
+# We can add more than one by separating them by commas. (This file is written in Lua.)
+admins = { "chad@landchad.net", "chadmin@landchad.net" }</code></pre>
+
+<p>
+Note that we have not created these accounts yet, we will do this <a href=#user>below</a>.
+</p>
+
+<h3>Set the Server URL</h3>
+
+<p>
+Find the line <code>VirtualHost "localhost"</code> and replace <code>localhost</code> with your domain.
+In our case, we will have <code>VirtualHost "landchad.net"</code>
+</p>
+
+<h3>Multi-User Chats</h3>
+
+<p>
+Most people will probably want the ability to have chats with more than two users.
+This is easily enough to enable.
+In the config file, add the following:
+</p>
+
+<pre><code>Component "<strong>chat.landchad.xyz</strong>" "muc"
+    restrict_room_creation = "admin"</code></pre>
+
+<p>
+On the first line, you must have a separate subdomain for your multi-user chats.
+I use the <code>chat.</code> subdomain, but some use <code>muc.</code>.
+Anything if possible.
+</p>
+
+<p>
+The second line is important because it prevents non-admins from creating and squatting rooms on your server.
+The only situation where you might not want that is if you indend to open a general public chat system for people you don't know.
+</p>
+
+<aside>
+<p>
+Read more about the <code>muc</code> plugin on the Prosody documentation page <a href="https://prosody.im/doc/modules/mod_muc">here</a>.
+</p>
+</aside>
+
+
+<h3>End-to-end Encryption</h3>
+
+<p>
+Importantly, we'll want end-to-end encryption enabled for user privacy.
+</p>
+
+<p>
+Find the array beginning with <code>modules_enabled</code>.
+This includes a list of modules to be used.
+Add
+<code>"omemo_all_access";</code> to that list.
+</p>
+
+<p>
+This module is not installed by default,
+but you can easily download it by running the following command on the command prompt
+to download and install the module to the correcy directory.
+</p>
+
+<pre><code style=font-size:x-small>curl -sL https://hg.prosody.im/prosody-modules/raw-file/785389a2d2b3/mod_omemo_all_access/mod_omemo_all_access.lua &gt; /usr/lib/prosody/modules/mod_omemo_all_access.lua</code></pre>
+
+<h3>Other things to check</h3>
+
+<p>Check the config file for other settings you might want to change.
+For example, if you want to run a general public XMPP server, you can allow anyone to create an account by changing <code>allow_registration</code> to <code>true</code>.
+</p>
+
+<h2>Certificates</h2>
+
+<p>
+Obviously, we want to have client-to-server and server-to-server encryption.
+Nowadays, use can use Certbot to generate certificates and use a convenient command below <code>prosodyctl</code> to import them.
+</p>
+
+<p>
+<strong>If you have multi-user chat enabled, be sure to get a certificate for that subdomain as well.</strong>
+I usually just create a dummy nginx site for each and run it with the <code>--nginx</code> option.
+This makes auto-renewal a little easier.
+</p>
+
+<!-- <pre><code>server { -->
+<!--         listen 80 ; -->
+<!--         listen [::]:80 ; -->
+<!--         root /var/www/html; -->
+<!--         index index.html index.htm index.nginx-debian.html; -->
+<!--         server_name <strong>muc.landchad.net</strong> ; -->
+<!--         location / { -->
+<!--                 try_files $uri $uri/ =404; -->
+<!--         } -->
+<!-- }</code></pre> -->
+
+<pre><code>certbot --nginx</code></pre>
+
+<p>
+Once you have the certificates for encryption, run the following to import them into Prosody.
+</p>
+
+<pre><code>prosodyctl --root cert import /etc/letsencrypt/live/</code></pre>
+
+<p>
+Note that you might get an error that a certificate has not been found if your <code>muc</code> subdomain and your main domain share a certificate.
+It should still work, this is just notifying you that no specific
+</p>
+
+
+<p>
+For user privacy, we will definitely want to install and enable encryption with OMEMO.
+</p>
+
+<h2 id=user>Creating users/admins manually</h2>
+
+<p>
+Let's manually create the admin user we prepared for above.
+Note that you can indeed do this in your XMPP client if you have not disabled registration, but this is how it is done on the command line:
+</p>
+
+<pre><code>prosodyctl adduser chad@landchad.net</code></pre>
+
+<p>This will prompt you to create a password as well.</p>
+
+
+<h2>Make changes active</h2>
+
+<p>
+With any system service, use <code>systemctl reload</code> or <code>systemctl restart</code> to make the new settings active:
+</p>
+
+<pre><code>systemctl reload prosody</code></pre>
+
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>

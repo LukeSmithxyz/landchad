@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Setting Up a Webserver &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Setting Up a Webserver</h1></header>
+    <nav></nav>
+    <main>
+        <p>At this point, we should have a domain name and a server and the domain name should direct to the IP address of the server with DNS records.
+        As I said in previous articles, the instructions I will give will be for <strong>Debian 10</strong>.
+        In this article, other distributions might work a little differently.</p>
+
+        <h2>Logging in the the server</h2>
+
+        <p>
+        We first want to log into our VPS to get a command prompt where we can set up the web server.
+        I am assuming you are using either MacOS or GNU/Linux and you know how to open a terminal.
+        On Windows, you can also use either PuTTY or the Windows Subsystem for Linux.
+        </p>
+        <p>
+        Now on Vultr's site, you can click on your VPS and you will see that there is an area that shows you the password for your server at the bottom here.
+        </p>
+
+        <img src="pix/nginx-password.png" alt="Find your password">
+
+        <p>
+        Now pull up a terminal and type:
+        </p>
+
+        <pre><code>ssh root@<strong>yourdomain.com</strong></code></pre>
+
+        <p>
+        This command will attempt to log into your server.
+        It should prompt you for your password, and you can just copy or type in the password from Vultr's site.
+        </p>
+
+        <aside>
+            <p>
+            If you get an error here, you might not have done your <a href="dns.html">DNS settings</a> right.
+            Double check those.
+            Note you can also replace the <code>yourdomain.com</code> with your IP address, but you'll want to fix your DNS settings soon.
+            </p>
+        </aside>
+
+        <h2>Installing the Webserver: NGINX</h2>
+
+        <p>
+        If the program runs without an error, <code>ssh</code> has now logged you into your server.
+        Let's start by running the following commands.
+        </p>
+
+        <pre><code>apt update
+apt upgrade
+apt install nginx</code></pre>
+
+        <p>
+        The first command checks for packages that can be updated and the second command installs any updates.
+        </p>
+
+        <p>
+        The third command installs <code>nginx</code> (pronounced Engine-X) which is the web server we'll be using,
+        along with some other programs.
+        </p>
+
+        <h3>Our nginx configuration file</h3>
+
+        <p>
+        <code>nginx</code> is your webserver.
+        You can make a little website or page, put it on your VPS and then tell <code>nginx</code> where it is and how to host it on the internet.
+        It's simple. Let's do it.
+        </p>
+
+        <aside>
+    <p>
+    <code>nginx</code> configuration files are in <code>/etc/nginx/</code>.
+    The two main subdirectories in there (on Debian and similar OSes) are <code>/etc/nginx/sites-available</code> and <code>/etc/nginx/sites-enabled</code>.
+    The names are descriptive.
+    The idea is that you can make a site configuration file in <code>sites-available</code> and when it's all ready,
+    you make a link/shortcut to it in <code>sites-enabled</code> which will activate it.
+    </p>
+        </aside>
+
+    <p>First, let's create the settings for our website. You can copy and paste (with required changes)
+    but I will also explain what the lines do.
+    </p>
+
+    <p>
+    Create a file in <code>/etc/nginx/sites-available</code> by doing this:
+    </p>
+
+    <pre><code>nano /etc/nginx/sites-available/mywebsite</code></pre>
+
+    <p>
+    Note that "nano" is a command line text editor.
+    You will now be able to create and edit this file.
+    By saving, this file will now appear.
+    Note also I name the file <code>mywebsite</code>, but you can name it whatever you'd like.
+    </p>
+
+    <p>
+    I'm going to add the following content to the file.
+    The content <strong>like this</strong> will be different depending on what you want to call your site.
+    </p>
+
+<pre><code>server {
+        listen 80 ;
+        listen [::]:80 ;
+        server_name <strong>landchad.net</strong> ;
+        root /var/www/<strong>landchad</strong> ;
+        index index.html index.htm index.nginx-debian.html ;
+        location / {
+                try_files $uri $uri/ =404 ;
+        }
+}</code></pre>
+
+
+<aside>
+<h4>Explanation of those settings</h4>
+<p>
+The <code>listen</code> lines tell <code>nginx</code> to listen for connections on both IPv4 and IPv6.
+</p>
+<p>
+The <code>server_name</code> is the website that we are looking for.
+By putting <code>landchad.net</code> here, that means whenever someone connects to this server and is looking for that address,
+they will be directed to the content in this block.
+</p>
+<p>
+<code>root</code> specifies the directory we're going to put our website files in.
+This can theoretically be wherever, but it is conventional to have them in <code>/var/www/</code>.
+Name the directory in that whatever you want.
+</p>
+<p>
+<code>index</code> determine what the "default" file is;
+normally when you go to a website, say <code>landchad.net</code>, you are actually going to a file at <code>landchad.net/index.html</code>.
+That's all that is.
+Note that that this in concert with the line above mean that <code>/var/www/landchad/index.html</code>, a file on our computer that we'll create
+will be the main page of our website.
+</p>
+<p>
+Lastly, the <code>location</code> block is really just telling the server how to look up files, otherwise throw a 404 error.
+Location settings are very powerful, but this is all we need them for now.
+</p>
+</aside>
+
+<h3>Create the directory and index for the site</h3>
+
+<p>
+We'll actually start making a "real" website later, but let's go ahead and create a little page that will appear on when someone looks up the domain.
+</p>
+
+<pre><code>mkdir /var/www/landchad</code></pre>
+
+<p>
+Now let's create and index file inside of that directory which will appear when the website is accessed:
+</p>
+
+<pre><code>nano /var/www/landchad/index.html</code></pre>
+
+<p>
+I'll add the following basic content, but you can add whatever you want.
+This will appear on your website.
+</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;h1&gt;My website!&lt;/h1&gt;
+&lt;p&gt;This is my website. Thanks for stopping by!&lt;/p&gt;
+&lt;p&gt;Now my website is live!&lt;/p&gt;</code></pre>
+
+<h3>Enable the site</h3>
+
+<p>
+Once you save that file, we can enable it making a link to it in the <code>sites-enabled</code> directory:
+</p>
+
+<pre><code>ln -s /etc/nginx/sites-available/mywebsite /etc/nginx/sites-enabled</code></pre>
+
+<p>
+Now we can just <code>reload</code> or <code>restart</code> to make <code>nginx</code> service the new configuration:
+</p>
+
+<pre><code>systemctl reload nginx</code></pre>
+
+<h2>The Firewall</h2>
+
+<p>
+Vultr and some other VPS automatically install and enable <code>ufw</code>, a firewall program.
+This will block bacsically everything by default, so we have to change that.
+If you don't have <code>ufw</code> installed, you can skip this section.
+</p>
+
+<h3>Option 1: Disable the firewall entirely...</h3>
+
+<p>It's usually easier to just entirely disable the firewall.
+I recommend this in 99% of the cases.
+</p>
+
+<pre><code>systemctl stop ufw
+systemctl disable ufw</code></pre>
+
+<h3>Option 2: Or enable the proper ports.</h3>
+
+<p>If you want to keep and customize the firewall for later, we can get away with just enabling the ports needed for a webserver:
+</p>
+
+<pre><code>ufw allow 80
+ufw allow 443</code></pre>
+
+<p>
+Port number 80 is the canonical webserver port, while 443 is the port used for encrypted connections.
+We will certainly need that for the next page.
+</p>
+
+<h2>We now have running website!</h2>
+
+<p>
+At this point you can now type in your website in your browser and this webpage will appear!
+</p>
+
+<img src=pix/nginx-website.png alt="The webpage as it appears.">
+
+<p>
+Note the "Not secure" notification.
+The next brief step is securing encrypted connections to your website.
+</p>
+
+<span class=next><a href="certbot.html">Next: Enabling Encrypted Connections</a></span>
+
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
