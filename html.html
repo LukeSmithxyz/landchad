@@ -49,7 +49,7 @@ Note how this HTML file appears as a webpage:
 
 
 
-<table>
+<table class=cnp>
     <tr>
         <td>
 <pre><code>&lt;!DOCTYPE html&gt;
@@ -70,7 +70,7 @@ multiple lines.
 Observe if we add lines to the end of this file:
 </p>
 
-<table>
+<table class=cnp>
     <tr>
         <td>
 <pre><code>&lt;!DOCTYPE html&gt;
@@ -116,7 +116,7 @@ Heading tags are for your page's title and section headings in the document:
 </ul>
 
 
-<table>
+<table class=cnp>
     <tr>
         <td>
 <pre><code>&lt;h1&gt;This is a top-level heading.&lt;/h1&gt;
@@ -149,69 +149,50 @@ If we use these heading tags, when we clear CSS, we can easily style all <code>&
 to be the size and color and alignment we want.
 </p>
 
-&lt;<++>&gt;
-&lt;<++>&gt;
-&lt;<++>&gt;
-        <h2>A look at a decent template</h2>
+<h2>Text formatting</h2>
+
+<p>
+HTML can also be used to do text formatting.
+We can make bold, italic, underlined or struck through text with more HTML tags:
+</p>
+
+<table class=cnp>
+    <tr>
+        <td>
+<pre><code>&lt;p&gt;This is &lt;b&gt;bold text&lt;/b&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is &lt;i&gt;italic text&lt;/i&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is &lt;u&gt;underlined&lt;/u&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is &lt;s&gt;struck through&lt;/s&gt;.&lt;/p&gt;</code></pre>
+        </td>
+        <td>
+        <img src="pix/html2-01.png" alt="formatted text">
+        </td>
+    </tr>
+</table>
+
+        <h2>Semantic Tags</h2>
 
         <p>
-        It's a good habit to include the same core things in every HTML page.
-        I have a template file that I use for this website that includes all the basics.
-        When I make a new page, I just copy the template and add the content.
-        Here is what the template looks like:
-        </p>
-<code><pre>&lt;!DOCTYPE html&gt;
-&lt;html lang=en&gt;
-    &lt;head&gt;
-        &lt;title&gt;<strong>Your page title</strong>&lt;/title&gt;
-        &lt;meta charset="utf-8"/&gt;
-        &lt;link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /&gt;
-        &lt;link rel='stylesheet' type='text/css' href='style.css'&gt;
-        &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
-        &lt;link rel='alternate' type='application/rss+xml' title='<strong>Site Title</strong> RSS' href='/rss.xml'&gt;
-    &lt;/head&gt;
-&lt;body&gt;
-    &lt;header&gt;&lt;h1&gt;<strong>Your page title</strong>&lt;/h1&gt;&lt;/header&gt;
-
-    &lt;nav&gt;&lt;/nav&gt;
-
-    &lt;main&gt;
-
-    <strong>Put all your page content here in the &lt;main&gt; tag.</strong>
-
-    &lt;/main&gt;
-
-    &lt;footer&gt;&lt;/footer&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-
-    <h3>The
-    </h3>
-
-        <h3>HTML can be broken...</h3>
-
-        <p>
-        HTML is interpreted by browsers very liberally.
-        If you make mistakes in HTML, browsers will do their best to be forgiving and try to figure out what you meant.
+        While <code>&lt;b&gt;&lt;/b&gt;</code> and <code>&lt;i&gt;&lt;/i&gt;</code>
+        do exist, it's actually better <em>not</em> to use them directly in text.
         </p>
 
         <p>
-        For example, paragraphs are formatted by the <code>&lt;p&gt;</code> tag and when the paragraph ends,
-        <code>&lt;/p&gt;</code> should be included.
-        However, if you forget or neglect to include a <code>&lt;/p&gt;</code> to close the tag, this isn't a big deal, as if your browser sees another <code>&lt;p&gt;</code> to start a new paragraph, it will consider the previous paragraphy closed and both paragraphs will be formatted correctly.
-        In fact, there are some people nowadays that only ever use the opening tag and never close them!
+        Try using <code>&lt;strong&gt;&lt;/strong&gt;</code> instead of <code>&lt;b&gt;&lt;/b&gt;</code> and <code>&lt;em&gt;&lt;/em&gt;</code> instead of <code>&lt;i&gt;&lt;/i&gt;</code>.
+        By default, they will look exactly the same.
+        You complain that they require more key presses, but it's thought to be a very bad idea to modify lower-level tags with CSS directly.
         </p>
-
-        <h3>...but not always.</h3>
 
         <p>
-        That works fine with <code>&lt;p&gt;</code>, but for other tags like <code>&lt;b&gt;</code>, it won't work.
-        Your browser can't guess where you want the bolding to end, so if you fail to close a <code>&lt;b&gt;</code> with <code>&lt;/b&gt;</code>,
-        the whole rest of your document will show up bold!
+        Note that some bold words on this site have <strong>different color for emphasis</strong>.
+        This is a setting set via CSS for all <code>&lt;strong&gt;</code> tags.
+        It would not be a good idea for us to use this for <code>&lt;b&gt;</code>, since there might be a non-colored situation we want to occasionally use it in.
         </p>
 
-
-    <span class=next><a href="html2.html">Next: Text formatting in HTML</a></span>
+    <span class=next><a href="html2.html">Next: Images and Links in HTML</a></span>
 
     </main>
 	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>

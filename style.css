@@ -1,33 +1,10 @@
 /* Since this site is about teaching web concepts, even this file is a learning
  * opportunity. */
 
-@-webkit-keyframes next {
-    0% {color: yellow ;}
-    100% {color: lightblue}
-}
-
-.next a {
-	color: inherit ;
-}
-
-.next {
-	color: red ;
-	  -webkit-animation:next 1s infinite alternate ;
-	font-size: xx-large ;
-	text-align: center ;
-	margin: auto ;
-	display: block ;
-	font-weight: bold ;
-	padding: 1em ;
-}
-
-.next:before {
-	content: "👉" ;
-}
-
 body {
 	color: beige ;
-	background: #222 ;
+	background: #111 ;
+	margin-bottom: 200px ;
 }
 
 h1 {
@@ -44,9 +21,9 @@ h2 {
 	color: deeppink ;
 	font-variant: small-caps;
 	font-size: 24pt ;
-    border-bottom: dashed #ddd 1px ;
-    max-width: 500px ;
-    margin: 1em auto ;
+	border-bottom: dashed #ddd 1px ;
+	max-width: 500px ;
+	margin: 1em auto ;
 }
 
 h3 {
@@ -66,14 +43,14 @@ a:hover {
 }
 
 dt {
-    font-weight: bold ;
+	font-weight: bold ;
 }
 
 /* code and pre are for formatting monospace text commands. Use code generally,
  * but pre is for separate code blocks. pre is also sensitive to whitespace,
  * unlike most of HTML. */
 code {
-    color: lime ;
+	color: lime ;
 	border-radius: 5px ;
 }
 pre {
@@ -149,6 +126,11 @@ aside code {
     color: green ;
 }
 
+.cnp {
+	width: 100% ;
+
+}
+
 /* This "@media" block defines rules that will only be applied when the minimum
  * width of the screen is 55em or greater. In essence, they are settings that
  * only apply on normal weide screens, but *not* phones and low res monitors.
@@ -192,4 +174,31 @@ aside code {
 .cryptoinfo code {
 	font-size: small ;
 	overflow-wrap: break-word ;
+}
+
+/* The "Next Article" Button changes color and also has a 👉 automatically
+ * added to its front. */
+
+@-webkit-keyframes next {
+    0% {color: yellow ;}
+    100% {color: lightblue}
+}
+
+.next a {
+	color: inherit ;
+}
+
+.next {
+	color: red ;
+	  -webkit-animation:next 1s infinite alternate ;
+	font-size: xx-large ;
+	text-align: center ;
+	margin: auto ;
+	display: block ;
+	font-weight: bold ;
+	padding: 1em ;
+}
+
+.next:before {
+	content: "👉" ;
 }
