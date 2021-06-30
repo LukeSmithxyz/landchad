@@ -126,10 +126,18 @@ aside code {
     color: green ;
 }
 
+/* .callout here is refencing any aside given the class name callout
+ * An example being: <aside class="callout"> */
+aside.callout  {
+    border: solid 1px orange;
+}
+
+
 .cnp {
 	width: 100% ;
 
 }
+
 
 /* This "@media" block defines rules that will only be applied when the minimum
  * width of the screen is 55em or greater. In essence, they are settings that

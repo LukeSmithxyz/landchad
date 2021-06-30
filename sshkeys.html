@@ -76,6 +76,7 @@
         </p>
         </aside>
 
+
         <p>
         To test if this has worked, now try logging in normally to your server with ssh:
         </p>
@@ -85,6 +86,22 @@
         <p>
         It should now let your log in without a password prompt!
         </p>
+        <aside class=callout>
+            <p>
+            If you find that this does not work try running the following, make sure you are in the directory where the keys where created. 
+            </p>
+            <p>
+            <code> chmod 700 .ssh/ </code>
+            </p>
+            <code> chmod 644 .ssh/id_rsa.pub </code>
+            <p>
+            <code> chmod 600 .ssh/id_rsa </code>
+            </p>
+            <code> chmod 644 .ssh/authorized_keys </code>
+            <p>
+            For whatever reason these files due not have the correct permissions set, as ssh is very picky about correct file permissions this can cause errors. The above will fix these.
+            </p>
+        </aside>
 
         <h2>Disabling Password Logins for Security</h2>
 
