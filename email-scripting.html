@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Sending emails with scripts&ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Sending emails with scripts</h1></header>
+    <nav></nav>
+    <main>
+      <p>Sending emails using scripts is a great way to safely automate your system. You don't want your automatic updates to fail and to not realize it for weeks or months. In this guide you will learn how to send emails using your server to for example, notify you over email in the case of failure so you can take appropriate action.
+      </p>
+
+      <p>In the case you already hosting an email server on the used machine, you only have to follow the step where you install the dependencies and the steps below 'Sending a test email'. Otherwise you can continue the guide.
+      </p>
+
+      <p>To start off, run the following command in the server's terminal to install the required applications.
+      </p>
+
+      <pre><code>sudo apt install sasl2-bin libsasl2-modules postfix bsd-mailx</code></pre>
+
+      <h2>Setting up Postfix
+      </h2>
+
+      <p>You should now see a big postfix popup. First press tab and enter, which brings you to another screen. In the following screen like you see in the image below, select the option 'Internet Site' and fill in whatever you want. Generally you would fill in your domain name or the server's hostname. When you have chosen the system mail name, press enter.
+      </p>
+
+      <p><a href="pix/email-scripting1.png"><img src="pix/email-scripting1.png" alt="Picture of the big Postfix popup" /></a>
+      </p>
+
+      <p>Now press enter again, which will finish the installation of Postfix and the other applications.
+      </p>
+
+      <p>The next step is to edit the Postfix configuration file. Execute the following command in the server's terminal:
+      </p>
+
+      <pre><code>sudoedit /etc/postfix/main.cf</code></pre>
+
+      <p>Find the line containing the following:
+      </p>
+
+      <pre><code>relayhost =</code></pre>
+
+      <p>Change this line to the following, while changing *domain name* and *port* to the relevant domain name and port of the SMTP server you want to use.
+      </p>
+
+      <pre><code>relayhost = [*domain name*]:*port*</code></pre>
+
+      <p>Add the following to the end of the configuration file:
+      </p>
+
+      <pre><code># outbound relay configurations
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_security_level = may
+header_size_limit = 4096000</pre></code>
+
+      <p>Save and close the file and create a new file using the following command:
+      </p>
+
+      <p>sudoedit /etc/postfix/sasl_passwd
+      </p>
+
+      <p>In this file, add the following, while replacing the values *domain name* and *port* to the same values as the values of the previous steps, and changing the values *smtp username* and *smtp password* to the username and password of the email account you want to use.
+      </p>
+
+      <pre><code>[*domain name*]:*port*  *smtp username*:*smtp password*</code></pre>
+
+      <p>Save and close the file and execute the following command:
+      </p>
+
+      <pre><code>sudo postmap /etc/postfix/sasl_passwd</code></pre>
+
+      <p>Execute the following command to restart Postfix for changes to take effect:
+      </p>
+
+      <pre><code>sudo systemctl restart postfix</code></pre>
+
+      <p>Execute the following command to change the permissions of two files, for security reasons:
+      </p>
+
+      <pre><code>sudo chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db</pre></code>
+
+      <p>If everything went correctly, sending emails should now work. You can test it by following the next steps:
+      </p>
+
+      <h2>Sending a test email</h2>
+
+      <p>Now execute the following command to send an email. Replace *from-address* and *to-address* to the relevant values. *from-address* will be the sender address, and *to-address* will be the address on which you will receive the email.
+      </p>
+
+      <pre><code>echo "this is a server sent email." | mailx -r *from-address* -s hello *to-address*</code></pre>
+
+      <p>If that worked, great! Your server can now send emails. In the case it's not working, check the file <code>/var/log/mail.log</code> for any errors.
+      </p>
+
+      <p>You can now run this command in scripts to send an email with whatever message you want.
+      </p>
+
+      <h2>Extra security step</h2>
+
+      <p>If you're not running an email server on the same server you are sending emails on, it might be worth it to follow the next step for extra security. Edit the file <code>/etc/postfix/main.cf</code> and change the following line:
+      </p>
+
+      <pre><code>inet_interfaces = all</code></pre>
+
+      <p>To this:
+      </p>
+
+      <pre><code>inet_interfaces = loopback-only</code></pre> 
+
+      <p>This will configure your Postfix to only send emails, but to not accept incoming mails.
+
+      <p><b>Monero:</b> 8986huhbRZwL3rAPagRAgWWKgcHszcBETEcbS13NJ2VBbTNK1D8eSXJXF9d6B7hVb5XNDyHh9CpJLj7H8PBe7gTD5rXhNsG
+      </p>
+
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
