@@ -69,6 +69,7 @@ pre {
 p img, li img, h1 img, h2 img, h3 img, h4 img {
 	vertical-align: middle ;
 	max-width: 1em;
+	max-height: 1em;
 	border: none ;
 	display: inline ;
 }
@@ -78,6 +79,10 @@ img {
 	margin: auto ;
 	display: block ;
 	border: solid 5px beige ;
+}
+.titleimg {
+	border: none ;
+	height: 150px ;
 }
 strong {
 	color: orange ;
