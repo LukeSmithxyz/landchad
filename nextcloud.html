@@ -61,7 +61,7 @@ server {
     ssl_certificate     /etc/ssl/nginx/<strong>yourwebsite.com</strong>.crt;
     ssl_certificate_key /etc/ssl/nginx/<strong>yourwebsite.com</strong>.key;
 
-    root /var/www/<strong>yourwebsitedirectory</strong>;
+    root /var/www;
 
     location = /robots.txt {
         allow all;
@@ -157,12 +157,12 @@ server {
         <pre><code>ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/</code></pre>
         <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
         <pre><code>wget https://download.nextcloud.com/server/releases/nextcloud-21.0.2.tar.bz2</code></pre>
-        <p>If you already have your LandChad property set up (your web site) we can simply extract the tarball there so we don't have to do any messing around with Nginx at the moment. You may wish to have a subdomain instead, but that is out of the scope of this tutorial. Run the following command:</p>
-        <pre><code>tar -xjf nextcloud*.tar.bz2 -C /var/www/<strong>yourwebsitedirectory</strong></code></pre>
+        <p>Now we need to extract the Nextcloud tarball. Run the following command:</p>
+        <pre><code>tar -xjf nextcloud*.tar.bz2 -C /var/www</code></pre>
         <p>If you have multiple Nextcloud tarballs in the current working directory you might want to manually specify which one you wish to extract.</p>
         <p>Let's correct the ownership and permissions of those files. Run the following commands after you fill in the placeholders:</p>
-        <pre><code>chown -R www-data:www-data /var/www/<strong>yourwebsitedirectory</strong>/nextcloud
-chmod -R 755 /var/www/<strong>yourwebsitedirectory</strong>/nextcloud</code>
+        <pre><code>chown -R www-data:www-data /var/www/nextcloud
+chmod -R 755 /var/www/nextcloud</code>
         </pre>
         <p>Start and enable the php-fpm and the mariadb services (the name of the php-fpm service may have a version number ahead of it, use bash's tab autocomplete to help you out with that):</p>
         <pre><code>systemctl enable php-fpm
