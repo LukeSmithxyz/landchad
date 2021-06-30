@@ -29,11 +29,10 @@
         <code># mysql_secure_installation</code>
         <p>When it asks for root a password, say yes and input a new and secure password. The root password here is just for the SQL database, not for the GNU/Linux system.</p>
         <p>Answer the rest of the questions as follows:</p>
-        <pre>
-        <code>Remove anonymous users? [Y/n]: Y</code>
-        <code>Disallow root login remotely? [Y/n]: Y</code>
-        <code>Remove test database and access to it? [Y/n]: Y</code>
-        <code>Reload privilege tables now? [Y/n]: Y</code>
+        <pre><code>Remove anonymous users? [Y/n]: Y
+Disallow root login remotely? [Y/n]: Y
+Remove test database and access to it? [Y/n]: Y
+Reload privilege tables now? [Y/n]: Y</code>
         </pre>
         <p>Next, sign into the SQL database with the new and secure password you chose before. Run the following command:</p>
         <code># mysql -u root -p</code>
@@ -50,9 +49,8 @@
         <code># tar -xjf nextcloud*.tar.bz2 -C /var/www/html/[WHERE EVER YOUR WEBSITE IS STORED]</code>
         <p>If you have multiple Nextcloud tarballs in the current working directory you might want to manually specify which one you wish to extract.</p>
         <p>Let's correct the ownership and permissions of those files. Run the following commands after you fill in the placeholders:</p>
-        <pre>
-        <code># chown -R www-data:www-data /var/www/html/[WHERE EVER YOUR WEBSITE IS STORED]/nextcloud</code>
-        <code># chmod -R 755 /var/www/html/[WHERE EVER YOUR WEBSITE IS STORED]/nextcloud</code>
+        <pre><code># chown -R www-data:www-data /var/www/html/[WHERE EVER YOUR WEBSITE IS STORED]/nextcloud
+# chmod -R 755 /var/www/html/[WHERE EVER YOUR WEBSITE IS STORED]/nextcloud</code>
         </pre>
         <p>Now we need to head to Nextcloud's web interface. Go to your web browser and go to your website, but go to the subdirectory "nextcloud" instead. For example, if your domain is landchad.net and you have set up HTTPS then go to <code>https://landchad.net/nextcloud</code>. This will launch the configuration wizard.</p>
     
