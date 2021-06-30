@@ -20,7 +20,7 @@
         <p>First, we need to obtain a shell prompt by ssh-ing (remote machines or local machines) or just logging in (local machines). A traditional ssh might look like this if the domain you wished to ssh into is <code>landchad.net</code>:</p>
         <pre><code>ssh root@landchad.net</code></pre>
         <p>We should upgrade the system and then install packages that we might need. Run the following command:</p>
-        <pre><code>apt-get full-upgrade -y && sudo apt-get install mariadb-server php-mysql php php-gd php-mbstring php-dom php-curl php-zip php-simplexml php-xml -y</code></pre>
+        <pre><code>apt-get full-upgrade -y && sudo apt-get install mariadb-server php-mysql php php-gd php-mbstring php-dom php-curl php-zip php-simplexml php-xml php-fpm -y</code></pre>
         <p>Next, we need to set up our SQL database by running a Secure Installation and creating the tables that will store data that Nextcloud will need. Run the following command:</p>
         <pre><code>mysql_secure_installation</code></pre>
         <p>When it asks for root a password, say yes and input a new and secure password. The root password here is just for the SQL database, not for the GNU/Linux system.</p>
@@ -37,11 +37,124 @@ Reload privilege tables now? [Y/n]: Y</code>
 GRANT ALL ON nextcloud.* TO '<strong>username</strong>'@'localhost' IDENTIFIED BY '<strong>password</strong>';
 FLUSH PRIVILEGES;
 EXIT;</code></pre>
-        <p>Start and enable the php-fpm and the mariadb services:</p>
-        <pre><code>systemctl enable php-fpm
-systemctl start php-fpm
-systemctl enable mariadb
-systemctl start mariadb</code></pre>
+        <p>Now we need to configure PHP. Let's start my making sure that the PHP user is set to <code>www-data</code> and if that is not the case, add the <code>www-data</code> user if needed and set the correct variable in <code>nginx.conf</code>. Make sure this line is at the beginning of <code>/etc/nginx/nginx.conf</code>.</p>
+        <pre><code>user www-data;</code></pre>
+        <p>Check for the <code>www-data</code> user by running <code>id -u www-data</code>. If a number is output from that command, then the www-data user exists. If not. add the user simply by running <code>useradd www-data</code></p>
+        <p>Next, we need to ensure that we have SSL certificates generated for your website. If you have not already done this, refer to <a href="certbot.html">this guide</a>. Although having SSL for your site is not required, it is highly recommended that you have it or you will risk attackers being able to steal passwords and data.</p>
+        <p>In <code>/etc/nginx/sites-available/</code> we need to make a new configuration for Nextcloud (example: <code>/etc/nginx/sites-available/nextcloud</code>). Create it and open it, modify, and add the following lines:</p>
+        <pre><code>server {
+    listen 80;
+    listen [::]:80;
+    server_name <strong>yourwebsite.com</strong>;
+
+    location /nextcloud {
+        return 301 https://$server_name$request_uri;
+    }
+}
+
+server {
+
+    <strong># If you have SSL ready for your website (DO NOT use Nextcloud without HTTPS, you will risk data leaks including passwords and files), use these lines:</strong>
+    listen 443      ssl http2;
+    listen [::]:443 ssl http2;
+    server_name <strong>yourwebsite.com</strong>;
+    ssl_certificate     /etc/ssl/nginx/<strong>yourwebsite.com</strong>.crt;
+    ssl_certificate_key /etc/ssl/nginx/<strong>yourwebsite.com</strong>.key;
+
+    root /var/www/<strong>yourwebsitedirectory</strong>;
+
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+
+    location ^~ /.well-known {
+        location = /.well-known/carddav { return 301 /nextcloud/remote.php/dav/; }
+        location = /.well-known/caldav  { return 301 /nextcloud/remote.php/dav/; }
+
+        location /.well-known/acme-challenge    { try_files $uri $uri/ =404; }
+        location /.well-known/pki-validation    { try_files $uri $uri/ =404; }
+
+        return 301 /nextcloud/index.php$request_uri;
+    }
+
+    location ^~ /nextcloud {
+        client_max_body_size 512M;
+        fastcgi_buffers 64 4K;
+
+        gzip on;
+        gzip_vary on;
+        gzip_comp_level 4;
+        gzip_min_length 256;
+        gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
+        gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
+
+        pagespeed off;
+
+        add_header Referrer-Policy                      "no-referrer"   always;
+        add_header X-Content-Type-Options               "nosniff"       always;
+        add_header X-Download-Options                   "noopen"        always;
+        add_header X-Frame-Options                      "SAMEORIGIN"    always;
+        add_header X-Permitted-Cross-Domain-Policies    "none"          always;
+        add_header X-Robots-Tag                         "none"          always;
+        add_header X-XSS-Protection                     "1; mode=block" always;
+
+        fastcgi_hide_header X-Powered-By;
+
+        index index.php index.html /nextcloud/index.php$request_uri;
+
+        location = /nextcloud {
+            if ( $http_user_agent ~ ^DavClnt ) {
+                return 302 /nextcloud/remote.php/webdav/$is_args$args;
+            }
+        }
+
+        location ~ ^/nextcloud/(?:build|tests|config|lib|3rdparty|templates|data)(?:$|/)    { return 404; }
+        location ~ ^/nextcloud/(?:\.|autotest|occ|issue|indie|db_|console)                  { return 404; }
+
+        location ~ \.php(?:$|/) {
+            fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+            set $path_info $fastcgi_path_info;
+
+            try_files $fastcgi_script_name =404;
+
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param PATH_INFO $path_info;
+            fastcgi_param HTTPS on;
+
+            fastcgi_param modHeadersAvailable true;
+            fastcgi_param front_controller_active true;
+            fastcgi_pass php-handler;
+
+            fastcgi_intercept_errors on;
+            fastcgi_request_buffering off;
+        }
+
+        location ~ \.(?:css|js|svg|gif)$ {
+            try_files $uri /nextcloud/index.php$request_uri;
+            expires 6M;
+            access_log off;
+        }
+
+        location ~ \.woff2?$ {
+            try_files $uri /nextcloud/index.php$request_uri;
+            expires 7d; 
+            access_log off;
+        }
+
+        location /nextcloud/remote {
+            return 301 /nextcloud/remote.php$request_uri;
+        }
+
+        location /nextcloud {
+            try_files $uri $uri/ /nextcloud/index.php$request_uri;
+        }
+    }
+}</code></pre>
+        <p>Enable the site by running this command:</p>
+        <pre><code>ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/</code></pre>
         <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
         <pre><code>wget https://download.nextcloud.com/server/releases/nextcloud-21.0.2.tar.bz2</code></pre>
         <p>If you already have your LandChad property set up (your web site) we can simply extract the tarball there so we don't have to do any messing around with Nginx at the moment. You may wish to have a subdomain instead, but that is out of the scope of this tutorial. Run the following command:</p>
@@ -51,6 +164,13 @@ systemctl start mariadb</code></pre>
         <pre><code>chown -R www-data:www-data /var/www/<strong>yourwebsitedirectory</strong>/nextcloud
 chmod -R 755 /var/www/<strong>yourwebsitedirectory</strong>/nextcloud</code>
         </pre>
+        <p>Start and enable the php-fpm and the mariadb services (the name of the php-fpm service may have a version number ahead of it, use bash's tab autocomplete to help you out with that):</p>
+        <pre><code>systemctl enable php-fpm
+systemctl start php-fpm
+systemctl enable mariadb
+systemctl start mariadb</code></pre>
+        <p>Reload the nginx service:</p>
+        <pre><code>systemctl reload nginx</code></pre>
         <p>Now we need to head to Nextcloud's web interface. Go to your web browser and go to your website, but go to the subdirectory "nextcloud" instead. For example, if your domain is landchad.net and you have set up HTTPS then go to <code>https://landchad.net/nextcloud</code>. This will launch the configuration wizard.</p>
 
         <ul>
