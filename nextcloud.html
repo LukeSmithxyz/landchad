@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Nextcloud Server &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Nextcloud Server</h1></header>
+    <nav></nav>
+    <main>
+
+        <p>Nextcloud is by far the best (and in many ways only) free and open source cloud storage solution. Not only can the client be used on nearly all platforms such as desktop, android and IOS but it also doesn't take up much memory on your server.
+        </p>
+
+        <p>You'll need a server or VPS running a Debian-based OS (Ubuntu 20 or Debian 10 are recommended) and at least 512MB of RAM. You'll also need a domain name pointing to your server's IP address.
+        </p>
+
+        <p><b>
+	Note that although you can use NGINX instead of Apache (and I've successfully done it before) it's not officially supported.
+	<a href="https://docs.nextcloud.com/server/latest/admin_manual/installation/nginx.html"> More info here.</a>
+        </b></p>
+
+        <h2>Automatic Installation</h2>
+        <p>If you want to just automatically do all the steps below then you can use my installation script
+	<a href="https://github.com/BiasedRiot/SaorTech-cloud-services/blob/main/services/install_nextcloud.sh"> in my git repo linked here.</a>
+         Or alternatively you can use the <a href="https://docs.nextcloud.com/server/latest/admin_manual/installation/installation_wizard.html">Nextcloud installation wizard in the official documentation</a> but I've found before that it fails if you don't have a certain amount of memory allocated.
+        </p>
+
+<h2>Manual Installation</h2>
+	
+<h3>Setting up Apache and Mariadb</h3>
+
+<p>
+First thing we'll need to do is install the dependancies. We'll be using Mariadb and Apache for the server. Simply run the below command.
+</p>
+
+<pre><code>apt install apache2 software-properties-common mariadb-server php7.3 libapache2-mod-php7.3 php7.3-mysql</code></pre>
+
+<p>
+Enable and start the apache systemD service with the below command:
+</p>
+
+<pre><code>systemctl start apache2
+systemctl enable apache2
+</code></pre>
+
+<p>
+Next run the mysql_secure_installation using the below command
+</p>
+
+<pre><code>
+mysql_secure_installation
+</code></pre>
+	
+<p>
+Next run <code>mariadb</code> and enter the below SQL commands.
+</p>
+
+<pre><code>
+CREATE DATABASE nextcloud;
+CREATE USER nextcloud IDENTIFIED BY 'ENTER A SECURE PASSWORD';
+GRANT USAGE ON *.* TO 'nextcloud'@'localhost' IDENTIFIED BY 'YOUR PASSWORD';
+GRANT ALL privileges ON nextcloud.* TO 'nextcloud'@'localhost';
+FLUSH PRIVILEGES;	
+</code></pre>
+	
+	
+
+<h3>Installing the Nextcloud Application</h3>
+
+<p>
+First we'll install some more dependancies.
+</p>
+
+<pre><code>
+apt install php7.3-gd php7.3-json php7.3-mysql php7.3-curl php7.3-mbstring php7.3-intl php7.3-imagick php7.3-xml php7.3-zip
+</code></pre>
+
+<p>
+Next we'll install the nextcloud app and move the relevant files to your apache server directory.
+</p>
+
+<pre><code>
+wget https://download.nextcloud.com/server/releases/nextcloud-15.0.7.tar.bz2
+tar -xvf nextcloud-15.0.7.tar.bz2
+cd nextcloud
+mkdir /var/www/nextcloud/
+
+mv ./* /var/www/nextcloud | mv ./.htaccess /var/www/nextcloud | mv ./.user.ini /var/www/nextcloud
+</code></pre>
+
+<p>
+Next we'll remove this installed directory and change the permissions.
+</p>
+
+<pre><code>
+cd /var/www/nextcloud
+rm -r ~/nextcloud/
+chown -R www-data:www-data ./*
+chown www-data:www-data .htaccess
+chown www-data:www-data .user.ini
+</code></pre>
+
+
+<h3>Setting Up Encryption (SSL)</h3>
+
+<p>
+Next we'll create an SSL certificate for your domain name. For tutorial purposes I'll use the domain <code>nextcloud.example.com</code>. Thanks to the EFF anyone can get an SSL certificate for free using Certbot.
+First we'll install the dependancies:
+</p>
+
+<pre><code>
+apt install certbot python3-certbot-apache
+</code></pre>
+
+<p>
+Next you'll need to go to the file <code>/etc/apache2/sites-available/000-default.conf</code> and change the section in <code>ServerName</code> from example.com to whatever your domain is.
+Then you can copy this file to the sites enabled with the below commands: 
+</p>
+<pre><code>
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+systemctl restart apache2
+</code></pre>
+
+<p>
+Next run the below command to create your cert:
+</p>
+
+<pre><code>
+certbot --apache -d $my_domain --redirect
+</code></pre>
+
+<h3>Housekeeping and security best practices</h3>
+<p>
+The remaining commands are just to make your server work/secure it as much as possible.
+First we'll need to create the directory for storing the data. We're doing it in the root directory so there's no chance of someone accessing it from the browser.
+</p>
+
+<pre><code>
+mkdir /nextcloud-data
+chown www-data:www-data /nextcloud-data
+chown www-data:www-data /nextcloud-data/
+</code></pre>
+
+<p>
+Next go to the <code>/etc/php/7.3/apache2/php.ini</code> and make the following changes.
+</p>
+
+<p>
+Change <strong>upload_max_filesize = 2M</strong> to <strong>512M</strong>
+</p>
+<p>Change <strong>memory_limit = 128M</strong> to <strong>512M</strong>
+</p>
+<p>Change <strong>post_max_size = 8M</strong> to <strong>512M</strong>
+</p>
+
+<p>
+Next go to the <code>/etc/apache2/sites-enabled/000-default-le-ssl.conf</code> file and add the following to it:
+<b>NOTE:</b> Remove the space at the start of the IfModule and VirtualHost tags I only added it in because html makes it disappear.
+</p>
+
+<pre><code>
+
+< IfModule mod_ssl.c>
+< VirtualHost *:443>
+        ServerName $my_domain
+        <IfModule mod_headers.c>
+          Header always set Strict-Transport-Security \"max-age=15552000; includeSubDomains; preload\"
+        </IfModule>
+	<Directory /var/www/nextcloud/>
+		Options +FollowSymlinks
+		AllowOverride All
+	</Directory>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/nextcloud
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+ServerAlias $my_domain
+SSLCertificateFile /etc/letsencrypt/live/$my_domain/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/$my_domain/privkey.pem
+Include /etc/letsencrypt/options-ssl-apache.conf
+< /VirtualHost>
+< /IfModule>
+
+</code></pre>
+
+<p>
+Then run the below commands and you should be all set:
+</p>
+
+<pre><code>
+systemctl restart apache2
+a2enmod headers
+
+-u www-data php /var/www/html/./occ db:convert-filecache-bigint
+</code></pre>
+
+
+<p>
+If you run into any issues then <a href="https://docs.nextcloud.com/server/latest/admin_manual/installation/source_installation.html">feel free to checkout the documentation</a> or send me an email or message. My details are below.
+</p>
+
+<p>
+<b>My Website:</b> https://biasedriot.co
+</p>
+
+<p>
+<b>My Youtube Channel:</b> https://www.youtube.com/channel/UCehh50T6qtDpt_kEUF33GJw
+</p>
+
+<p>
+<b>Monero:</b> 84Y4FZiTbLeR5qc1fBrBhB1yq5agKtEdoixq2w1ysXJv486MiBCz3czGT15bqeXDPpdLoNyF93inxY3BCk6g8mrDMNKoArS
+</p>
+<p>
+<b>Bitcoin:</b> 1Dmn9jEtWAhdLk1HHWkUVNeDdAaBCwNajm
+</p>
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
