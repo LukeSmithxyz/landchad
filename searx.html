@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Setting up a Searx instance &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Setting up a Searx instance</h1></header>
+    <nav></nav>
+    <main>
+        <p>This is a guide on setting up your own Searx instance with Filtron reverse proxy and Morty result proxy.</p>
+        <h2>What is Searx?</h2>
+        <p>Searx is a privacy-respecting metasearch engine. It is not a regular search engine like Brave Search, Bing or Google which indexes information from pages by using their bots. A meta-search engine asks other search engines for results and presents them to you.</p>
+        <p>It can also act as a proxy for these search engines as your server is doing the requests to Google not your machine which is more private while still having Google's results. One downside can be the speed due to it having to pull information from another server; some engines might be slower than others and that is shown on Searx's settings.</p>
+        <h3>What is all this Filtron or Morty stuff?</h3>
+        <p>Filtron is an application firewall, a middleware between Searx and Nginx (webserver). It avoids abuse from your server and limits requests. Essentialy it protects your server from bad actors</p>
+        <p>Morty is a result proxy which proxies images and websites. It downloads the images and displays them from your server like Searx. You can also view websites through your server privately without using your machine to request that website.</p>
+        <h2>Setting it up</h2>
+        <p><code>(YOUR DOMAIN HERE)</code> in this guide means your domain (for example: <code>landchad.net</code>) and will require changing from you. When you paste commands, the dollar sign symbol ($) isn't needed and only signifies the command line.</p>
+        <p>First we will make a subdomain. If you used our <a href="https://landchad.net/dns.html">Epik DNS guide</a> you can skip this step. This is different from all registars but make a CNAME record for your domain like so:</p>
+        <pre><code>searx   1800 IN CNAME   (YOUR DOMAIN HERE).</code></pre>
+        <h3>Installing Searx</h3>        
+        <p>When you have done that, we will update the system. You will need Nginx and Git for this, these commands will install it for you. You should also be <strong>not</strong> root and have sudo privileges.</p>
+        <pre><code>$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt install git nginx</code></pre>
+        <h3>Installing Searx.</h3>
+        <p>We will clone the Searx repository.</p>
+        <pre><code>$ git clone https://github.com/searx/searx searx
+$ cd ./searx
+</code></pre>
+        <p>Now we will use the install script to install Searx, Filtron and Morty. Some questions will come up, press enter to all of them.</p>
+        <pre><code>$ sudo -H ./utils/searx.sh install all
+$ sudo -H ./utils/filtron.sh install all
+$ sudo -H ./utils/morty.sh install all</code></pre>
+        <p>Check if all services are running.</p>
+        <pre><code>$ sudo systemctl status searx
+$ sudo systemctl status filtron
+$ sudo systemctl status morty</code></pre>
+        <p>If everything is installed and all services are running, we can setup Nginx.</p>
+        <h3>Nginx config</h3>
+        <p>Make sure Nginx is running (if it's not running you can check for errors using the command <code>nginx -t</code>). More detailed guide on Nginx can be found at <a href="https://landchad.net/nginx.html">here.</a></p>
+        <pre><code>$ sudo systemctl status nginx</code></pre>
+        <p>We will make a config file for Searx <code>/etc/nginx/sites-available/searx</code> and edit it:</p>
+        <pre><code>$ nano /etc/nginx/sites-available/searx</code></pre>
+        <p>Paste the following content in there and replace <code>(YOUR DOMAIN HERE)</code> with your domain name.</p>
+        <pre><code>server {
+        listen 80;
+        listen [::]:80;
+
+        server_name searx.(YOUR DOMAIN HERE);
+
+        root /usr/local/searx/searx-src;
+
+        # If you want to log user activity, comment these
+        access_log /dev/null;
+        error_log  /dev/null;                
+
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+        add_header X-Frame-Options DENY;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+        add_header Permissions-Policy "interest-cohort=();geolocation=();midi=();notifications=();push=();sync-xhr=();microphone=();camera=();magnetometer=();gyroscope=();speaker=();vibrate=();fullscreen=();payment=();";
+        add_header 'Referrer-Policy' 'same-origin';
+        add_header Expect-CT 'enforce; max-age=3600';
+        
+        # SSL settings for security (DO NOTE: This disables TLS 1.0 and TLS 1.1 + some ciphers, if you have any older browsers and hardware [https://oktasupport.cadence.com/TLS1.2_BrowserSupport.html], it may not work on them)
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_prefer_server_ciphers on;
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+        ssl_session_timeout  1d;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_tickets off; # Requires nginx >= 1.5.9
+        ssl_stapling on; # Requires nginx >= 1.3.7
+        ssl_stapling_verify on; # Requires nginx => 1.3.7
+
+        index index.html index.htm;
+
+        # Searx reverse proxy
+        location / {
+                proxy_pass         http://127.0.0.1:4004/;
+        
+                proxy_set_header   Host             $http_host;
+                proxy_set_header   Connection       $http_connection;
+                proxy_set_header   X-Real-IP        $remote_addr;
+                proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+                proxy_set_header   X-Scheme         $scheme;
+                proxy_set_header   X-Script-Name    /searx;
+        }
+
+        location /searx/static {
+                alias /usr/local/searx/searx-src/searx/static;
+        }
+
+        # Morty reverse proxy
+        location /morty {
+                proxy_pass         http://127.0.0.1:3001/;
+        
+                proxy_set_header   Host             $http_host;
+                proxy_set_header   Connection       $http_connection;
+                proxy_set_header   X-Real-IP        $remote_addr;
+                proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+                proxy_set_header   X-Scheme         $scheme;
+        }
+}
+        </code></pre>
+        <p>Create a symbolic link between <code>/etc/nginx/sites-available/searx</code> and <code>/etc/nginx/sites-enabled/searx</code></p>
+        <pre><code>$ sudo ln -s /etc/nginx/sites-available/searx /etc/nginx/sites-enabled/searx</code></pre>
+        <p>Create a HTTPS certificate using Lets Encrypt's certbot. More details on how to do it are <a href="https://landchad.net/certbot.html">here</a>.</p>
+        <p>If you have done that you can now restart Nginx and Uwsgi.</p>
+        <pre><code>$ sudo -H systemctl restart nginx
+$ sudo -H service uwsgi restart searx</code></pre>
+        <p>Go visit your <code>searx.(YOUR DOMAIN HERE)</code> and see if it works!</p>
+
+        <h3>Changing settings</h3>
+
+        <p>If you want to change some settings of your Searx instance go edit <code>/etc/searx/settings.yml</code>. Use <a href="https://searx.github.io/searx/admin/settings.html">this guide</a> for more information.</p>
+
+        <pre><code>$ nano /etc/searx/settings.yml</code></pre>
+        
+        <h3>Maintaining a Searx instance.</h3>
+        
+        <p>To update Searx you can use the following commands:</p>
+
+        <pre><code>$ sudo -H ./utils/searx.sh update searx
+$ sudo -H ./utils/filtron.sh update filtron
+$ sudo -H ./utils/morty.sh update morty</code></pre>
+
+        <h3>Need help?</h3>
+            
+        <p>Of course you can write an angry e-mail to Luke about why you have such incompetent people creating these guides but please check out <a href="https://github.com/searx/searx/issues?q=is%3Aissue">this</a> and <a href="https://github.com/searx/searx/discussions/categories/installation-issue-official-wiki">this</a> before. Also check <code>nginx -t</code> for any errors with Nginx.</p>
+
+        <h2>Contributors</h2>
+        <ul>
+            <li><strong>hen</strong> &ndash; <a href="https://hen.ee">website</a>, <a href="mailto:contact@hen.ee">contact</a></li>
+        </ul>
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
