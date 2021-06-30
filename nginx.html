@@ -172,7 +172,7 @@ This will appear on your website.
 &lt;p&gt;This is my website. Thanks for stopping by!&lt;/p&gt;
 &lt;p&gt;Now my website is live!&lt;/p&gt;</code></pre>
 
-<h3>Enable the site</h3>
+<h3 id=enable>Enable the site</h3>
 
 <p>
 Once you save that file, we can enable it making a link to it in the <code>sites-enabled</code> directory:
@@ -209,10 +209,11 @@ systemctl disable ufw</code></pre>
 This keeps the firewall otherwise active.
 </p>
 
-<pre><code>ufw allow http,https</code></pre>
+<pre><code>ufw allow 80
+ufw allow 443</code></pre>
 
 <p>
-This will open port 80 and port 443. Port 80 is the canonical webserver port, while 443 is the port used for encrypted connections.
+Port 80 is the canonical webserver port, while 443 is the port used for encrypted connections.
 We will certainly need that for the next page.
 </p>
 
