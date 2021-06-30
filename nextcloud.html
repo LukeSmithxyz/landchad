@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Setting up a Nextcloud Instance &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1><img src="pix/nextcloud.svg" alt="logo"> Setting up a Nextcloud Instance</h1></header>
+    <nav></nav>
+    <main>
+
+        <h2 id="whatis">What is Nextcloud?</h2>
+        <p><a href="https://nextcloud.com" target="_blank"><img src="pix/nextcloud.svg" alt="logo">Nextcloud</a> is a free and open source solution for cloud storage. However it can also do other things, such as manage your email, notes, calender, tasks, and can even connect to the Fediverse (think Mastodon and Pleroma). Pretty much every service that Google has to offer has a much better alternative as a Nextcloud app and this is a must-have for anyone wanting to get away from Google services but still wants a traditional cloud experience (in the likes of Google Services, anyways).</p>
+
+        <h2 id="instructions">Instructions</h2>
+        <p>First, we need to obtain a shell prompt by ssh-ing (remote machines or local machines) or just logging in (local machines). A traditional ssh might look like this if the domain you wished to ssh into is <code>landchad.net</code>:</p>
+        <pre><code>ssh root@landchad.net</code></pre>
+        <p>We should upgrade the system and then install packages that we might need. Run the following command:</p>
+        <pre><code>apt-get full-upgrade -y && sudo apt-get install mariadb-server php-mysql php php-gd php-mbstring php-dom php-curl php-zip php-simplexml php-xml -y</code></pre>
+        <p>Next, we need to set up our SQL database by running a Secure Installation and creating the tables that will store data that Nextcloud will need. Run the following command:</p>
+        <pre><code>mysql_secure_installation</code></pre>
+        <p>When it asks for root a password, say yes and input a new and secure password. The root password here is just for the SQL database, not for the GNU/Linux system.</p>
+        <p>Answer the rest of the questions as follows:</p>
+        <pre><code>Remove anonymous users? [Y/n]: Y
+Disallow root login remotely? [Y/n]: Y
+Remove test database and access to it? [Y/n]: Y
+Reload privilege tables now? [Y/n]: Y</code>
+        </pre>
+        <p>Next, sign into the SQL database with the new and secure password you chose before. Run the following command:</p>
+        <pre><code>mysql -u root -p</code></pre>
+        <p>We need to create a database for Nextcloud. Follow the instructions below and change some of the placeholders as you wish:</p>
+        <pre><code>CREATE DATABASE nextcloud;
+GRANT ALL ON nextcloud.* TO '<strong>username</strong>'@'localhost' IDENTIFIED BY '<strong>password</strong>';
+FLUSH PRIVILEGES;
+EXIT;</code></pre>
+        <p>Start and enable the php-fpm and the mariadb services:</p>
+        <pre><code>systemctl enable php-fpm
+systemctl start php-fpm
+systemctl enable mariadb
+systemctl start mariadb</code></pre>
+        <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
+        <pre><code>wget https://download.nextcloud.com/server/releases/nextcloud-21.0.2.tar.bz2</code></pre>
+        <p>If you already have your LandChad property set up (your web site) we can simply extract the tarball there so we don't have to do any messing around with Nginx at the moment. You may wish to have a subdomain instead, but that is out of the scope of this tutorial. Run the following command:</p>
+        <pre><code>tar -xjf nextcloud*.tar.bz2 -C /var/www/<strong>yourwebsitedirectory</strong></code></pre>
+        <p>If you have multiple Nextcloud tarballs in the current working directory you might want to manually specify which one you wish to extract.</p>
+        <p>Let's correct the ownership and permissions of those files. Run the following commands after you fill in the placeholders:</p>
+        <pre><code>chown -R www-data:www-data /var/www/<strong>yourwebsitedirectory</strong>/nextcloud
+chmod -R 755 /var/www/<strong>yourwebsitedirectory</strong>/nextcloud</code>
+        </pre>
+        <p>Now we need to head to Nextcloud's web interface. Go to your web browser and go to your website, but go to the subdirectory "nextcloud" instead. For example, if your domain is landchad.net and you have set up HTTPS then go to <code>https://landchad.net/nextcloud</code>. This will launch the configuration wizard.</p>
+
+        <ul>
+            <li>Choose an admin username and secure password.
+            <li>Leave Data folder at the default value unless it is incorrect.
+            <li>For Database user, enter the user you set for the SQL database.
+            <li>For Database password, enter the password you chose for the new user in MariaDB.
+            <li>For Database name, enter: nextcloud
+            <li>Leave "localhost" as "localhost".
+            <li>Click Finish
+        </ul>
+
+        <p>Congratulations, you have set up your own Nextcloud instance.</p>
+
+        <h2 id="whatsnext">What's Next?</h2>
+        <p>Now you may be wondering: What do I do now? Here are some suggestions:</p>
+
+        <ul>
+            <li>Rice your Nextcloud instance by changing your themeing and installing new themes and plugins in Settings in the Nextcloud Web Interface.
+            <li>Install the Nextcloud Client on your personal computer and sync your files to your instance.
+            <li>Install the Nextcloud App on your mobile device and sync your files to your instance.
+            <li>Set up your email account on the Nextcloud Mail app on the web interface to view and sync your email there (just like Gmail).
+            <li>Schedule events with Nextcloud Calender.
+            <li>Write notes in Markdown inside the Nextcloud Notes web and mobile app.
+            <li>Set the Nextcloud Dashboard as your web browser's homepage (it is pretty nice).
+        </ul>
+
+        <p>Enjoy your cloud services in freedom.</p>
+
+        <hr>
+
+        <p><em>Written by <a href="https://github.com/MattMadness">Matthew "Madness" Evan</a></em></p>
+
+        <!--<span class=next><a href="<++>">Next:<++></a></span>--!>
+
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
