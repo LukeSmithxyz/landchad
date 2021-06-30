@@ -9,45 +9,34 @@
     <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
     </head>
 <body>
-    <header><h1>Hosting Your Own Git Repositories</h1></header>
+    <header><h1><img src="pix/git.svg">Hosting Your Own Git Repositories</h1></header>
     <nav></nav>
     <main>
         <p>
         Once you have your own VPS or other Internet-available server, you can
         start hosting your own git repositories. The goal of this tutorial is
-        for you to go from
+        for you to go from</p>
 
         <pre><code>git clone github.com/...</code></pre>
 
-        to
+        <p>to</p>
 
         <pre><code>git clone YourLandChadDomainName.xyz/...</code></pre>
 
-        so you can cultivate your own homegrown, grass fed code, rather than
+        <p>
+        so you can cultivate your own homegrown, grass-fed code, rather than
         relying on a centralized proprietary service like GitHub.
         </p>
-
-        <h3>What's not included in this tutorial</h3>
-
-        <ul>
-          <li>
-            We will not set up a web front end. Your only interaction with
-            these repos will be via the <code>git</code> command line tool.
-          </li>
-          <li>
-            We will not support multiple users. It's expected only you, the
-            server owner, have write access to these repos.
-          </li>
-        </ul>
 
         <h2>Installing git</h2>
 
         <p>
         You most likely already have it installed on your server, but if not,
-        run
+        run:</p>
 
         <pre><code>apt install git</code></pre>
 
+        <p>
         We don't need any additional software, <code>git</code> itself ships
         with everything needed to host a remote repository!
         </p>
@@ -75,24 +64,27 @@
         <p>
         If you're logged in to your server as root and have <code>git</code>
         installed, you can become the <code>git</code> user by executing
+        </p>
 
         <pre><code>su git</code></pre>
 
+        <p>
         Now navigate to/create your desired directory, for example
+        </p>
 
-        <pre><code>
-cd /srv
-mkdir git
-        </code></pre>
+        <pre><code>cd /srv
+mkdir git</code></pre>
 
         <h3>Create the repo</h3>
 
         <p>
         Now you can create the bare repository with
+        </p>
 
 
         <pre><code>git init --bare my-repo.git</code></pre>
 
+        <p>
         By convention, bare repository names end with ".git".
         </p>
 
@@ -107,12 +99,12 @@ mkdir git
         <p>
         You will need to be able to login remotely via <code>ssh</code> as the
         <code>git</code> user we've used before. To do this, you will either
-        need to set up a password for the <code>git</code> user with
-
-        <pre><code>passwd git</pre></code>
-
+        need to set up a password for the <code>git</code> user by running
+        <code>passwd git</code>,
         or copy your public SSH key from your local machine to
         <code>/home/git/.ssh/authorized_keys</code>.
+        See the <a href="sshkeys.html">SSH keys instructional</a> for details
+        (just log in as <code>git</code> instead of <code>root</code>).
         </p>
 
         <h3>Syncing a new repository with your server</h3>
@@ -127,7 +119,8 @@ mkdir git
         <p>
         A remote is just a named URL remembered in your repo's configuration. So
         we need a name and a URL. By convention, the "main" remote is called
-        "origin". The URL has the format <code>user@host:path</code>, where
+        "origin". The URL has the format <code>user@host:path</code>, where:
+        </p>
 
         <ul>
           <li>
@@ -135,7 +128,7 @@ mkdir git
             we've already worked with before.
           </li>
           <li>
-            <code>host</code> is a DNS hostname pointing to your server.
+            <code>host</code> is your domain name.
             Alternatively you could even use your server's raw IP address.
           </li>
           <li>
@@ -146,10 +139,12 @@ mkdir git
         </p>
 
         <p>
-        So, to create a new remote, run
+        So, to create a new remote, run:
+        </p>
 
         <pre><code>git remote add origin git@yourdomain.xyz:/srv/git/my-repo.git</code></pre>
 
+        <p>
         Now you'll be able to run <code>git push origin master</code> to push
         your commits or <code>git pull origin</code> to pull from the remote.
         </p>
@@ -159,25 +154,27 @@ mkdir git
         <p>
         If you've already set up your local repository to sync with a service
         like GitHub it probably already has a remote called "origin". You can
-        see your repo's remotes with
+        see your repo's remotes with:
+        </p>
 
         <pre><code>git remote -v</code></pre>
 
+        <p>
         You can follow the above instructions, substituting an arbitrary other
         name other than "origin" to create a differently named remote, e.g.
+        </p>
 
         <pre><code>git remote add vps git@...</code></pre>
 
+        <p>
         Now you'll be able to push/pull with <code>git push vps master</code>
         and <code>git pull vps</code>, respectively.
         </p>
 
         <p>
         Or, to completely sever ties with your centralized git provider, first
-        remove the original origin with
-
-        <pre><code>git remote remove origin</code></pre>
-
+        remove the original origin with:
+        <code>git remote remove origin</code>
         and then follow the instructions as above.
         </p>
 
