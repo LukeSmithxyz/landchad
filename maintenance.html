@@ -113,7 +113,7 @@ nginx: /usr/sbin/nginx /usr/lib/nginx /etc/nginx /usr/share/nginx /usr/share/man
 /usr/share/nginx/modules-available/mod-stream.conf</code></pre>
 
         <p>
-        <code>updatedb</code> is an ideal candidate for a cronjob so you don't have to worry about running each time.
+        <code>updatedb</code> is an ideal candidate for a <a href="cron.html">cronjob</a> so you don't have to worry about running each time.
         For example, adding the following to your crontab will run <code>updatedb</code> every 30 minutes:
         </p>
         <pre><code>*/30 * * * * /usr/bin/updatedb</code></pre>
