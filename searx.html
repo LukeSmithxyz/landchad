@@ -14,11 +14,14 @@
     <main>
         <p>This is a guide on setting up your own Searx instance with Filtron reverse proxy and Morty result proxy.</p>
         <h2>What is Searx?</h2>
-        <p>Searx is a privacy-respecting metasearch engine. It is not a regular search engine like Brave Search, Bing or Google which indexes information from pages by using their bots. A meta-search engine asks other search engines for results and presents them to you.</p>
+        <p>Searx is a privacy-respecting metasearch engine. It is not a regular search engine like Brave Search, Bing or Google which indexes information from pages by using their bots. A meta-search engine asks other search engines for results and presents them to you. It is also free and open-source and hackable.</p>
         <p>It can also act as a proxy for these search engines as your server is doing the requests to Google not your machine which is more private while still having Google's results. One downside can be the speed due to it having to pull information from another server; some engines might be slower than others and that is shown on Searx's settings.</p>
+        <p>You can find a public instance to test it <a href="https://searx.space">here</a></p>
+        <a href="pix/searx1.png"><img src="pix/searx1.png" alt="Picture of Searx" /></a>
+        <a href="pix/searx2.png"><img src="pix/searx2.png" alt="Picture of Searx results" /></a>
         <h3>What is all this Filtron or Morty stuff?</h3>
-        <p>Filtron is an application firewall, a middleware between Searx and Nginx (webserver). It avoids abuse from your server and limits requests. Essentialy it protects your server from bad actors</p>
-        <p>Morty is a result proxy which proxies images and websites. It downloads the images and displays them from your server like Searx. You can also view websites through your server privately without using your machine to request that website.</p>
+        <p>Filtron is an application firewall, a middleware between Searx and Nginx (webserver). It avoids abuse from your server and limits requests. Essentialy it protects your server from bad people.</p>
+        <p>Morty is a result proxy which proxies images and websites. It downloads the images and displays them from your server like Searx. You can also view websites through your server privately without using your machine to request that website, almost like a VPN.</p>
         <h2>Setting it up</h2>
         <p><code>(YOUR DOMAIN HERE)</code> in this guide means your domain (for example: <code>landchad.net</code>) and will require changing from you. When you paste commands, the dollar sign symbol ($) isn't needed and only signifies the command line.</p>
         <p>First we will make a subdomain. If you used our <a href="https://landchad.net/dns.html">Epik DNS guide</a> you can skip this step. This is different from all registars but make a CNAME record for your domain like so:</p>
