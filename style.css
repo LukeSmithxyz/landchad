@@ -126,6 +126,12 @@ aside code {
     color: green ;
 }
 
+/* .callout here is refencing any aside given the class name callout
+ * An example being: <aside class="callout"> */
+aside.callout  {
+    border: solid 1px orange;
+}
+
 .cnp {
 	width: 100% ;
 
