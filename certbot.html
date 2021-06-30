@@ -97,7 +97,7 @@ ufw allow 443</code></pre>
 
         <p>
         Of course, you don't want to have to remember to log in to renew them every three months, so it's easy to tell the server to automatically run this command.
-        We will use a cronjob for this. Run the following command:
+        We will use a <a href="cron.html">cronjob</a> for this. Run the following command:
         </p>
 
         <pre><code>crontab -e</code></pre>
@@ -110,7 +110,7 @@ ufw allow 443</code></pre>
         </aside>
 
         <p>
-        This <code>crontab</code> command will open up a file for editting.
+        This <code>crontab</code> command will open up a file for editing.
         A crontab is a list of commands that your operating system will run automatically at certain times.
         We are going to tell it to automatically try to renew our certificates every month so we never have to.
         </p>
@@ -123,6 +123,10 @@ ufw allow 443</code></pre>
 
         <p>
         Save the file and exit to activate this cronjob.
+        </p>
+
+        <p>
+        For more on cron and crontabs please <a href="cron.html">click here!</a>
         </p>
 
         <span class=next><a href="html.html">Next: Use HTML to Make Simple Webpages</a></span>

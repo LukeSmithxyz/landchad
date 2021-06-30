@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Cronjobs</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Using Cronjobs to run scheduled tasks</h1></header>
+    <nav></nav>
+    <main>
+        <p>
+        Cron is a service that lets you run scheduled tasks. These tasks are called <strong> cronjobs. </strong> If you have already followed the initial course you will have already used cron when you set up certbot. 
+        </p>
+        <h2> What tasks would I want to schedule? </h2>
+        <p>
+        You can schedule anything! Some examples of what you might have done already include:
+        <ul>
+            <li> <code> updatedb </code> to update your <code> locate </code> database </li>
+            <li> <code> certbot </code> to update renewing of your https certs </li>
+        </ul>
+        Some tasks that you might <em>want</em> to schedule may include:
+        <ul>
+            <li> Package updates - if you really just want to leave your server alone you can automated updating packages on your server </li>
+            <li> Backups - you may want to backup certain files every day and some every week, this is possible with cron </li>
+        </ul>
+            <p>
+            And many more, anything you can do can be turned into a cronjob.
+            </p>
+
+            <h2> How do I schedule things? </h2>
+
+            <p>
+            You can schedule tasks in the following ways:
+            <ol>
+                <li> Your users crontab </li>
+                <li> System wide cron directories </li>
+            </ol>
+
+            
+
+            <h3> Your user crontab </h3>
+
+            <p> 
+            This the preferred method for personal tasks and scripts, it's also the easiest to get started with. Run the command <code> crontab -e </code> to access your users crontab
+            </p>
+            <aside>
+                <p>
+                These crontabs are located at <code> /var/spool/cron/crontabs/ </code> If you wanted to you can edit these files instead of running <code> crontab -e </code>
+                </p>
+            </aside>
+            
+            <p>
+            Once you have figured out the command you want to run you need to figure out how often you want to run it and when. I am going to schedule my system updates once a week on at 3:30 AM on a Monday. 
+            </p>
+            <p>
+            We now have to convert this time (Every Monday at 3:30 AM) into a cron time. Cron uses a simple but effective way of scheduling when to run things.
+            </p>
+            <p>
+            Crontab expressions look like this <code> * * * * * command-to-run </code> 
+            <pre>
+				 .---------------- minute (0 - 59)
+				 |  .------------- hour (0 - 23)
+				 |  |  .---------- day of month (1 - 31)
+				 |  |  |  .------- month (1 - 12
+				 |  |  |  |  .---- day of week (0 - 6) 
+				 |  |  |  |  |
+				 *  *  *  *  *
+			</pre>
+            <br>
+			<aside> 
+				<p> Run the command <code> cat /etc/crontab </code> to see something similar to the above </p>
+			</aside>
+			
+            <p>
+            So for our Monday at 3:30AM job we would do the following:
+            <pre>
+            <code> 30 3 * * 1 apt-get -y update && apt-get -y dist-upgrade </code>
+            </pre>
+            <br>
+            <aside class=callout>
+                <p>
+                For day of the week field (the last field), the week starts on a Sunday, so Monday is <code> 1 </code> 
+                </p>
+            </aside>
+            <br>
+            <aside>
+                <p>
+                The website <a href="crontab.guru">https://crontab.guru</a> is insanely helpful for figuring out specific cron timings
+                </p>
+            </aside>
+            <p> 
+            Lets add another Job, our backup job (for the purposes of this our backup command is just called <code> backup </code> We want to run <code> backup </code> Every evening at 11PM, once we work out the timings for this we can add the to the same file as the above by running <code> crontab -e </code> This would mean our full crontab would look like this:
+            <pre>
+            <code> 30 3 * * 1 apt-get -y update && apt-get -y dist-upgrade </code>
+            <code> 0 23 * * * backup </code>
+            </pre>
+
+            <h3> System wide cron directories </h3>
+
+            <p>
+            Run the command <code> ls /etc/cron* </code> you should see a list of directories and there contents. The directories should be something like the below
+            <ul>
+                <li> /etc/cron.d  <em> This is a crontab like the ones that you create with </em> <code> crontab -e </code> </li>
+                <li> /etc/cron.hourly </li>
+                <li> /etc/cron.daily </li>
+                <li> /etc/cron.weekly </li>
+                <li> /etc/cron.monthly </li>
+            </ul>
+
+            <p>
+
+            The directories cron.{hourly,daily,weekly,monthly} are where you can put <strong> scripts </strong> to run at those times. You don't put normal cron entries here. I prefer to use these directories for system wide jobs that don't relate to an individual user. For example If we wanted to put our backup job in <code> /etc/cron.daily </code> we would do the following:
+            <ol>
+                <li> Create and edit the file <code> /etc/cron.daily/backup/ </code>:
+                    <ul> 
+                        <li> <code> vim /etc/cron.daily/backup </code> </li>
+                    </ul>
+                    <li> Add the backup command in there, we can also add some logging because it's a full script. The full thing will look like this: </li>
+                    <p>
+                            <pre>
+ #!/bin/sh
+
+ # the logger command generates system logs
+ logger "starting backup daily job"
+ 
+ # backup is hypothetical backup command
+ backup 
+
+ logger "finished backing up"
+                            </pre>
+                    </p>
+                </li>
+                <li> Save that file </li>
+                <li> Make that executable: </li>
+                <ul>
+                    <li> <code> chmod +x /etc/cron.daily/backup </code> </li>
+                </ul>
+            </ol>
+
+            <p>
+            It's that easy, no messing around with cron timers! A downside of this is that you can't choose when these run, most of the time they will run at ~6:30am every hour,day,week,month.
+            </p>
+
+            <p>
+            That's it! There is not much more to know about cron. Hopefully you now know the appropriate cron method and have the ability to correctly schedule your tasks.
+            </p>
+
+            <h2> Contribution </h2>
+
+            <p>
+            This article was written by Mark McNally
+            </p>
+
+            <ul>
+                <li>
+            I am a (internet) LandChad, my website is <a href="https://mark.mcnally.je">here</a>
+                </li>
+                <li>
+                    Contact me about this article or just because <a href="mailto:mark@mcnally.je">here</a>
+                </li>
+                <li>
+                    I have a <a href="https://www.youtube.com/channel/UCMiInY8BhSUtCarO6uu6i_g">youtube channel</a> where I may post some LandChad related content as well as other content that you will hopefully find interesting 
+                    <li> If you feel like donating: </li>
+                    <ul> 
+                        <li> XMR: <code> 42ueuWXJGP48xtahfnujWDMFHJVdMGeFj85jxuwPBygkVw1GEBbHfTsDFBByTSLXpDV4bKcNr7EPCfvSJpyYLY5HPvqUmRB  </code> </li>
+                        <li> BTC: <code> 36mXUtU6Kh9pmYvGYPLY7peHU4TR7FBATT </code> </li>
+                    </ul>
+            </ul>
+                        <p> 
+                        Yes I know I need to set up OpenAlias...
+                        </p>
+
+
+            
+
+
+
+
+
+
+	
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
+
+
+
+
+
+        
+        
+        
