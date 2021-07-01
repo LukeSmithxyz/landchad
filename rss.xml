@@ -317,7 +317,7 @@ mkdir git</code></pre>
  | | | | .---- day of week (0 - 6)
  | | | | |
  * * * * *
-30 3 * * 1 apt -y update && apt -y dist-upgrade</code></pre>
+30 3 * * 1 apt -y update && apt -y upgrade</code></pre>
             <h3>Some notes</h3>
             <ul>
                 <li>On the day of the week option, Sunday is 0 and counting up from there, Saturday will be 6.</li>
