@@ -13,8 +13,9 @@
     <nav></nav>
     <main>
         <img class=titleimg src="pix/gitea.svg">
-        <p>Gitea allows you to self-host your git repositories similar to <a href="git.html">bare repositories</a>, but comes with additional features that you might know from GitHub, such as issues, pull requests or multiple users. Its advantage over GitLab &ndash; another Free Software GitHub clone &ndash; is that it is much more lightweight and easier to setup.</p>
+        <p>Gitea allows you to self-host your git repositories similar to <a href="git.html">bare repositories</a>, but comes with additional features that you might know from GitHub, such as issues, pull requests or multiple users. Its advantage over GitLab&mdash;another Free Software GitHub clone&mdash;is that it is much more lightweight and easier to setup.</p>
         <p>Head over to <a href="https://gitea.com">gitea.com</a> to see what it looks like in practice.</p>
+        <p>Although Gitea is lighter than Gitlab, if you have a VPS with only 512MB of RAM, you will probably have to upgrade. Gitea is more memory-intensive than having just a bare git repository.</p>
 
         <h2>Installing Gitea</h2>
         <p>First install a few dependencies:</p>
@@ -42,9 +43,9 @@ apt install gitea</code></pre>
 server {
 	listen 443 ssl;
 	listen [::]:443 ssl;
-        ssl_certificate /etc/ssl/nginx/<strong>git.landchad.net</strong>.crt;
-        ssl_certificate_key /etc/ssl/nginx/<strong>git.landchad.net</strong>.key;
-        server_name <strong>git.landchad.net</strong>;
+        ssl_certificate /etc/ssl/nginx/<strong>git.example.org</strong>.crt;
+        ssl_certificate_key /etc/ssl/nginx/<strong>git.example.org</strong>.key;
+        server_name <strong>git.example.org</strong>;
 	location / {
 		proxy_pass http://localhost:3000/; # The / is important!
 		proxy_redirect off;
@@ -60,12 +61,22 @@ server {
 
         <h2>Setting up Gitea</h2>
 
-        <p>If everything worked fine you should now see a setup screen like this when you go to your configured domain in the browser. The options should be pretty self-explanatory, it is only important to select SQLite3 and to replace the base url and SSH server domain with your own. Here's an example:</p>
+        <p>If everything worked fine you should now see a setup screen when you go to your configured domain in the browser. The options should be pretty self-explanatory, it is only important to select SQLite3 and to replace the base url and SSH server domain with your own.</p>
 
-        <a href=pix/gitea-setup.png><img src=pix/gitea-setup.png></a>
-        <p>Note: These settings can be changed in a configuration file later so don't worry about making wrong decisions right now.</p>
+        <dl>
+            <dt>Database Type:</dt>
+            <dd>SQLite3</dd>
+            <dt>SSH Server Domain:</dt>
+            <dd><strong>git.example.org</strong></dd>
+            <dt>Gitea Base URL:</dt>
+            <dd><strong>git.example.org</strong></dd>
+        </dl>
+
+        <p>These and other settings can be changed in a configuration file later so don't worry about making wrong decisions right now.</p>
 
         <p>After clicking the install button you should now be able to log into your Gitea instance with the account you just created! Explore the settings for more things to do, such as setting up your SSH keys.</p>
+
+        <p>If Gitea does not load fully and has random errors, it is possible that you need to increase your available memory on your VPS. This can usually be done on your VPS-provider's website without too much trouble.</p>
 
         <h2>A few extras</h2>
         <h3>Automatically create a new repo on push</h3>
@@ -73,7 +84,7 @@ server {
         <img src=pix/gitea-push-create.png>
         <br>
         <p>If you now add a remote to a repository like this</p>
-        <pre><code>git remote add origin 'ssh://gitea@git.landchad.net/chad/coolproject.git'</code></pre>
+        <pre><code>git remote add origin 'ssh://gitea@git.<strong>example.org</strong>/<strong>username</strong>/<strong>coolproject</strong>.git'</code></pre>
         <p>and push, Gitea will automatically create a private <code>coolproject</code> repository in your account!</p>
 
         <h3>Change tab-width</h3>
