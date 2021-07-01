@@ -17,32 +17,31 @@
         <p>
         Now that you have a website, why not offer it on a private alternative such as the onion network?
         </p>
-        <aside>
-            <a href="https://landchad.net" >LandChad.net</a> does not condone
-            any illegal activities or websites on the dark web nor the usage of
-            this tutorial to launch such sites.
-        </aside>
 
         <h2>Setting up Tor</h2>
 
+        <h3>Installing Tor</h3>
+
         <p>Firstly we need to add the tor repo's to have the latest up to date version or tor.</p>
-        <pre><code>apt install apt-transport-https</code></pre>
-        <pre><code>echo "deb https://deb.torproject.org/torproject.org buster main" > /etc/apt/sources.list.d/tor</code></pre>
-	<pre><code>echo "deb-src https://deb.torproject.org/torproject.org buster main" >> /etc/apt/sources.list.d/tor</code></pre>
-	    
+        <pre><code>apt install -y apt-transport-https gpg
+echo "deb https://deb.torproject.org/torproject.org buster main
+deb-src https://deb.torproject.org/torproject.org buster main" > /etc/apt/sources.list.d/tor.list</code></pre>
+
 	<p>Then we need to add the gpg keys to our keyring</p>
-	
-	<pre><code>curl https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --import</code></code>
-	<pre><code>gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -</code></code>
-	    
+
+	<pre><code>curl -s https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --import
+gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -</code></pre>
+
 	<p>Now update and install tor</p>
-	
-	<pre><code>apt update</code></pre>
-	<pre><code>apt install tor deb.torproject.org-keyring</code></pre>
+
+	<pre><code>apt update
+apt install tor deb.torproject.org-keyring</code></pre>
+
+        <h3>Enabling Tor</h3>
 
         <p>Then edit the file <code>/etc/tor/torrc</code>, uncommenting the following lines:</p>
-        <pre><code>        HiddenServiceDir /var/lib/tor/hidden_service/
-        HiddenServicePort 80 127.0.0.1:80</code></pre>
+        <pre><code>HiddenServiceDir /var/lib/tor/hidden_service/
+HiddenServicePort 80 127.0.0.1:80</code></pre>
         <aside>
             <h4>Optional: Running multiple onion services</h4>
             <p>If you want to forward multiple virtual ports for a single onion
@@ -83,11 +82,14 @@
         <p>
         From here we are almost done, all we have to do is enable the site and reload nginx which is also covered in <a href="nginx.html#enable">the webserver tutorial</a>.
         </p>
-	<p> Also make sure to update tor on a regular basis by running</p>
-        <pre><code>apt update</code></pre>
-	<pre><code>apt install tor</code></pre>
-	 
-        <strong>Contributor</strong>  -  <a href="https://tomfasano.xyz" target="_blank">tomfasano.xyz</a>
+
+        <h3>Update regularly!</h3>
+
+        <p>Make sure to update Tor on a regular basis by running:</p>
+        <pre><code>apt update
+apt install tor</code></pre>
+
+        <p><strong>Contributor</strong>  -  <a href="https://tomfasano.xyz" target="_blank">tomfasano.xyz</a></p>
 
     </main>
 	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
