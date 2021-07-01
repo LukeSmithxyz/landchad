@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Setting Up an Authoritative Name Server &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Setting Up an Authoritative Name Server</h1></header>
+    <nav></nav>
+    <main>
+        <h2>Domain Name System 101</h2>
+
+        <p>
+            DNS or the <code>Domain Name System</code> is a distributed network of name servers that link domain names to IP addresses. This allows us to avoid having to remember IP addresses for every site we visit. When you visit the site <code>landchad.net</code>, your browser will first lookup the domain using a <code>DNS Resolver</code>, usually your ISP's by default. If the resolver hasn't cached the domain name, it will ask the <code>DNS Root Servers</code> for the location of the <code>net</code> name server. Then it will ask the <code>net</code> name server for the location of the <code>landchad.net</code> name server. Finally, it will ask the <code>landchad.net</code> for the IP address it points to (<code>A</code> or <code>AAAA</code> Record). Your browser then uses this IP address to send an HTTP request to the web server.
+        </p>
+
+        <p>
+            If you have been following the main course, you are aware that your <code>DNS Records</code> are set on your registrar's website and thus your domain is controlled by their name servers. This works fine and their servers are designed to handle a lot of traffic, however some types of records are not available depending on the registrar and it may be inconvenient to login to a separate service when managing your site. This article will show you how to setup your own name server and manage it over ssh on the same VPS.
+        </p>
+
+        <h2>Terms</h2>
+
+        <dl>
+            <dt>DNS Zone</dt><dd>The DNS context for a domain name. Defines itself and any subdomains or delegates subdomains to other zones.</dd>
+            <dt>DNS Record</dt><dd>An entry in a DNS zone.</dd>
+            <dt>Authoritative Name Server</dt><dd>A DNS server that is responsible for controlling a DNS Zone.</dd>
+            <dt>DNSSEC</dt><dd>A method of cryptographically signing DNS zones to prevent cache poisoning attacks and other deceptive activities with your domain.</dd>
+            <dt>TTL</dt><dd>Time to Live. The amount of time a record resides in a resolver's cache. Be careful not to set this too high as it will delay propagation of zone updates in the future.</dd>
+            <dt>Priority and Weight</dt><dd>Some records have a Priority and Weight value for each entry. Records with the lowest Priority value are preferred. Records with a higher Weight are preferred if Priority is equal.</dd>
+        </dl>
+
+        <h2>How</h2>
+
+        <h3>Prerequisites</h3>
+        
+        <p>
+            If you have a firewall enabled on your server or through your VPS, be sure to allow <code>TCP</code> and <code>UDP</code> port <code>53</code>.
+        </p>
+        <p>
+            Add <code>127.0.0.1</code> and <code>::1</code> to your server's DNS resolver list.
+        </p>
+
+        <h3>Installation</h3>
+
+        <p>
+            Since we will be installing BIND 9.16 which is not supported by Debian stable, add the following line to your <code>/etc/apt/sources.list</code>:
+        </p>
+        
+        <pre><code>deb http://ftp.debian.org/debian sid main</code></pre>
+
+        <p>
+            Then run <code>apt update</code>. Verify by running <code>apt list bind9</code> and making sure the version is 9.16.
+        </p>
+        
+        <aside>
+            <p>
+                Be advised that any future package installations will default to Debian unstable (This is Debian's standard for "unstable", so still pretty stable).
+            </p>
+        </aside>
+
+        <p>
+            Install BIND9 by running:
+        </p>
+
+        <pre><code># apt install bind9 dnsutils</code></pre>
+
+        <h3>Configuration</h3>
+
+        <h4>Server Settings</h4>
+        <p>
+            Add the following lines to <code>/etc/bind/named.conf.options</code> in the <code>options</code> block. If an option already exists, edit the existing line, don't duplicate.
+        </p>
+
+        <pre><code>
+// IP addresses to listen on
+// Replace 1.2.3.4 with the server's IPv4 address.
+// Replace 1000::2000:3000:4000 with your server's IPv6 address.
+listen-on { 127.0.0.1; 1.2.3.4; }; 
+listen-on-v6 { ::1; 1000::2000:3000:4000; };
+
+// enables DNSSEC
+key-directory "/var/cache/bind/keys";
+dnssec-validation auto;
+        </code></pre>
+        
+        <h4>Zone File Creation</h4>
+        <p>
+            Run the following commands to create the required directories:
+        </p>
+
+        <pre><code>
+# rndc-confgen -a
+# mkdir /var/cache/bind/keys
+# chown bind:bind /var/cache/bind/keys
+# mkdir /var/cache/bind/dynamic
+# chown bind:bind /var/cache/bind/dynamic
+        </code></pre>
+
+        <p>
+            Create a zone file for your domain in the <code>dynamic</code> directory. Name it according to your domain with a <code>.db</code> extension. Example: <code>landchad.net.db</code>. Add the following to the file, replacing <code>landchad.net</code> with your domain name and the IP addresses with your server's IP addresses.
+        </p>
+
+        <pre><code>
+; landchad.net
+$TTL 86400
+
+; Start of Authority
+@           IN      SOA ns1.landchad.net. hostmaster.landchad.net. (
+                            2021070100      ; serial number YYYYMMDD##
+                            28800
+                            7200
+                            864000          ; expire
+                            86400           ; minimum TTL
+                        )
+
+                    NS  ns1.landchad.net.
+                    NS  ns2.landchad.net.
+
+ns1         IN      A       1.2.3.4
+                    AAAA    1000::2000:3000:4000
+
+ns2         IN      A       1.2.3.4
+                    AAAA    1000::2000:3000:4000
+
+; Your Records
+
+
+$ORIGIN landchad.net.
+        </code></pre>
+
+        <p>
+            In the zone file syntax, a trailing <code>.</code> in a domain signifies the root, meaning it is a full dns name. Any domain without a trailing <code>.</code> is relative to the current zone. For example, <code>ns1</code> is translated to <code>ns1.landchad.net.</code>. <code>@</code> signifies the current zone apex. <code>;</code> marks a comment.
+        </p>
+
+        <h4>Adding Existing Records</h4>
+        <p>
+            Add all of your records to this file below the comment. For example if you are running a web server:
+        </p>
+
+        <pre><code>
+; zone file syntax:
+; (name) IN (record type) (parameters)
+
+@   IN  A       1.2.3.4
+        AAAA    1000::2000:3000:4000
+
+www IN  CNAME   landchad.net.
+        </code></pre>
+
+        <h4>Finish Server Configuration</h4>
+        <p>
+            Next, add your zone to the end of <code>/etc/bind/named.conf.local</code>
+        </p>
+
+        <pre><code>
+zone "landchad.net" {
+    type master;
+    file "/var/cache/bind/dynamic/landchad.net.db";
+    auto-dnssec maintain;
+    inline-signing yes;
+};
+        </code></pre>
+
+        <h4>Creating DNSSEC Keys</h4>
+
+        <p>
+            For zone, we will create 2 keys: A <code>Key Signing Key</code> and a <code>Zone Signing Key</code>. Run the following commands to create them. Note that the <code>dnssec-dsfromkey</code> command references the <code>KSK</code>. The file name will always be different so be sure to update accordingly.
+        </p>
+
+        <pre><code>
+# cd /var/cache/bind/keys
+# dnssec-keygen -a ECDSAP384SHA384 -f KSK -n ZONE landchad.net
+Generating key pair.
+Klandchad.net.+014+09673
+# dnssec-keygen -a ECDSAP384SHA384 -n ZONE landchad.net
+Generating key pair.
+Klandchad.net.+014+32388
+# chown -R bind:bind ./
+# dnssec-dsfromkey Klandchad.net.+014+09673.key
+landchad.net. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479ECE38A8762B4499
+        </code></pre>
+        
+        <p>
+            Take note of the output of <code>dnssec-dsfromkey</code>.
+        </p>
+
+        <h4>Starting the Server</h4>
+
+        <p>
+            To start the server, run the following: 
+        </p>
+
+        <pre><code>
+# systemctl restart named
+        </code></pre>
+
+        <h3>Registrar Setup</h3>
+
+        <p>
+            Add custom nameservers with subdomains <code>ns1</code> and <code>ns2</code>. Be sure to include both your <code>IPv4</code> and <code>IPv6</code> address. Assuming you aren't setting up a slave server, use the same IP addresses for both.
+        </p>
+
+        <a href="pix/nameserver-custom.png"><img src="pix/nameserver-custom.png" alt="Epik Custom NS Image"></a>
+
+        <p>
+            Go to DNSSEC settings and add the information given by <code>dnssec-keygen</code>.
+        </p>
+
+        <a href="pix/nameserver-add-ds.png"><img src="pix/nameserver-add-ds.png" alt="Epik DNSSEC Image"></a>
+
+        <h3>Testing</h3>
+
+        <p>
+            Verify that your custom dns settings are working by running <code>dig</code> on <code>ns1.landchad.net</code> from a client computer. Then go to <a href="https://dnssec-analyzer.verisignlabs.com">dnssec-analyzer.verisignlabs.com</a> and enter your domain name. Check that there are no errors.
+        </p>
+
+        <a href="pix/nameserver-dnssec-verify.png"><img src="pix/nameserver-dnssec-verify.png" alt="Verisign Result Image"></a>
+
+        <h3>Important: Updating Zone File</h3>
+
+        <p>
+            To update the zone in the future, open the <code>landchad.net.db</code> file and edit the records. You must change the SOA serial number according to <code>YYYYMMDD##</code>. Then run the following:
+        </p>
+
+        <pre><code>
+# rndc reload
+        </code></pre>
+
+        <h2></h2>
+        <h3>Contributors</h3>
+        
+        <dl>
+            <dt>George Witt</dt><dd>Website: <a href="https://gawitt.com">gawitt.com</a></dd><dd>GitHub: <a href="https://github.com/ElectricGeorge">@ElectricGeorge</a></dd>
+        </dl>
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
