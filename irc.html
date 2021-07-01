@@ -34,8 +34,8 @@
           This is good practice for installing software/servers manually, as it give you more fine-grained control over which permissions the application has.
         </p>
 
-<pre><code>sudo useradd -m ergo
-sudo chsh ergo --shell /bin/sh</code></pre>
+<pre><code>useradd -m ergo
+chsh ergo --shell /bin/sh</code></pre>
 
         <p>
           Next, we want to switch to our newly created <code>ergo</code> user and create the server directory.
@@ -538,7 +538,7 @@ cd server</code></pre>
         <p>
           It will stay online until you close the terminal, or press CTRL+C. Don't worry, the next section goes over how to make it run like a normal server with a SystemD service.<br>
           If you have not already, make sure the port <code>6697</code> is not blocked on your server. If you are using UFW as your firewall,
-          you need to run <code>sudo ufw enable 6697</code> (not as the <code>ergo</code> user, of course).
+          you need to run <code>ufw enable 6697</code> (not as the <code>ergo</code> user, of course).
         </p>
 
         <h3>Connecting to the server</h3>
@@ -626,9 +626,9 @@ WantedBy=multi-user.target</code></pre>
           To install it, switch to your normal user, and execute the following lines to install, enable, and start the SystemD service:
         </p>
 
-<pre><code>sudo ln -s /home/ergo/server/ergo.service /etc/systemd/system/ergo.service
-sudo systemctl enable ergo
-sudo systemctl start ergo</code></pre>
+<pre><code>ln -s /home/ergo/server/ergo.service /etc/systemd/system/ergo.service
+systemctl enable ergo
+systemctl start ergo</code></pre>
 
         <p>Ergo is now installed and running as a service, and will automatically start when the system boots.</p>
 
