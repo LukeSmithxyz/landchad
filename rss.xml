@@ -16,13 +16,13 @@
 <!-- LB -->
 
 <item>
-<title>Setting up Gitea &ndash; LandChad.net</title>
+<title>Setting up Gitea</title>
 <guid>https://landchad.net/gitea.html</guid>
 <link>https://landchad.net/gitea.html</link>
 <pubDate>Thu, 01 Jul 2021 16:14:22 -0400</pubDate>
 <description><![CDATA[
     <header><h1>Setting up Gitea</h1></header>
-    
+
     <main>
         <img class=titleimg src="pix/gitea.svg">
         <p>Gitea allows you to self-host your git repositories similar to <a href="git.html">bare repositories</a>, but comes with additional features that you might know from GitHub, such as issues, pull requests or multiple users. Its advantage over GitLab&mdash;another Free Software GitHub clone&mdash;is that it is much more lightweight and easier to setup.</p>
@@ -97,13 +97,13 @@ server {
             <li><a href="https://phire.cc">phire</a></li>
         </ul>
     </main>
-	
+
 ]]></description>
 </item>
 
 
 <item>
-<title>Hosting Your Own Git Repositories &ndash; LandChad.net</title>
+<title>Hosting Your Own Git Repositories</title>
 <guid>https://landchad.net/git.html</guid>
 <link>https://landchad.net/git.html</link>
 <pubDate>Thu, 01 Jul 2021 07:19:51 -0400</pubDate>
@@ -251,7 +251,7 @@ mkdir git</code></pre>
 
 
 <item>
-<title>Requiring Passwords for Webpages (HTTP Authentication) &ndash; LandChad.net</title>
+<title>Requiring Passwords for Webpages (HTTP Authentication)</title>
 <guid>https://landchad.net/auth.html</guid>
 <link>https://landchad.net/auth.html</link>
 <pubDate>Thu, 01 Jul 2021 07:19:27 -0400</pubDate>
@@ -355,7 +355,7 @@ mkdir git</code></pre>
 
 
 <item>
-<title>Cronjobs &ndash; LandChad.net</title>
+<title>Cronjobs</title>
 <guid>https://landchad.net/cron.html</guid>
 <link>https://landchad.net/cron.html</link>
 <pubDate>Thu, 01 Jul 2021 07:19:04 -0400</pubDate>
