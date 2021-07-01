@@ -18,15 +18,15 @@
         This allows us to do two main things:
         </p>
         <ol>
-            <li><strong>Password-less login</strong>: With SSH keys, we can permanently designate our profile on our local computer as safe for hour server, allowing us to bypass password verification when logging into our server.</li>
+            <li><strong>Password-less login</strong>: With SSH keys, we can permanently designate our profile on our local computer as safe for our server, allowing us to bypass password verification when logging into our server.</li>
             <li><strong>Prevent hacking</strong>: Since we no longer need a password to log in, we can simply deactivate password logins on our server altogether, which prevents hacking from people who may be so lucky as to guess our password!</li>
         </ol>
         <p>
-        In order words, using an SSH key to login is <strong>both safer, faster and easier</strong>.
+        In other words, using an SSH key to login is <strong>both safer, faster and easier</strong>.
         </p>
 
         <p>
-        This is especially better once you start making scripts on your computer that interact with your server.
+        This is especially useful once you start making scripts on your computer that interact with your server.
         You can upload files in the background, edit your spam filters or anything else from your local computer without having to input
         your password each time you touch the server.
         </p>
@@ -58,15 +58,15 @@
         <h2>Making your server trust your key.</h2>
 
         <p>
-        Now that you have an SSH key generate, just run the following:
+        Now that you have generated an SSH key, just run the following:
         </p>
 
         <pre><code>ssh-copy-id root@yourdomain.com</code></pre>
 
         <p>
-        That will ask for your server's root password and will log you in briefly.
+        The command will ask for your server's root password and log you in briefly.
         What this does is that it puts your public SSH key fingerprint on your server in a file <code>/root/.ssh/authorized_keys</code>.
-        What this does is that it allows approved SSH keys to login without passwords.
+        This file in turn allows approved SSH keys to log in without passwords.
         </p>
 
         <aside>
@@ -83,7 +83,7 @@
         <pre><code>ssh root@yourdomain.com</code></pre>
 
         <p>
-        It should now let your log in without a password prompt!
+        It should now let you log in without a password prompt!
         </p>
         <aside class=callout>
             <p>
@@ -107,7 +107,7 @@
         <p>
         Once we have authorized ssh keys for all the devices we need, we can actually just disable password logins.
         If you've ever looked at your system logs (<code>journalctl -xe</code>) you will find that there are always hundreds of random Chinese computers trying to brute force every server connected to the internet with random passwords.
-        They usually always are unsuccessful, but let's make it <strong>impossible</strong> for them.
+        They are usually unsuccessful, but let's make it <strong>impossible</strong> for them.
         </p>
 
         <p>
@@ -124,7 +124,7 @@ ChallengeResponseAuthentication <strong>no</strong>
 UsePAM <strong>no</strong></code></pre>
 
         <p>
-        Once we've done that, we will reload hour SSH daemon:
+        Once we've done that, we will reload our SSH daemon:
         </p>
 
         <pre><code>systemctl reload sshd</code></pre>
@@ -142,11 +142,11 @@ UsePAM <strong>no</strong></code></pre>
         <h2>What if I lose my SSH key?!</h2>
 
         <p>
-        Firstly, don't do this. Make every precaution that you have a backup.
+        Firstly, don't do this. Take every precaution that you have a backup.
         </p>
 
         <p>
-        If this does happens, Vultr and most other VPS providers will have one little out.
+        If this does happen, Vultr and most other VPS providers will have a way out.
         Log onto their website and select the server you want to log into.
         </p>
 
@@ -163,7 +163,7 @@ UsePAM <strong>no</strong></code></pre>
         </p>
 
         <p>
-        From here, simply reverse the settings we set above and you can login via SSH with a password and you can reapprove a newly created SSH key or whatever you want to do.
+        From here, simply reverse the settings we set above and you can log in via SSH with a password and reapprove a newly created SSH key or whatever you want to do.
         </p>
 
     </main>
