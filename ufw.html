@@ -14,18 +14,31 @@
     <main>
 		<p>
 			<strong>Uncomplicated Firewall</strong> (UFW) is a front-facing program for the more involved <code>iptables</code> firewall program installed in most GNU/Linux distributions.
-			If you're reading this, I assume you know the basic steps on how to use a Linux shell and how to install software for your server.
-			Otherwise, I recommend following <a href="nginx.html">Setting Up a Web Server</a>.
+			We can use <code>ufw</code> to restrict machines on the internet to only access the services (SSH, websites etc) you want them to, but it can also be used to prevent programs on the computer itself from accesing parts of the internet it shouldn't.
+		</p>
+
+		<p>
+			If you're reading this, I'll assume you have <a href="server.html">set up a server on Vultr</a>.
 		</p>
 
 		<h2 id="how-to-get-it">How to Get It</h2>
 
+		<p>Log into your server by pulling up a terminal and typing:</p>
+
+		<pre><code>ssh root@<strong>yourdomain.com</strong></code></pre>
+
 		<p>
-			If you followed <a href="nginx.html#firewall">the basic setup course</a>, then you know that Vultr already installed <code>ufw</code> for you.
-			If you don't use Vultr, then you can install it on a Debian system by running in a remote shell:
+			This command will attempt to log into your server and run a remote shell.
+			If you leave the settings default, it should prompt you for your password, and you can just copy or type in the password from Vultr's site.
+			If you did not <a href="dns.html">set up your DNS yet</a>, replace <code><strong>yourdomain.com</strong></code> with the IP address that Vultr gives you.
 		</p>
 
-		<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install ufw</code></pre>
+		<p>
+			If you followed <a href="nginx.html#firewall">setting up your webserver</a>, then you know that Vultr already installed <code>ufw</code> for you.
+			If you don't use Vultr, then you can install it on a Debian system by running in your remote shell:
+		</p>
+
+		<pre><code>apt-get update &amp;&amp; apt-get install ufw</code></pre>
 
 		<p>
 			The first command checks to see what packages can be installed, and the second command installs <code>ufw</code>.
@@ -33,15 +46,6 @@
 		</p>
 
 		<h2 id="first-time-setup">First-Time Setup</h2>
-
-		<p>
-			<code>ufw</code> is an administration program, so you will need root access to use it.
-			To make sure you don't have to keep typing <code>sudo</code> in all your commands, you can login to the root user by running:
-		</p>
-
-		<pre><code>sudo su -</code></pre>
-
-		<p>I'll assume you're in a root account from now on, but otherwise, remember to prepend all <code>ufw</code> commands with <code>sudo</code>.</p>
 
 		<p>You can check the status of <code>ufw</code> right now by running:</p>
 
