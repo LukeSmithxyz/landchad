@@ -21,7 +21,7 @@
       <p>To start off, run the following command in the server's terminal to install the required applications.
       </p>
 
-      <pre><code>sudo apt install sasl2-bin libsasl2-modules postfix bsd-mailx</code></pre>
+      <pre><code>apt install sasl2-bin libsasl2-modules postfix bsd-mailx</code></pre>
 
       <h2>Setting up Postfix
       </h2>
@@ -38,7 +38,7 @@
       <p>The next step is to edit the Postfix configuration file. Execute the following command in the server's terminal:
       </p>
 
-      <pre><code>sudoedit /etc/postfix/main.cf</code></pre>
+      <pre><code>nano /etc/postfix/main.cf</code></pre>
 
       <p>Find the line containing the following:
       </p>
@@ -63,7 +63,7 @@ header_size_limit = 4096000</pre></code>
       <p>Save and close the file and create a new file using the following command:
       </p>
 
-      <p>sudoedit /etc/postfix/sasl_passwd
+      <p>nano /etc/postfix/sasl_passwd
       </p>
 
       <p>In this file, add the following, while replacing the values *domain name* and *port* to the same values as the values of the previous steps, and changing the values *smtp username* and *smtp password* to the username and password of the email account you want to use.
@@ -74,17 +74,17 @@ header_size_limit = 4096000</pre></code>
       <p>Save and close the file and execute the following command:
       </p>
 
-      <pre><code>sudo postmap /etc/postfix/sasl_passwd</code></pre>
+      <pre><code>postmap /etc/postfix/sasl_passwd</code></pre>
 
       <p>Execute the following command to restart Postfix for changes to take effect:
       </p>
 
-      <pre><code>sudo systemctl restart postfix</code></pre>
+      <pre><code>systemctl restart postfix</code></pre>
 
       <p>Execute the following command to change the permissions of two files, for security reasons:
       </p>
 
-      <pre><code>sudo chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db</pre></code>
+      <pre><code>chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db</pre></code>
 
       <p>If everything went correctly, sending emails should now work. You can test it by following the next steps:
       </p>
