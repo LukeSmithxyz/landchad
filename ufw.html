@@ -17,33 +17,22 @@
 			We can use <code>ufw</code> to restrict machines on the internet to only access the services (SSH, websites etc) you want them to, but it can also be used to prevent programs on the computer itself from accesing parts of the internet it shouldn't.
 		</p>
 
-		<p>
-			If you're reading this, I'll assume you have <a href="server.html">set up a server on Vultr</a>.
-		</p>
-
 		<h2 id="how-to-get-it">How to Get It</h2>
 
 		<p>Log into your server by pulling up a terminal and typing:</p>
 
-		<pre><code>ssh root@<strong>yourdomain.com</strong></code></pre>
+		<pre><code>ssh root@<strong>example.org</strong></code></pre>
 
 		<p>
 			This command will attempt to log into your server and run a remote shell.
 			If you leave the settings default, it should prompt you for your password, and you can just copy or type in the password from Vultr's site.
-			If you did not <a href="dns.html">set up your DNS yet</a>, replace <code><strong>yourdomain.com</strong></code> with the IP address that Vultr gives you.
 		</p>
 
 		<p>
-			If you followed <a href="nginx.html#firewall">setting up your webserver</a>, then you know that Vultr already installed <code>ufw</code> for you.
-			If you don't use Vultr, then you can install it on a Debian system by running in your remote shell:
+        Some VPS providers automatically install <code>ufw</code>, but if you do not have it installed already, install it in the typical way:
 		</p>
 
-		<pre><code>apt-get update &amp;&amp; apt-get install ufw</code></pre>
-
-		<p>
-			The first command checks to see what packages can be installed, and the second command installs <code>ufw</code>.
-			It's strung together by a <code>&amp;&amp;</code> to run the second command as long as the first succeeded.
-		</p>
+		<pre><code>apt install ufw</code></pre>
 
 		<h2 id="first-time-setup">First-Time Setup</h2>
 
@@ -56,7 +45,6 @@
 		<aside>
 			<strong>Careful!</strong> Enabling <code>ufw</code> without allowing SSH will block you from remoting to your server.
 			Double-check that you have allowed SSH, and if you have changed the default SSH port, put in <em>that</em> number instead.
-			If you have been blocked from SSH, we will get to how to use Vultr's console to recover from it.
 		</aside>
 
 		<pre><code>ufw default deny incoming # block all incoming connections by default
@@ -96,19 +84,6 @@ To                           Action      From
 		<pre><code>ufw delete allow in 'WWW Full'
 ufw reload</pre></code>
 
-		<h2 id="recovering-from-losing-ssh">Recovering SSH</h2>
-
-		<p>
-			If you have accidentally firewalled yourself from logging on your computer, you can recover access by using Vultr's console.
-			Looking at your server in the Vultr menu, you should see a meatball menu on the right which gives you access to a console.
-		</p>
-
-		<a href="pix/view-console.png"><img src="pix/view-console.png" alt="View Console"></a>
-
-		<p>Log in through there, and disable ufw by typing:</p>
-
-		<pre><code>ufw disable</code></pre>
-
 		<h2 id="enabling-common-services">Enabling Common Services</h2>
 
 		<p>
@@ -117,10 +92,31 @@ ufw reload</pre></code>
 			Here is a list of a few common services:
 		</p>
 
+        <h3>Opening Port Numbers</h3>
+
+        <p>Suppose you install <a href="gemini.html">a Gemini server</a>, which must broadcast on port 1965. By default <code>ufw</code> blocks all incoming connections on all ports, so whenever you install a new service like this you will have to tell <code>ufw</code> to enable the desired port:</p>
+
+        <pre><code>ufw allow 1985</code></pre>
+
 		<h3>Websites: HTTP and HTTPS</h3>
 
-		<pre><code>ufw allow in 'WWW Full'
-ufw reload</code></pre>
+        <p>HTTP uses port 80 and HTTPS uses port 443. We can enable them like this:</p>
+
+        <pre><code>ufw allow 80
+ufw allow 443</code></pre>
+
+        <p>But <code>ufw</code> additionally knows the typical ports of common serives, so you can also run this:</p>
+
+        <pre><code>ufw allow http
+ufw allow https</code></pre>
+
+        <p>And that will do the same thing. There are also other abbreviations for common port lists:</p>
+
+		<pre><code>ufw allow in 'WWW Full'</code></pre>
+
+
+        <p>To see these other "apps" that <code>ufw</code> knows by default, run <code>ufw app list</code></p>
+
 
 		<h3>Email: IMAP, POP3, and SMTP</h3>
 
@@ -128,14 +124,7 @@ ufw reload</code></pre>
 ufw allow in POP3
 ufw allow in SMTP
 ufw allow in 'Postfix SMTPS'
-ufw allow in 'Mail Submission'
-ufw reload</pre></code>
-
-		<h3>Everything Else</h3>
-
-		<p>You can view all applications <code>ufw</code> knows about by running:</p>
-
-		<pre><code>ufw app list</code></pre>
+ufw allow in 'Mail Submission'</pre></code>
 
 		<h2 id="fine-tuning-rules">Fine-Tuning Rules</h2>
 
@@ -174,6 +163,20 @@ ufw status verbose</code></pre>
 		<p>To read more what you can do with <code>ufw</code>, run:</p>
 
 		<pre><code>man ufw</code></pre>
+
+		<h2 id="recovering-from-losing-ssh">Recovering SSH</h2>
+
+		<p>
+			If you have accidentally firewalled yourself from logging on your computer, you can recover access by using your VPS's virtual console.
+            On Vultr, this is on your VPS's menu. To the right of the server name, It is the leftmost icon that looks like a monitor.
+		</p>
+
+		<a href="pix/ssh-01.png"><img src="pix/ssh-01.png" alt="View Console"></a>
+
+		<p>Log in through there, and disable ufw by typing:</p>
+
+		<pre><code>ufw disable</code></pre>
+
 
 		<h2 id="further-reading">Further Reading</h2>
 
