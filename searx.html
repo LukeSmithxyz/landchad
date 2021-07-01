@@ -23,42 +23,42 @@
         <p>Filtron is an application firewall, a middleware between Searx and Nginx (webserver). It avoids abuse from your server and limits requests. Essentialy it protects your server from bad people.</p>
         <p>Morty is a result proxy which proxies images and websites. It downloads the images and displays them from your server like Searx. You can also view websites through your server privately without using your machine to request that website, almost like a VPN.</p>
         <h2>Setting it up</h2>
-        <p><code>(YOUR DOMAIN HERE)</code> in this guide means your domain (for example: <code>landchad.net</code>) and will require changing from you. When you paste commands, the dollar sign symbol ($) isn't needed and only signifies the command line. This guide uses Debian 10.</p>
+        <p><code>(YOUR DOMAIN HERE)</code> in this guide means your domain (for example: <code>landchad.net</code>) and will require changing from you. This guide uses Debian 10.</p>
         <p>First we will make a subdomain. If you used our <a href="https://landchad.net/dns.html">Epik DNS guide</a> you can skip this step. This is different from all registars but make a CNAME record for your domain like so: (Some will like the dot at the end, some will not)</p>
-        <pre><code>searx   1800 IN CNAME   (YOUR DOMAIN HERE).</code></pre>
+        <pre><code>searx   1800 IN CNAME   <strong>(YOUR DOMAIN HERE)</strong>.</code></pre>
         <p>Cloudflare's DNS for example:</p>
 
         <h3>Installing Searx</h3>        
         <p>When you have done that, we will update the system. You will need Nginx and Git for this, these commands will install it for you. You should have sudo privileges or be <code>root</code>. If you are the <code>root</code> user you can omit <code>sudo</code> from the commands.</p>
-        <pre><code>$ sudo apt update
-$ sudo apt upgrade
-$ sudo apt install git nginx</code></pre>
+        <pre><code>sudo apt update
+sudo apt upgrade
+sudo apt install git nginx</code></pre>
         <h3>Installing Searx.</h3>
-        <p>We will clone the Searx repository. <strong>NB:</strong> if you are root, make sure to not skip the first command.</p>
-        <pre><code>$ cd /usr/local/src
-$ git clone https://github.com/searx/searx searx
-$ cd ./searx
+        <p>We will clone the Searx repository. <strong>NB:</strong> if you are the root user, make sure to not skip the first command.</p>
+        <pre><code>cd /usr/local/src
+sudo git clone https://github.com/searx/searx searx
+cd ./searx
 </code></pre>
         <p>Now we will use the install script to install Searx, Filtron and Morty. Some questions will come up, press enter to all of them.</p>
-        <pre><code>$ sudo -H ./utils/searx.sh install all
-$ sudo -H ./utils/filtron.sh install all
-$ sudo -H ./utils/morty.sh install all</code></pre>
+        <pre><code>sudo -H ./utils/searx.sh install all
+sudo -H ./utils/filtron.sh install all
+sudo -H ./utils/morty.sh install all</code></pre>
         <p>Check if all services are running.</p>
-        <pre><code>$ sudo systemctl status searx
-$ sudo systemctl status filtron
-$ sudo systemctl status morty</code></pre>
+        <pre><code>sudo systemctl status searx
+sudo systemctl status filtron
+sudo systemctl status morty</code></pre>
         <p>If everything is installed and all services are running, we can setup Nginx.</p>
         <h3>Nginx config</h3>
         <p>Make sure Nginx is running (if it's not running you can check for errors using the command <code>nginx -t</code>). More detailed guide on Nginx can be found at <a href="https://landchad.net/nginx.html">here.</a></p>
-        <pre><code>$ sudo systemctl status nginx</code></pre>
+        <pre><code>sudo systemctl status nginx</code></pre>
         <p>We will make a config file for Searx <code>/etc/nginx/sites-available/searx.conf</code> and edit it:</p>
-        <pre><code>$ nano /etc/nginx/sites-available/searx.conf</code></pre>
-        <p>Paste the following content in there and replace <code>(YOUR DOMAIN HERE)</code> with your domain name.</p>
+        <pre><code>sudo nano /etc/nginx/sites-available/searx.conf</code></pre>
+        <p>Paste the following content in there and replace <code><strong>(YOUR DOMAIN HERE)</strong></code> with your domain name.</p>
         <pre><code>server {
         listen 80;
         listen [::]:80;
 
-        server_name searx.(YOUR DOMAIN HERE);
+        server_name searx.<strong>(YOUR DOMAIN HERE)</strong>;
 
         root /usr/local/searx/searx-src;
 
@@ -114,40 +114,40 @@ $ sudo systemctl status morty</code></pre>
 }
         </code></pre>
         <p>Create a symbolic link between <code>/etc/nginx/sites-available/searx.conf</code> and <code>/etc/nginx/sites-enabled/searx.conf</code></p>
-        <pre><code>$ sudo ln -s /etc/nginx/sites-available/searx.conf /etc/nginx/sites-enabled/searx.conf</code></pre>
+        <pre><code>sudo ln -s /etc/nginx/sites-available/searx.conf /etc/nginx/sites-enabled/searx.conf</code></pre>
         <p>Create a HTTPS certificate using Lets Encrypt's certbot. More details on how to do it are <a href="https://landchad.net/certbot.html">here</a>.</p>
         <p>If you have done that you can now restart Nginx and Uwsgi.</p>
-        <pre><code>$ sudo -H systemctl restart nginx
-$ sudo -H service uwsgi restart searx</code></pre>
-        <p>Go visit your <code>searx.(YOUR DOMAIN HERE)</code> and see if it works!</p>
+        <pre><code>sudo -H systemctl restart nginx
+sudo -H service uwsgi restart searx</code></pre>
+        <p>Go visit your <code>searx.<strong>(YOUR DOMAIN HERE)</strong></code> and see if it works!</p>
 
         <h3>Changing settings</h3>
 
         <p>If you want to change some settings of your Searx instance go edit <code>/etc/searx/settings.yml</code>. Use <a href="https://searx.github.io/searx/admin/settings.html">this guide</a> for more information.</p>
 
-        <pre><code>$ nano /etc/searx/settings.yml
+        <pre><code>sudo nano /etc/searx/settings.yml
 
-### After editing do:
+<strong>### After editing do:</strong>
 
-$ sudo -H service uwsgi restart searx</code></pre>
+sudo -H service uwsgi restart searx</code></pre>
         
         <h3>Maintaining Searx</h3>
         
         <p>To update Searx you can use the following commands:</p>
 
-        <pre><code>$ cd /usr/local/src/searx
-$ sudo -H ./utils/searx.sh update searx
-$ sudo -H ./utils/filtron.sh update filtron
-$ sudo -H ./utils/morty.sh update morty</code></pre>
+        <pre><code>cd /usr/local/src/searx
+sudo -H ./utils/searx.sh update searx
+sudo -H ./utils/filtron.sh update filtron
+sudo -H ./utils/morty.sh update morty</code></pre>
                                     
         <h3>Uninstalling Searx</h3>
 
         <p>To uninstall, execute these commands:</p>
 
-        <pre><code>$ cd /usr/local/src/searx
-$ sudo -H ./utils/searx.sh remove all
-$ sudo -H ./utils/filtron.sh remove all
-$ sudo -H ./utils/morty.sh remove all</code></pre>
+        <pre><code>cd /usr/local/src/searx
+sudo -H ./utils/searx.sh remove all
+sudo -H ./utils/filtron.sh remove all
+sudo -H ./utils/morty.sh remove all</code></pre>
 
         <h3>Need help?</h3>
             
