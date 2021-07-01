@@ -13,7 +13,7 @@
     <nav></nav>
     <main>
         <h2 id="whatis">What is Gemini?</h2>
-        <p><a href="https://gemini.circumlunar.space" target="_blank">Gemini</a> is a  new internet protocol which is different from the web. It's neither Gopher. It's much cleaner.</p> 
+        <p><a href="https://gemini.circumlunar.space" target="_blank">Gemini</a> is a  new internet protocol which is different from the HTTP and Gopher. It's much cleaner.</p>
         <h3>Why use gemini protocol?</h3>
         <ul>
             <li>Gemini capsules (webpages of gemini) are lightweight, minimal, and don't use many resources to operate.</li>
@@ -29,49 +29,32 @@
                 <li>Gemini server</li>
         </ol>
         <p>We can create three different directories to simplify the process:</p>
-        <pre><code>
-mkdir -p gemini/{content,certificate,server}
-        </code></pre>
+        <pre><code>mkdir -p gemini/{content,certificate,server}</code></pre>
         <h3>Content</h3>
         <p>Gemini uses text/gemini markup. It heavily borrows from Markdown. Similar to .html or .md, gemini uses .gmi as its extension.</p>
         <p>To create one gemini file, go inside the <code>content</code> directory and create one <code>index.gmi</code> file.</p>
-        <pre><code>
-touch gemini/content/index.gmi
-        </code></pre>
+        <pre><code>touch gemini/content/index.gmi</code></pre>
         <p>Update the file content of index.gmi</p>
-        <pre><code>
-# This is Sample Gemini page
+        <pre><code># This is Sample Gemini page
 ## With header 1 and header 2
 And a short paragraph like this.
-=> /index.gmi Link to the same page
-        </code></pre>
+=> /index.gmi Link to the same page</code></pre>
         <h3>TLS certificate</h3>
         <p>Go to the <code>certificate</code> directory which we have created earlier. Generate the TLS certificate using OpenSSL. Change YOURDOMAIN.COM to the domain of your gemini capsule.</p>
-        <pre><code>
-openssl req -new -subj "/CN=YOURDOMAIN.COM" -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -days 3650 -nodes -out cert.pem -keyout key.pem
-        </code></pre>
+        <pre><code>openssl req -new -subj "/CN=YOURDOMAIN.COM" -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -days 3650 -nodes -out cert.pem -keyout key.pem</code></pre>
         <h3>Gemini server</h3>
         <p>There are many gemini servers available. You can check the list of servers <a href="https://gemini.circumlunar.space/software" target="_blank">here</a>.</p>
         <p>We will use <code>agate</code> server for now. This is a simple gemini server written in Rust. Go to <code>server</code> directory and download agate server.</p>
-        <pre><code>
-wget https://github.com/mbrubeck/agate/releases/download/v3.1.0/agate.x86_64-unknown-linux-gnu.gz
-        </code></pre>
+        <pre><code>wget https://github.com/mbrubeck/agate/releases/download/v3.1.0/agate.x86_64-unknown-linux-gnu.gz</code></pre>
         <p>Unzip the gz</p>
-        <pre><code>
-gunzip agate.x86_64-unknown-linux-gnu.gz
-        </code></pre>
+        <pre><code>gunzip agate.x86_64-unknown-linux-gnu.gz</code></pre>
         <p>Rename and make it executable</p>
-        <pre><code>
-mv agate.x86_64-unknown-linux-gnu agate-server
-chmod +x agate-server
-        </code></pre>
+        <pre><code>mv agate.x86_64-unknown-linux-gnu agate-server
+chmod +x agate-server</code></pre>
         <p>Now we need to create a systemd service</p>
-        <pre><code>
-sudo touch /etc/systemd/system/agate.service
-        </code></pre>
+        <pre><code>sudo touch /etc/systemd/system/agate.service</code></pre>
         <p>Copy the below file and paste in agate.service.</p>
-        <pre><code>
-[Unit]
+        <pre><code>[Unit]
 Description=agate
 After=network.target
 
@@ -81,32 +64,23 @@ Type=simple
 ExecStart=/home/USER/gemini/agate-server --content /home/USER/gemini/content --certs /home/USER/gemini/certificate/ --hostname YOURDOMAIN.COM --lang en-US
 
 [Install]
-WantedBy=default.target
-        </code></pre>
+WantedBy=default.target</code></pre>
         <ul>
         <li>Change <code>/home/USER/gemini</code> to your gemini directory path.</li>
         <li>Change <code>YOURDOMAIN.COM</code> to your domain without http/https.</li>
         <li>Change <code>en-US</code> to your country language. en-IN for India, en-GB for UK, etc.</li>
         </ul>
         <p>Now we are ready to run server. Enable and run agate server.</p>
-        <pre><code>
-sudo systemctl enable agate</code></pre>
-        <pre><code>
-sudo systemctl start agate</code></pre>
+        <pre><code>systemctl enable agate
+systemctl start agate</code></pre>
         <h2>Finalization</h2>
         <p>Now your server should be running. If everything went okay, you can access your gemini via any gemini client with this url</p>
-        <pre><code>
-gemini://YOURDOMAIN.COM
-        </code></pre>
+        <pre><code>gemini://<strong>example.org</strong></code></pre>
         <p>Sample gemini site for reference:</p>
-        <pre><code>
-gemini://gemini.circumlunar.space
-        </code></pre>
+        <pre><code>gemini://gemini.circumlunar.space</code></pre>
         <p>Enjoy your first gemini capsule.</p>
         <hr>
         <p><em>Written by <a href="https://nihar.page">nihar.page</a></em></p>
-
-        <!--<span class=next><a href="<++>">Next:<++></a></span>--!>
 
     </main>
 	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
