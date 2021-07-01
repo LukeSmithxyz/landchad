@@ -22,7 +22,7 @@
           Having a chat server for you and your friends makes it impossible for a group of arbitrarily appointed moderators to deplatform you for wrong-think, and gives you greater freedom of communication.
         </p>
 
-        <h2>Installing an IRCd</h2>
+        <h2 id="installing">Installing an IRCd</h2>
 
         <p>
           An IRCd is short for "IRC daemon", which just means an IRC server.
@@ -71,7 +71,7 @@ drwxr-xr-x 2 ergo ergo   12288 Jul  1 09:01 languages
         TODO Mention UFW firewall ports 6667, 6697
         TODO Mention config rehashing at runtime (mention use-cases like new opers, etc)
 
-        <h2>Configuring Ergo</h2>
+        <h2 id="configuring">Configuring Ergo</h2>
 
         <p>
           Now that Ergo is installed, you want to configure it to fit the needs of your group.<br>
@@ -121,7 +121,7 @@ cp ergo.motd ircd.motd</code></pre>
           You should read over the configuration file yourself if you are curious about everything you can change.
         </p>
 
-        <h3>Network and server names</h3>
+        <h3 id="configuring-names">Network and server names</h3>
         <p>
           One of the first properties in the config file is network name.
           You can change this to whatever you like, as it will show up as the name when you connect to the server.
@@ -139,7 +139,7 @@ server:
     # server name
     name: "example.org"</code></pre>
 
-        <h3>Network password</h3>
+        <h3 id="configuring-password">Network password</h3>
         <p>
           The next step is optional, depending on if you want your network password protected or not.
           The benefit of password protection is fairly obvious; nobody can connect to your network unless you gave them the password.
@@ -159,7 +159,7 @@ server:
 <pre><code># password to login to the server, generated using `ergo genpasswd`:
 password: "<i>&lt;your hashed password&gt;</i>"</code></pre>
 
-        <h3>Message of the day (MotD)</h3>
+        <h3 id="configuring-motd">Message of the day (MotD)</h3>
         <p>Change the MotD (<b>M</b>essage <b>o</b>f <b>t</b>he <b>D</b>ay) file to the one you copied earlier:</p>
 
 <pre><code># motd filename
@@ -168,7 +168,7 @@ motd: ircd.motd</code></pre>
 
         <p>Feel free to edit <code>ircd.motd</code> to your heart's content. Its contents will be sent to clients when they connect to the network.</p>
 
-        <h3>IP limits</h3>
+        <h3 id="configuring-ip-limits">IP limits</h3>
         <p>
           For security purposes, you might want to limit the amount of client connections per IP.
           For a private network, 4 is likely the maximum amount of connections you will have per IP, so that is a safe value.<br>
@@ -183,7 +183,7 @@ ip-limits:
     # maximum concurrent connections per IP/CIDR
     max-concurrent-connections: 16</code></pre>
 
-        <h3>IP cloaking</h3>
+        <h3 id="configuring-ip-cloaking">IP cloaking</h3>
         <p>
           Traditionally, IRC networks expose users' IP addresses to everyone. This is not a good practice for privacy, however.
           With Ergo, IP cloaking is enable by default. You can enable or disable it if you like, and change how it looks to users.<br>
@@ -211,7 +211,7 @@ ip-cloaking:
     # you may want to use your network name here
     netname: "chad"</code></pre>
 
-        <h3>Password enforcement adjustments for HexChat (and possibly other clients)</h3>
+        <h3 id="configuring-hexchat-password">Password enforcement adjustments for HexChat (and possibly other clients)</h3>
         <p>
           Ergo offers account registration to allow users to do things like use history and bouncer features, register channels, etc.<br>
           In clients such as HexChat, server password may conflict with account passwords, so the following setting should be enable if you wish to use accounts with clients such as HexChat.<br>
@@ -227,7 +227,7 @@ ip-cloaking:
 # PASS as well, so it can be configured to authenticate with SASL only.
 skip-server-password: true</code></pre>
 
-        <h3>Multiclient, always-on clients, history, etc</h3>
+        <h3 id="configuring-multiclient">Multiclient, always-on clients, history, etc</h3>
         <p>
           Traditionally, IRC servers have no message history, and once you close your client, you cannot receive messages, and are not shown to be online at all.
           Ergo includes functionality to allow users to both receive history, and keep their clients "online" even after they have left.
@@ -266,7 +266,7 @@ multiclient:
     # (use 0 or omit for no expiration):
     #always-on-expiration: 90d</code></pre>
 
-        <h3>VHosts</h3>
+        <h3 id="configuring-vhosts">VHosts</h3>
         <p>
           IP cloaking was mentioned previously, and somewhat related to that, Ergo includes "vhost" functionality, which allows users to set a custom IP/host string.
           This is mostly for cosmetic value, and does not interfere with operators being able to see actual IP addresses for banning, but if you do not want it enable for some reason, you can disable it.
@@ -278,7 +278,7 @@ vhosts:
     # are vhosts enabled at all?
     enabled: true</code></pre>
 
-        <h3>Channels</h3>
+        <h3 id="configuring-channels">Channels</h3>
         <p>
           Channels are where everyone on an IRC network talk. By default, anyone can create a channel, and anyone with an account can register one.
           The difference between a normal channel and a registered one is that the registered one will preserve the operator status of the person who created,
@@ -313,7 +313,7 @@ channels:
         # how many channels can each account register?
         max-channels-per-account: 15</code></pre>
 
-        <h3>Operators (administrators, etc)</h3>
+        <h3 id="configuring-operators">Operators (administrators, etc)</h3>
         <p>
           The IRC term for an administrator or another privileged user is "operator", or "oper" for short.<br>
           Ergo's opers have different permissions that can be granted to them, and are defined in "classes", basically groups of permissions under a name.
@@ -402,7 +402,7 @@ opers:
           Another, less privileged example of an oper is shown as a comment below the above configuration snippet.
         </p>
 
-        <h3>Chat history</h3>
+        <h3 id="configuring-history">Chat history</h3>
         <p>
           Traditionally, IRC networks do not store, relay, or handle chat history in any way.<br>
           On a privacy standpoint, this is a good thing, since chats are entirely ephemeral and handled by clients.<br>
@@ -490,7 +490,7 @@ retention:
     # may be needed for compliance with data privacy regulations.
     enable-account-indexing: true</code></pre>
 
-        <h3>Spam reduction</h3>
+        <h3 id="configuring-spam">Spam reduction</h3>
         <p>
           Most IRC networks have measures in place to reduce chat spam. By default, "fakelag" is enabled in Ergo, and that can deal with most aggregious chat spam.<br>
           If you are running a private network where user trust is high, you can disable it so that there are no limits on the speed that messages can be sent.
@@ -515,12 +515,12 @@ fakelag:
       # sending any commands:
     cooldown: 2s</code></pre>
 
-        <h2>Starting and using your server</h3>
+        <h2 id="using">Starting and using your server</h3>
         <p>
           Now that Ergo is both installed and configured, you can actually start using it!
         </p>
         
-        <h3>Starting the server</h3>
+        <h3 id="using-starting">Starting the server</h3>
         <p>
           First thing, make sure you're still using the <code>ergo</code> user, and are in the <code>~/server</code> directory.<br>
           If you aren't, you can run the following to get back there:
@@ -541,7 +541,7 @@ cd server</code></pre>
           you need to run <code>ufw enable 6697</code> (not as the <code>ergo</code> user, of course).
         </p>
 
-        <h3>Connecting to the server</h3>
+        <h3 id="using-connecting">Connecting to the server</h3>
         <p>
           To use IRC, you of course need an IRC client. There are many choices available, but the most widely used for Windows and Linux is <a href="https://hexchat.github.io/">HexChat</a>.
           On Mac, you have a slightly nicer option with <a href="https://www.codeux.com/textual/">Textual</a>, although you have to <a href="https://github.com/Codeux-Software/Textual/#building-textual">compile it from source</a> if you want to use it for free.<br>
@@ -578,7 +578,7 @@ cd server</code></pre>
 
         <img src="pix/irc/textual-network-edit.png" alt="Textual network edit menu">
 
-        <h2>Surviving restarts with a SystemD service</h3>
+        <h2 id="service">Surviving restarts with a SystemD service</h3>
         <p>
           In the beginning of the last section, Ergo was started by simply running <code>./ergo run</code>, but this is only suitable for testing.
           To have a proper server setup, you need to run it as a service. This can be achieved via a SystemD service.
@@ -632,13 +632,13 @@ systemctl start ergo</code></pre>
 
         <p>Ergo is now installed and running as a service, and will automatically start when the system boots.</p>
 
-        <h2>Registering accounts and channels</h2>
+        <h2 id="registering">Registering accounts and channels</h2>
         <p>
           Account and channel registration were mentioned multiple times in this guide, and are indeed very important parts of the modern IRC ecosystem.
           You can connect to most IRC networks and talk without creating an account, but you will not be able to reserve your nickname or register channels, so it is important to register an account.
         </p>
 
-        <h3>Registering an account with NickServ</h3>
+        <h3 id="registering-accounts">Registering an account with NickServ</h3>
         <p>
           First, make sure you are connected to your IRC network.
           Once you are, type <code>/nickserv help</code> to make sure NickServ (the registration system) is working propertly.<br>
@@ -665,7 +665,7 @@ systemctl start ergo</code></pre>
 
         <p>You will now be logged into your account when you connect to your network.</p>
 
-        <h3>Registering channels with ChanServ</h3>
+        <h3 id="registering-channels">Registering channels with ChanServ</h3>
         <p>
           Once you have an account registered, you can register channels with ChanServ.<br>
           To do so, join the channel you want to register, then type the following, replacing <code><i>&lt;your channel&gt;</i></code> with the name of the channel you want to register:
@@ -678,7 +678,7 @@ systemctl start ergo</code></pre>
           When you go offline, you won't lose ownership, and you cannot be removed as the owner unless you unregister the channel later.
         </p>
 
-        <h2>Moderation</h2>
+        <h2 id="moderation">Moderation</h2>
         <p>
           Like any chat, there will come a point where you need to use moderation tools to keep things under control.
           Many IRC setup guides do not go over moderation, so it can be stressful when operators need to actually use moderation tools.<br>
@@ -686,7 +686,7 @@ systemctl start ergo</code></pre>
           Channel ban keeps a person out of channel a channel, whereas a network ban keeps a person out of the entire network.
         </p>
 
-        <h3>Understanding masks</h3>
+        <h3 id="moderation-masks">Understanding masks</h3>
         <p>
           Bans are applied "masks", which are formatted pieces of text that contain a user's nick (username), their realname value, and their IP address or host.<br>
           This is what a mask looks like: <code>nick!~nick-dude@127.0.0.1</code>.<br>
@@ -695,7 +695,7 @@ systemctl start ergo</code></pre>
           A ban on anyone with the IP address <code>127.0.0.1</code> would look like this: <code>*!*@127.0.0.1</code>
         </p>
 
-        <h3>Discovering real IPs</h3>
+        <h3 id="moderation-real-ips">Discovering real IPs</h3>
         <p>
           Even if IP cloaking is enabled on your network, you can still obtain real IP addresses/hosts if you are an operator.
           See the <b>Operators</b> part of the configuration section of this guide on how to become an operator.<br>
@@ -703,7 +703,7 @@ systemctl start ergo</code></pre>
           <code>/whois</code> is not a command that is exclusive to operators, but it does not reveal as much information to non-operators.
         </p>
 
-        <h3>Banning someone from the network</h3>
+        <h3 id="moderation-network-ban">Banning someone from the network</h3>
         <p>
           Any netword-wide moderation action requires being an operator. See the <b>Operators</b> part of the configuration section of this guide on how to become an operator.<br>
           Banning someone from the network is achieved with the <code>/kline</code> command. To see more info on the command, type <code>/helpop kline</code>.<br>
@@ -719,7 +719,7 @@ systemctl start ergo</code></pre>
 
         <p>To unban a mask, you can use the <code>/unkline</code> command with the mask you want to unban.</p>
 
-        <h3>Banning someone from a channel</h3>
+        <h3 id="moderation-channel-ban">Banning someone from a channel</h3>
         <p>
           Channel owners, administrators, and operators can ban people from channels.
           This is not the same as banning someone from the network, since it only has an effect on one channel.
@@ -737,7 +737,7 @@ systemctl start ergo</code></pre>
           You can see who is banned in a channel by typing <code>/banlist</code>.
         </p>
 
-        <h3>Muting people in a channel</h3>
+        <h3 id="moderation-muting">Muting people in a channel</h3>
         <p>
           By default, anyone can speak in an IRC channel. To change this, you must be a channel owner, administrator, or operator.<br>
           Channels, along with users, have modes, which modify their behavior. There is a special mode for channels called <code>m</code> (moderated) which requires users to be privileged in some way to talk.<br>
@@ -756,7 +756,7 @@ systemctl start ergo</code></pre>
 
         <p>Unvoice the user by typing the above command, but replacing the <code>+</code> with a <code>-</code>.</p>
 
-        <h3>Appointing channel administrators and operators</h3>
+        <h3 id="moderation-appointing">Appointing channel administrators and operators</h3>
         <p>
           Assuming you a channel owner, you can appoint both administrators and operators.
           If you are only an operator, you may only appoint operators.<br>
@@ -775,7 +775,7 @@ systemctl start ergo</code></pre>
           To remove administrator or operator status, run either of the above commands, but replace the <code>+</code> with a <code>-</code>.
         </p>
 
-        <h2>Bringing modern-day features to IRC with TheLounge</h3>
+        <h2 id="thelounge">Bringing modern-day features to IRC with TheLounge</h3>
         <p>
           A large downside to IRC as a protocol is just how old it is, and the limitations that exist because of it.
           Other old protocols such as HTTP were built to be content-agnostic and versitile, but IRC was built with a very specific set of features, so it has not held up so well to contemporary chat systems.<br>
@@ -796,7 +796,7 @@ systemctl start ergo</code></pre>
         </p>
 
         <hr>
-        
+
         <p><i>Written by <a href="https://termer.net/">Termer</a></i></p>
     </main>
 	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
