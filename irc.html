@@ -34,8 +34,7 @@
           This is good practice for installing software/servers manually, as it give you more fine-grained control over which permissions the application has.
         </p>
 
-<pre><code>useradd -m ergo
-chsh ergo --shell /bin/bash</code></pre>
+<pre><code>useradd -m ergo -s /bin/bash</code></pre>
 
         <p>
           Next, we want to switch to our newly created <code>ergo</code> user and create the server directory.
@@ -50,10 +49,10 @@ mkdir server</code></pre>
           Once you have selected the correct package, copy its URL and replace <code><i>&lt;release url&gt;</i></code> with the package URL (still as the <code>ergo</code> user):
         </p>
 
-<pre><code>wget "<i>&lt;release url&gt;</i>"
-tar -xf ergo-*-*.tar.gz
-mv ergo-*-*/* .
-rm -r ergo-*-*</code></pre>
+<pre><code>wget https://github.com/ergochat/ergo/releases/download/v2.7.0/ergo-2.7.0-linux-x86_64.tar.gz
+tar -xf ergo-2.7.0-linux-x86_64.tar.gz
+mv ergo-2.7.0-linux-x86_64/*
+rm -r ergo-2.7.0-linux-x86_64*</code></pre>
 
         <p>Executing <code>ls -l</code> should now yield something like this:</p>
 
@@ -82,7 +81,7 @@ drwxr-xr-x 2 ergo ergo   12288 Jul  1 09:01 languages
         </p>
 
 <pre><code>sudo -i -u ergo
-cd server</code></pre>
+cd ~/server</code></pre>
 
         <p>
           Next, generate certificate files for TLS:
@@ -128,7 +127,7 @@ cp ergo.motd ircd.motd</code></pre>
 network:
     # name of the network
     name: "Land-Chat"</code></pre>
-    
+
         <p>Change the server name to your server's domain name.</p>
 
 <pre><code># server configuration
@@ -290,23 +289,23 @@ channels:
     # +n is no-external-messages and +t is op-only-topic
     # see  /QUOTE HELP cmodes  for more channel modes
     default-modes: +nt
-  
+
     # how many channels can a client be in at once?
     max-channels-per-client: 100
-  
+
     # if this is true, new channels can only be created by operators with the
     # `chanreg` operator capability
     operator-only-creation: false
-  
+
     # channel registration - requires an account
     registration:
         # can users register new channels?
         enabled: true
-  
+
         # restrict new channel registrations to operators only?
         # (operators can then transfer channels to regular users using /CS TRANSFER)
         operator-only: false
-  
+
         # how many channels can each account register?
         max-channels-per-account: 15</code></pre>
 
@@ -324,7 +323,7 @@ oper-classes:
     "chat-moderator":
         # title shown in WHOIS
         title: Chat Moderator
-  
+
         # capability names
         capabilities:
             - "kill"
@@ -336,16 +335,16 @@ oper-classes:
             - "sajoin"
             - "samode"
             - "snomasks"
-  
+
     # server admin: has full control of the ircd, including nickname and
     # channel registrations
     "server-admin":
         # title shown in WHOIS
         title: Server Admin
-  
+
         # oper class this extends from
         extends: "chat-moderator"
-  
+
         # capability names
         capabilities:
             - "rehash"
@@ -366,23 +365,23 @@ opers:
     "gigachad":
         # which capabilities this oper has access to
         class: "server-admin"
-  
+
         # custom whois line
         whois-line: is the server administrator
-  
+
         # custom hostname
         vhost: "gigachad"
-  
+
         # normally, operator status is visible to unprivileged users in WHO and WHOIS
         # responses. this can be disabled with 'hidden'. ('hidden' also causes the
         # 'vhost' line above to be ignored.)
         hidden: false
-  
+
         # modes are modes to auto-set upon opering-up. uncomment this to automatically
         # enable snomasks ("server notification masks" that alert you to server events;
         # see `/quote help snomasks` while opered-up for more information):
         #modes: +is acjknoqtuxv
-  
+
         # operators can be authenticated either by password (with the /OPER command),
         # or by certificate fingerprint, or both. if a password hash is set, then a
         # password is required to oper up (e.g., /OPER dan mypassword). to generate
@@ -497,17 +496,17 @@ retention:
 fakelag:
     # whether to enforce fakelag
     enabled: true
-  
+
     # time unit for counting command rates
     window: 1s
-  
+
     # clients can send this many commands without fakelag being imposed
     burst-limit: 5
-  
+
     # once clients have exceeded their burst allowance, they can send only
     # this many commands per `window`:
     messages-per-window: 2
-  
+
     # client status resets to the default state if they go this long without
       # sending any commands:
     cooldown: 2s</code></pre>
@@ -516,7 +515,7 @@ fakelag:
         <p>
           Now that Ergo is both installed and configured, you can actually start using it!
         </p>
-        
+
         <h3 id="using-starting">Starting the server</h3>
         <p>
           First thing, make sure you're still using the <code>ergo</code> user, and are in the <code>~/server</code> directory.<br>
