@@ -56,7 +56,7 @@
 		<aside>
 			<strong>Careful!</strong> Enabling <code>ufw</code> without allowing SSH will block you from remoting to your server.
 			Double-check that you have allowed SSH, and if you have changed the default SSH port, put in <em>that</em> number instead.
-			And then double-check again.
+			If you have been blocked from SSH, we will get to how to use Vultr's console to recover from it.
 		</aside>
 
 		<pre><code>ufw default deny incoming # block all incoming connections by default
@@ -95,6 +95,19 @@ To                           Action      From
 
 		<pre><code>ufw delete allow in 'WWW Full'
 ufw reload</pre></code>
+
+		<h2 id="recovering-from-losing-ssh">Recovering SSH</h2>
+
+		<p>
+			If you have accidentally firewalled yourself from logging on your computer, you can recover access by using Vultr's console.
+			Looking at your server in the Vultr menu, you should see a meatball menu on the right which gives you access to a console.
+		</p>
+
+		<a href="pix/view-console.png"><img src="pix/view-console.png" alt="View Console"></a>
+
+		<p>Log in through there, and disable ufw by typing:</p>
+
+		<pre><code>ufw disable</code></pre>
 
 		<h2 id="enabling-common-services">Enabling Common Services</h2>
 
