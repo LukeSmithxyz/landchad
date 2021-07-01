@@ -23,7 +23,7 @@
         <p>Filtron is an application firewall, a middleware between Searx and Nginx (webserver). It avoids abuse from your server and limits requests. Essentialy it protects your server from bad people.</p>
         <p>Morty is a result proxy which proxies images and websites. It downloads the images and displays them from your server like Searx. You can also view websites through your server privately without using your machine to request that website, almost like a VPN.</p>
         <h2>Setting it up</h2>
-        <p><code>(YOUR DOMAIN HERE)</code> in this guide means your domain (for example: <code>landchad.net</code>) and will require changing from you. This guide uses Debian 10.</p>
+        <p><code><strong>(YOUR DOMAIN HERE)</strong></code> in this guide means your domain (for example: <code>landchad.net</code>) and will require changing from you. This guide uses Debian 10 but can be used on CentOS as well with minimal changes.</p>
         <p>First we will make a subdomain. If you used our <a href="https://landchad.net/dns.html">Epik DNS guide</a> you can skip this step. This is different from all registars but make a CNAME record for your domain like so: (Some will like the dot at the end, some will not)</p>
         <pre><code>searx   1800 IN CNAME   <strong>(YOUR DOMAIN HERE)</strong>.</code></pre>
         <p>Cloudflare's DNS for example:</p>
