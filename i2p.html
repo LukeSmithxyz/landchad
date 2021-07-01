@@ -48,10 +48,13 @@ cd ~/.i2pd</code></pre>
 type = http
 host = 127.0.0.1
 port = 8080
-keys = landchat.dat</pre></code>
+keys = <strong>landchad.dat</strong></pre></code>
 			<p>
 				Then, run <code>i2pd --daemon</code> to start i2pd. Then use lynx or any browser
-				to go to http://127.0.0.1:7070/?page=i2p_tunnels to get your I2P hostname
+				to go to http://127.0.0.1:7070/?page=i2p_tunnels to get your I2P hostname. You
+				can also run these commands to find your hostname:
+				<pre><code>cd ~/.i2pd/
+printf "%s.b32.i2p\n" $(head -c 391 <strong>landchad.dat</strong> |sha256sum|xxd -r -p | base32 |sed s/=//g | tr A-Z a-z)</code></pre>
 			</p>
 
 			<h2>Adding the Nginx Config</h2>
