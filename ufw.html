@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Using UFW as a Firewall &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Using UFW as a Firewall</h1></header>
+    <nav></nav>
+    <main>
+		<p>
+			<strong>Uncomplicated Firewall</strong> (UFW) is a front-facing program for the more involved <code>iptables</code> firewall program installed in most GNU/Linux distributions.
+			We can use <code>ufw</code> to restrict machines on the internet to only access the services (SSH, websites etc) you want them to, but it can also be used to prevent programs on the computer itself from accesing parts of the internet it shouldn't.
+		</p>
+
+		<p>
+			If you're reading this, I'll assume you have <a href="server.html">set up a server on Vultr</a>.
+		</p>
+
+		<h2 id="how-to-get-it">How to Get It</h2>
+
+		<p>Log into your server by pulling up a terminal and typing:</p>
+
+		<pre><code>ssh root@<strong>yourdomain.com</strong></code></pre>
+
+		<p>
+			This command will attempt to log into your server and run a remote shell.
+			If you leave the settings default, it should prompt you for your password, and you can just copy or type in the password from Vultr's site.
+			If you did not <a href="dns.html">set up your DNS yet</a>, replace <code><strong>yourdomain.com</strong></code> with the IP address that Vultr gives you.
+		</p>
+
+		<p>
+			If you followed <a href="nginx.html#firewall">setting up your webserver</a>, then you know that Vultr already installed <code>ufw</code> for you.
+			If you don't use Vultr, then you can install it on a Debian system by running in your remote shell:
+		</p>
+
+		<pre><code>apt-get update &amp;&amp; apt-get install ufw</code></pre>
+
+		<p>
+			The first command checks to see what packages can be installed, and the second command installs <code>ufw</code>.
+			It's strung together by a <code>&amp;&amp;</code> to run the second command as long as the first succeeded.
+		</p>
+
+		<h2 id="first-time-setup">First-Time Setup</h2>
+
+		<p>You can check the status of <code>ufw</code> right now by running:</p>
+
+		<pre><code>ufw status</code></pre>
+
+		<p>Without any changes, it should report back <code>Status: inactive</code>. Let's set it up so that only connections to SSH (standardized at port 22) are allowed in, and then enable the firewall:</p>
+
+		<aside>
+			<strong>Careful!</strong> Enabling <code>ufw</code> without allowing SSH will block you from remoting to your server.
+			Double-check that you have allowed SSH, and if you have changed the default SSH port, put in <em>that</em> number instead.
+			If you have been blocked from SSH, we will get to how to use Vultr's console to recover from it.
+		</aside>
+
+		<pre><code>ufw default deny incoming # block all incoming connections by default
+ufw allow in ssh # or: ufw allow in 22
+ufw enable</code></pre>
+
+		<aside>
+			<code>ufw</code> has an internal list of protocols applications, and the ports used by them.
+			In this case, it knwos SSH is on port 22.
+			We'll go more in detail how to view all protocols <code>ufw</code> knows about.
+			By default, when you allow an incoming port, it allows that port both on IPv4 and IPv6.
+		</aside>
+
+		<p>
+			With the firewall enabled and allowing only SSH in, all other ports are prortected from incoming requests.
+			To view all your rules, run:
+		</p>
+
+		<pre><code>ufw status verbose</code></pre>
+
+		<p>A firewall that allows to connect to SSH and their website may look like:</p>
+
+		<pre><code>Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                           Action      From
+--                           ------      ----
+22 (SSH)                     ALLOW IN    Anywhere
+80,443/tcp (WWW Full)        ALLOW IN    Anywhere
+22 (SSH (v6))                ALLOW IN    Anywhere (v6)
+80,443/tcp (WWW Full (v6))   ALLOW IN    Anywhere (v6)</code></pre>
+
+		<p>If you want to delete e.g. the 'WWW Full' rule, run:</p>
+
+		<pre><code>ufw delete allow in 'WWW Full'
+ufw reload</pre></code>
+
+		<h2 id="recovering-from-losing-ssh">Recovering SSH</h2>
+
+		<p>
+			If you have accidentally firewalled yourself from logging on your computer, you can recover access by using Vultr's console.
+			Looking at your server in the Vultr menu, you should see a meatball menu on the right which gives you access to a console.
+		</p>
+
+		<a href="pix/view-console.png"><img src="pix/view-console.png" alt="View Console"></a>
+
+		<p>Log in through there, and disable ufw by typing:</p>
+
+		<pre><code>ufw disable</code></pre>
+
+		<h2 id="enabling-common-services">Enabling Common Services</h2>
+
+		<p>
+			You have blocked all incoming ports but SSH, which means no outsiders would be able to access other services, like an email server or your website.
+			You should look at the ports your services are open on and enable them individually.
+			Here is a list of a few common services:
+		</p>
+
+		<h3>Websites: HTTP and HTTPS</h3>
+
+		<pre><code>ufw allow in 'WWW Full'
+ufw reload</code></pre>
+
+		<h3>Email: IMAP, POP3, and SMTP</h3>
+
+		<pre><code>ufw allow in IMAPS
+ufw allow in POP3
+ufw allow in SMTP
+ufw allow in 'Postfix SMTPS'
+ufw allow in 'Mail Submission'
+ufw reload</pre></code>
+
+		<h3>Everything Else</h3>
+
+		<p>You can view all applications <code>ufw</code> knows about by running:</p>
+
+		<pre><code>ufw app list</code></pre>
+
+		<h2 id="fine-tuning-rules">Fine-Tuning Rules</h2>
+
+		<p>Instead of denying all ports by default, you may want to deny (ignores incoming requests) or reject (explicitly tells requests they're not allowed):</p>
+
+		<pre><code>ufw default allow in
+ufw deny in <strong>PORT</strong>
+ufw reject in <strong>PORT</strong>
+ufw reload</code></pre>
+
+		<p>You can add rules to comments to remember what they are there for:</p>
+
+		<pre><code>ufw allow in <strong>PORT</strong> comment 'Secret SSH'
+ufw reload
+ufw status verbose</code></pre>
+
+		<p>Output:</p>
+
+		<pre><code>To                         Action      From
+--                         ------      ----
+<strong>PORT</strong>                       ALLOW IN    Anywhere                   # Secret SSH
+<strong>PORT</strong> (v6)                  ALLOW IN    Anywhere (v6)              # Secret SSH</pre></code>
+
+		<p>To deny outgoing ports:</p>
+
+		<pre><code>ufw deny out <strong>PORT</strong></code></pre>
+
+		<p>Ratelimiting is useful to protect against brute-force login attacks, like in SSH. Only IPv4 is supported for now. Enable it by running:</p>
+
+		<pre><code>ufw limit <strong>PORT</strong>/tcp</code></pre>
+
+		<p>To blocklist IP addresses:</p>
+
+		<pre><code>ufw deny from <strong>IP_ADDRESS</strong></code></pre>
+
+		<p>To read more what you can do with <code>ufw</code>, run:</p>
+
+		<pre><code>man ufw</code></pre>
+
+		<h2 id="further-reading">Further Reading</h2>
+
+		<ul>
+			<li><a href="https://wiki.ubuntu.com/UncomplicatedFirewall">Ubuntu Wiki: UncomplicatedFirewall</a></li>
+			<li><a href="https://help.ubuntu.com/community/Gufw">Gufw (Graphical UFW)</a></li>
+			<li><code>man ufw</code></li>
+		</ul>
+
+		<strong>Contributor</strong> - <a href="https://shunter.xyz">shunter.xyz</a>
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
