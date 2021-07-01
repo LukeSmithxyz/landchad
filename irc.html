@@ -68,9 +68,6 @@ drwxr-xr-x 2 ergo ergo   12288 Jul  1 09:01 languages
 
         <p>If you see something similar to the above, that means Ergo is installed, although not quite ready to run yet.</p>
 
-        TODO Mention UFW firewall ports 6667, 6697
-        TODO Mention config rehashing at runtime (mention use-cases like new opers, etc)
-
         <h2 id="configuring">Configuring Ergo</h2>
 
         <p>
@@ -538,7 +535,8 @@ cd server</code></pre>
         <p>
           It will stay online until you close the terminal, or press CTRL+C. Don't worry, the next section goes over how to make it run like a normal server with a SystemD service.<br>
           If you have not already, make sure the port <code>6697</code> is not blocked on your server. If you are using UFW as your firewall,
-          you need to run <code>ufw enable 6697</code> (not as the <code>ergo</code> user, of course).
+          you need to run <code>ufw enable 6697</code> (not as the <code>ergo</code> user, of course).<br>
+          If you make and configuration changes while the server is running, you can apply them without restarting by typing <code>/rehash</code> as an operator.
         </p>
 
         <h3 id="using-connecting">Connecting to the server</h3>
