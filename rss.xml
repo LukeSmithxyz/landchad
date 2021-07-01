@@ -13,6 +13,470 @@
 <link>https://landchad.net/rss.xml</link>
 </image>
 
+<!-- LB -->
+
+<item>
+<title>Hosting Your Own Git Repositories &ndash; LandChad.net</title>
+<guid>https://landchad.net/git.html</guid>
+<link>https://landchad.net/git.html</link>
+<pubDate>Thu, 01 Jul 2021 07:19:51 -0400</pubDate>
+<description><![CDATA[
+    <header><h1>Hosting Your Own Git Repositories</h1></header>
+
+    <main>
+        <img class=titleimg src="pix/git.svg">
+        <p>
+        Once you have your own VPS or other Internet-available server, you can
+        start hosting your own git repositories. The goal of this tutorial is
+        for you to go from</p>
+        <pre><code>git clone github.com/...</code></pre>
+        <p>to</p>
+        <pre><code>git clone YourLandChadDomainName.xyz/...</code></pre>
+        <p>
+        so you can cultivate your own homegrown, grass-fed code, rather than
+        relying on a centralized proprietary service like GitHub.
+        </p>
+        <h2>Installing git</h2>
+        <p>
+        You most likely already have it installed on your server, but if not,
+        run:</p>
+        <pre><code>apt install git</code></pre>
+        <p>
+        We don't need any additional software, <code>git</code> itself ships
+        with everything needed to host a remote repository!
+        </p>
+        <h2>Creating bare repositories</h2>
+        <p>
+        For each repository you want to host, you will need to manually create
+        what's called a "bare" repository on your server. These hold all the
+        commits and any other git data needed for your repository, but without
+        an expanded "index" in which you can just browse all the files of a
+        certain commit in the file system.
+        </p>
+        <p>
+        These repositories need to be owned by the <code>git</code> user, and
+        you should probably pick a directory where you will store them all. One
+        sane choice is under <code>/srv/git/</code>, and we will use this as the
+        example directory for the rest of the tutorial, but any other path will
+        do as well.
+        </p>
+        <h3>Become the git user and create the directory</h3>
+        <p>
+        If you're logged in to your server as root and have <code>git</code>
+        installed, you can become the <code>git</code> user by executing
+        </p>
+        <pre><code>su git</code></pre>
+        <p>
+        Now navigate to/create your desired directory, for example
+        </p>
+        <pre><code>cd /srv
+mkdir git</code></pre>
+        <h3>Create the repo</h3>
+        <p>
+        Now you can create the bare repository with
+        </p>
+        <pre><code>git init --bare my-repo.git</code></pre>
+        <p>
+        By convention, bare repository names end with ".git".
+        </p>
+        <p>
+        Repeat the above command for any other repositories you want to host.
+        </p>
+        <h2>Syncing local repositories with your server</h2>
+        <h3>Set up SSH login for the git user</h3>
+        <p>
+        You will need to be able to login remotely via <code>ssh</code> as the
+        <code>git</code> user we've used before. To do this, you will either
+        need to set up a password for the <code>git</code> user by running
+        <code>passwd git</code>,
+        or copy your public SSH key from your local machine to
+        <code>/home/git/.ssh/authorized_keys</code>.
+        See the <a href="sshkeys.html">SSH keys instructional</a> for details
+        (just log in as <code>git</code> instead of <code>root</code>).
+        </p>
+        <h3>Syncing a new repository with your server</h3>
+        <p>
+        If you've just created a new repository on your local machine, you will
+        need to tell <code>git</code> where the remote repository is to be able
+        to sync with it (using commands like <code>git push</code> or
+        <code>git pull</code>). We do this by defining a "remote" for your
+        repository.
+        </p>
+        <p>
+        A remote is just a named URL remembered in your repo's configuration. So
+        we need a name and a URL. By convention, the "main" remote is called
+        "origin". The URL has the format <code>user@host:path</code>, where:
+        </p>
+        <ul>
+          <li>
+            <code>user</code> is <code>git</code>, the <code>git</code> user
+            we've already worked with before.
+          </li>
+          <li>
+            <code>host</code> is your domain name.
+            Alternatively you could even use your server's raw IP address.
+          </li>
+          <li>
+            <code>path</code> is the absolute path to the repository on the
+            server, in our example <code>/srv/git/my-repo.git</code>
+          </li>
+        </ul>
+        </p>
+        <p>
+        So, to create a new remote, run:
+        </p>
+        <pre><code>git remote add origin git@yourdomain.xyz:/srv/git/my-repo.git</code></pre>
+        <p>
+        Now you'll be able to run <code>git push origin master</code> to push
+        your commits or <code>git pull origin</code> to pull from the remote.
+        </p>
+        <h3>Syncing an existing repository</h3>
+        <p>
+        If you've already set up your local repository to sync with a service
+        like GitHub it probably already has a remote called "origin". You can
+        see your repo's remotes with:
+        </p>
+        <pre><code>git remote -v</code></pre>
+        <p>
+        You can follow the above instructions, substituting an arbitrary other
+        name other than "origin" to create a differently named remote, e.g.
+        </p>
+        <pre><code>git remote add vps git@...</code></pre>
+        <p>
+        Now you'll be able to push/pull with <code>git push vps master</code>
+        and <code>git pull vps</code>, respectively.
+        </p>
+        <p>
+        Or, to completely sever ties with your centralized git provider, first
+        remove the original origin with:
+        <code>git remote remove origin</code>
+        and then follow the instructions as above.
+        </p>
+        <h2>Contribution</h2>
+        <ul>
+            <li>Martin Chrzanowski -- <a
+                href="https://m-chrzan.xyz">website</a>, <a href="https://m-chrzan.xyz/crypto.html">donate</a></li>
+        </ul>
+    </main>
+
+]]></description>
+</item>
+
+
+<item>
+<title>Requiring Passwords for Webpages (HTTP Authentication) &ndash; LandChad.net</title>
+<guid>https://landchad.net/auth.html</guid>
+<link>https://landchad.net/auth.html</link>
+<pubDate>Thu, 01 Jul 2021 07:19:27 -0400</pubDate>
+<description><![CDATA[
+    <header><h1>Requiring Passwords for Webpages</h1></header>
+
+    <main>
+        <img class=titleimg src="pix/auth.svg" alt="access control with nginx"/>
+        <p>HTTP basic authentication will allow you to secure parts (or all) of your website with a username and password without the trouble of PHP or Javascript.
+        This will work with any Nginx server.
+        </p>
+        <h2>Installation</h2>
+        <p>We will be using the command <code>htpasswd</code> to make username and password pairs.</p>
+        <pre><code>apt install apache2-utils</code></pre>
+        <aside>
+            <p>The apache utils has a small username-password pair encryption tool.</p>
+            <p>Like the other on this site, this tutorial is for Nginx, <strong>not</strong> for Apache servers.</p>
+        </aside>
+        <p>
+        Now think of a username and password and remember them.
+        </p>
+        <pre><code>htpasswd -c /etc/nginx/<strong>myusers</strong> <strong>username</strong></code></pre>
+        <aside>
+            <p>The <code>-c</code> flag creates a file. You can make the path of this file anywhere outside of your webroot.</p>
+            <p>Obviously the username is up to you as well.</p>
+        </aside>
+        <p>
+        Type out your password twice to confirm. You can do this as many times as you'd like.
+        </p>
+        <p>Check out user name password pairs (the password will be securely hashed):</p>
+        <pre><code>cat /etc/nginx/<strong>myusers</strong></code></pre>
+        <h2>Nginx Config and Auth Basic</h2>
+        <p>
+        From here, we are going to edit our websites config file in <code>/etc/nginx/sites-enabled</code>.
+        Have in mind which folder you'd like to secure. Add something like this:
+        </p>
+        <pre><code>server {
+    #...
+    location /<strong>secret-folder </strong> {
+        auth_basic "What's the Password?" ;
+        auth_basic_user_file /etc/nginx/<strong>myusers</strong> ;
+    }
+    #...
+}</code></pre>
+        <aside>
+            <h4>Huh?</h4>
+            <p>If you're stuck, try finding the line <code>location / {</code></p>
+            <p>Just below this block is where you should add the custom location block</p>
+        </aside>
+        <p>If you'd like to do the opposite, such as making the entire site private except for a public section, do this:</p>
+        <pre><code>server {
+    #...
+    auth_basic "What's the Password?" ;
+    auth_basic_user_file /etc/nginx/<strong>myusers</strong> ;
+    location /<strong>public</strong>/ {
+        #...
+        auth_basic off ;
+    }
+    #...
+}</code></pre>
+        <h3>IP Addresses</h3>
+        <p>If passwords aren't enough we can ban an ip or accept one.</p>
+        <pre><code>location /api {
+    #...
+    allow 192.168.1.23:8080 ;
+    deny 127.0.0.1 ;
+}</code></pre>
+        <p>If you want to check both a username and password with an ip address, use the <code>satisfy</code> directive.</p>
+        <pre><code>location /api {
+    #...
+    satify all ;
+    allow 192.168.1.23:8080 ;
+    deny 127.0.0.1 ;
+    auth_basic "What's the Password?" ;
+    auth_basic_user_file /etc/nginx/<strong>myusers</strong> ;
+}</code></pre>
+        <h3>Complete Example</h3>
+        <pre><code>http {
+    server {
+        listen 80;
+        root /var/www/website ;
+        #...
+        location /<strong>secret-folder</strong> {
+            satisfy all ;
+            allow 192.168.1.3/24;
+            deny 127.0.0.1 ;
+            auth_basic "What's the Password?" ;
+            auth_basic_user_file /etc/nginx/<strong>myusers</strong> ;
+        }
+    }
+}</code></pre>
+        <p>
+        Now check your configuration with <code>nginx -t</code>
+        </p>
+        <p>Reload nginx and you're good to go!</p>
+        <strong>Contributor</strong>  -  <a href="https://tomfasano.xyz" target="_blank">tomfasano.xyz</a>
+    </main>
+
+]]></description>
+</item>
+
+
+<item>
+<title>Cronjobs &ndash; LandChad.net</title>
+<guid>https://landchad.net/cron.html</guid>
+<link>https://landchad.net/cron.html</link>
+<pubDate>Thu, 01 Jul 2021 07:19:04 -0400</pubDate>
+<description><![CDATA[
+    <header><h1>Using Cronjobs to run scheduled tasks</h1></header>
+
+    <main>
+        <p>
+        Cron is a service that lets you run scheduled tasks. These tasks are called <strong> cronjobs. </strong> If you have already followed the initial course you will have already used cron when you set up certbot.
+        </p>
+        <h2> What tasks would I want to schedule? </h2>
+        <p>
+        You can schedule anything! Some examples of what you might have done already include:
+        <ul>
+            <li> <code> updatedb </code> to update your <code> locate </code> database </li>
+            <li> <code> certbot </code> to update renewing of your https certs </li>
+        </ul>
+        Some tasks that you might <em>want</em> to schedule may include:
+        <ul>
+            <li> Package updates - if you really just want to leave your server alone you can automated updating packages on your server </li>
+            <li> Backups - you may want to backup certain files every day and some every week, this is possible with cron </li>
+        </ul>
+            <p>
+            And many more, anything you can do can be turned into a cronjob.
+            </p>
+            <h2>Basic Cronjobs</h2>
+            <p>
+            This the preferred method for personal tasks and scripts, it's also the easiest to get started with. Run the command <code> crontab -e </code> to access your users crontab
+            </p>
+            <p>
+            Once you have figured out the command you want to run you need to figure out how often you want to run it and when. I am going to schedule my system updates once a week on at 3:30 AM on a Monday.
+            </p>
+            <p>
+            We now have to convert this time (Every Monday at 3:30 AM) into a cron time. Cron uses a simple but effective way of scheduling when to run things.
+            </p>
+            <p>
+            Crontab expressions look like this <code> * * * * * command-to-run </code>
+            The five elements before the command tell when the command is supposed to be run automatically.
+            <p>
+            So for our Monday at 3:30AM job we would do the following:
+            <p>
+            <pre><code> .---------------- minute (0 - 59)
+ | .------------- hour (0 - 23)
+ | | .---------- day of month (1 - 31)
+ | | | .------- month (1 - 12
+ | | | | .---- day of week (0 - 6)
+ | | | | |
+ * * * * *
+30 3 * * 1 apt -y update && apt -y upgrade</code></pre>
+            <h3>Some notes</h3>
+            <ul>
+                <li>On the day of the week option, Sunday is 0 and counting up from there, Saturday will be 6.</li>
+                <li><code>*</code> designates "everything". Our command above has a <code>*</code> in the day of month and month columns. This means it will run regardless of the day of the month or month.</li>
+                <li>The hour option uses 24 hour time. 3 = 3AM, while use 15 for 3PM.</li>
+            </ul>
+            <h3>More examples</h3>
+            <p>
+            Let's add another job, our backup job (for the purposes of this our backup command is just called <code> backup</code>) We want to run <code> backup </code> Every evening at 11PM, once we work out the timings for this we can add the to the same file as the above by running <code> crontab -e </code> This would mean our full crontab would look like this:
+            <pre><code>0 23 * * * backup</code></pre>
+            <h3>Consecutive times</h3>
+            <p>
+            Suppose we want a command to run every weekday.
+            We know we can put <code>1</code> (Monday), but we can also use <code>1-5</code>
+            to signify from day 1 (Monday) to day 5 (Friday).
+            </p>
+            <pre><code>0 6 * * 1-5 echo "Wakey, wakey, wagie!" >> /home/wagie/alarm</code></pre>
+            <p>The above <code>echo</code> command runs every Monday through Friday at 6:00AM.</p>
+            <h3>Non-consecutive times</h3>
+            <p>
+            We can also randomly specify non-consecutive arguments with a comma.
+            Suppose you have a script you want to run at the midday of the 1st, 15th, and 20th day of every month.
+            You can specify that my putting <code>1,15,20</code> for the day of the month argument:
+            </p>
+            <pre><code>0 12 1,15,20 * * /usr/bin/pay_bills_script</code></pre>
+            <h3>"Every X minutes/days/months"</h3>
+            <p>We can also easily run a command very several minutes or months, without specifying the specific times:
+            </p>
+            <pre><code>*/15 * * * * updatedb</code></pre>
+            <p>
+            This cronjob will run the <code>updatedb</code> command every 15 minutes.
+            </p>
+            <h3>Beware of this Rookie Mistake Though...</h3>
+            <p>
+            Suppose you want to run a script once every other month.
+            You might be <em>tempted</em> write this:
+            </p>
+            <pre><code>* * * */2 *</code></pre>
+            <p>
+            That might <em>feel right</em>, but this script <em>will be running once every minute during that every other month</em>.
+            You should specify the first two arguments, because with <code>*</code> it will be running every minute and hour!
+            </p>
+            <pre><code>0 0 1 */2 *</code></pre>
+            <p>This makes the command run <em>only</em> at 0:00 (12:00AM) on the first day of every two months, which is what we really want.</p>
+            <p>
+            Consult the website <a href="https://crontab.guru">crontab.guru</a> for an intuitive and interactive tester of cronjobs.
+            </p>
+            <h2>User vs. Root Cronjobs</h2>
+            <p>
+            It is important to note that user accounts all have different cronjobs.
+            If you have a user account <code>chad</code> and edit his crontab with <code>crontab -e</code>,
+            the commands you add will be run as the <code>chad</code> user, not <code>root</code> or anyone else.
+            </p>
+            <p>
+            Bear in mind that if you need root access to run a particular command,
+            you will usually want to add it as root.
+            </p>
+            <h2>System-wide cron directories</h2>
+            <p>
+            <code>crontab -e</code> is the typical interface for adding cronjobs, but it's important to at least know that system-wide jobs are often stored in the file directory.
+            Some programs which need cronjobs will automatically install them in the following way.
+            </p>
+            <p>
+            Run the command <code> ls /etc/cron* </code> you should see a list of directories and there contents. The directories should be something like the below
+            <ul>
+                <li> /etc/cron.d  <em> This is a crontab like the ones that you create with </em> <code> crontab -e </code> </li>
+                <li> /etc/cron.hourly </li>
+                <li> /etc/cron.daily </li>
+                <li> /etc/cron.weekly </li>
+                <li> /etc/cron.monthly </li>
+            </ul>
+            <p>
+            The directories cron.{hourly,daily,weekly,monthly} are where you can put <strong> scripts </strong> to run at those times. You don't put normal cron entries here. I prefer to use these directories for system wide jobs that don't relate to an individual user.
+            </p>
+            <h2>Contribution</h2>
+            <ul>
+                <li>Mark McNally -- <a href="https://mark.mcnally.je">website</a>, <a href="https://www.youtube.com/channel/UCMiInY8BhSUtCarO6uu6i_g">Youtube</a></li>
+                <li>Edits and examples by Luke</li>
+            </ul>
+    </main>
+
+]]></description>
+</item>
+
+
+<item>
+<title>Mirror your site over tor</title>
+<guid>https://landchad.net/tor.html</guid>
+<link>https://landchad.net/tor.html</link>
+<pubDate>Thu, 01 Jul 2021 07:15:39 -0400</pubDate>
+<description><![CDATA[
+    <header><h1>Mirror Your Site Over Tor</h1></header>
+
+    <main>
+        <img class=titleimg src="pix/tor.svg" alt="Tor logo">
+        <p>
+        Now that you have a website, why not offer it on a private alternative such as the onion network?
+        </p>
+        <h2>Setting up Tor</h2>
+        <h3>Installing Tor</h3>
+        <p>Firstly we need to add the tor repo's to have the latest up to date version or tor.</p>
+        <pre><code>apt install -y apt-transport-https gpg
+echo "deb https://deb.torproject.org/torproject.org buster main
+deb-src https://deb.torproject.org/torproject.org buster main" > /etc/apt/sources.list.d/tor.list</code></pre>
+	<p>Then we need to add the gpg keys to our keyring</p>
+	<pre><code>curl -s https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --import
+gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -</code></pre>
+	<p>Now update and install tor</p>
+	<pre><code>apt update
+apt install tor deb.torproject.org-keyring</code></pre>
+        <h3>Enabling Tor</h3>
+        <p>Then edit the file <code>/etc/tor/torrc</code>, uncommenting the following lines:</p>
+        <pre><code>HiddenServiceDir /var/lib/tor/hidden_service/
+HiddenServicePort 80 127.0.0.1:80</code></pre>
+        <aside>
+            <h4>Optional: Running multiple onion services</h4>
+            <p>If you want to forward multiple virtual ports for a single onion
+            service, just add more HiddenServicePort lines (replace the 80 with any unoccupied port).
+            </p>
+            <p>If you want to run multiple onion services from the same Tor client, just add another
+            HiddenServiceDir line.</p>
+        </aside>
+        <p>Now start and enable tor at boot</p>
+        <pre><code> systemctl enable --now tor </code></pre>
+        <p>If the next command outputs <q>active</q> in green you're golden!</p>
+        <pre><code> systemctl status tor</code></pre>
+        <p>Now you're server is on the dark web. The following command will give you your onion address:</p>
+        <pre><code> cat /var/lib/tor/hidden_service/hostname</code></pre>
+        <h2>Adding the Nginx Config</h2>
+        <p>
+        From here, the steps are almost identical to setting up a normal website configuration file.
+        Follow the steps as if you were making a new website on the webserver
+        <a href="nginx.html">tutorial</a> up until the server block of code. Instead, paste this:
+        </p>
+        <pre><code>        server {
+            listen 127.0.0.1:80 ;
+            root /var/www/<strong>landchad</strong> ;
+            index index.html ;
+            server_name <strong>your-onion-address</strong>.onion ;
+        }</code></pre>
+        <aside>
+            <h4>Clarification</h4>
+            <p>Nginx will listen on port 80 for your <em>server's</em> localhost.</p>
+            <p>The <code>root</code> line is the path to whichever website of yours you'd like to mirror.</p>
+        </aside>
+        <p>
+        From here we are almost done, all we have to do is enable the site and reload nginx which is also covered in <a href="nginx.html#enable">the webserver tutorial</a>.
+        </p>
+        <h3>Update regularly!</h3>
+        <p>Make sure to update Tor on a regular basis by running:</p>
+        <pre><code>apt update
+apt install tor</code></pre>
+        <p><strong>Contributor</strong>  -  <a href="https://tomfasano.xyz" target="_blank">tomfasano.xyz</a></p>
+    </main>
+
+]]></description>
+</item>
+
+
 <item>
 	<title>Cryptocurrency Tutorials Completed</title>
 	<guid>https://landchad.net/index.html#crypto</guid>
