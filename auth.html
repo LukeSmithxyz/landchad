@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang=en>
     <head>
-        <title>HTTP Basic Authentication</title>
+        <title>Requiring Passwords for Webpages (HTTP Authentication) &ndash; LandChad.net</title>
         <meta charset="utf-8"/>
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
         <link rel='stylesheet' type='text/css' href='style.css'>
@@ -9,25 +9,27 @@
         <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
     </head>
 <body>
-    <header><h1>Access Control with HTTP Basic Auth</h1></header>
+    <header><h1>Requiring Passwords for Webpages</h1></header>
     <nav></nav>
     <main>
-        <img src="pix/auth.svg" alt="access control with nginx"/>
-        <p>HTTP basic authentication will allow you to secure parts (or all) of your website with a user name and password without the trouble of php or javascript.</p>
+        <img class=titleimg src="pix/auth.svg" alt="access control with nginx"/>
+        <p>HTTP basic authentication will allow you to secure parts (or all) of your website with a username and password without the trouble of PHP or Javascript.
+        This will work with any Nginx server.
+        </p>
 
         <h2>Installation</h2>
         <p>We will be using the command <code>htpasswd</code> to make username and password pairs.</p>
         <pre><code>apt install apache2-utils</code></pre>
         <aside>
             <p>The apache utils has a small username-password pair encryption tool.</p>
-            <p>This tutorial is <strong>not</strong> for apache websites.</p>
+            <p>Like the other on this site, this tutorial is for Nginx, <strong>not</strong> for Apache servers.</p>
         </aside>
 
         <p>
         Now think of a username and password and remember them.
         </p>
 
-        <pre><code>htpasswd -c /etc/apache2/<strong>myusers</strong> <strong>username</strong></code></pre>
+        <pre><code>htpasswd -c /etc/nginx/<strong>myusers</strong> <strong>username</strong></code></pre>
         <aside>
             <p>The <code>-c</code> flag creates a file. You can make the path of this file anywhere outside of your webroot.</p>
             <p>Obviously the username is up to you as well.</p>
@@ -35,8 +37,8 @@
         <p>
         Type out your password twice to confirm. You can do this as many times as you'd like.
         </p>
-        <p>Check out user name password pairs:</p>
-        <pre><code>cat /etc/apache2/<strong>myusers</strong></code></pre>
+        <p>Check out user name password pairs (the password will be securely hashed):</p>
+        <pre><code>cat /etc/nginx/<strong>myusers</strong></code></pre>
 
         <h2>Nginx Config and Auth Basic</h2>
         <p>
@@ -48,7 +50,7 @@
     #...
     location /<strong>secret-folder </strong> {
         auth_basic "What's the Password?" ;
-        auth_basic_user_file /etc/apache2/<strong>myusers</strong> ;
+        auth_basic_user_file /etc/nginx/<strong>myusers</strong> ;
     }
     #...
 }</code></pre>
@@ -62,7 +64,7 @@
         <pre><code>server {
     #...
     auth_basic "What's the Password?" ;
-    auth_basic_user_file /etc/apache2/<strong>myusers</strong> ;
+    auth_basic_user_file /etc/nginx/<strong>myusers</strong> ;
     location /<strong>public</strong>/ {
         #...
         auth_basic off ;
@@ -85,7 +87,7 @@
     deny 127.0.0.1 ;
 
     auth_basic "What's the Password?" ;
-    auth_basic_user_file /etc/apache2/<strong>myusers</strong> ;
+    auth_basic_user_file /etc/nginx/<strong>myusers</strong> ;
 }</code></pre>
         <h3>Complete Example</h3>
         <pre><code>http {
@@ -101,7 +103,7 @@
             deny 127.0.0.1 ;
 
             auth_basic "What's the Password?" ;
-            auth_basic_user_file /etc/apache2/<strong>myusers</strong> ;
+            auth_basic_user_file /etc/nginx/<strong>myusers</strong> ;
         }
     }
 }</code></pre>
