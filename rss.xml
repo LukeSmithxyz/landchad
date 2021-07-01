@@ -17,12 +17,12 @@
 
 <item>
 <title>Hosting Your Own Git Repositories &ndash; LandChad.net</title>
-<guid>https://lukesmith.xyz/git.html</guid>
-<link>https://lukesmith.xyz/git.html</link>
+<guid>https://landchad.net/git.html</guid>
+<link>https://landchad.net/git.html</link>
 <pubDate>Thu, 01 Jul 2021 07:19:51 -0400</pubDate>
 <description><![CDATA[
     <header><h1>Hosting Your Own Git Repositories</h1></header>
-    
+
     <main>
         <img class=titleimg src="pix/git.svg">
         <p>
@@ -158,19 +158,19 @@ mkdir git</code></pre>
                 href="https://m-chrzan.xyz">website</a>, <a href="https://m-chrzan.xyz/crypto.html">donate</a></li>
         </ul>
     </main>
-	
+
 ]]></description>
 </item>
 
 
 <item>
 <title>Requiring Passwords for Webpages (HTTP Authentication) &ndash; LandChad.net</title>
-<guid>https://lukesmith.xyz/auth.html</guid>
-<link>https://lukesmith.xyz/auth.html</link>
+<guid>https://landchad.net/auth.html</guid>
+<link>https://landchad.net/auth.html</link>
 <pubDate>Thu, 01 Jul 2021 07:19:27 -0400</pubDate>
 <description><![CDATA[
     <header><h1>Requiring Passwords for Webpages</h1></header>
-    
+
     <main>
         <img class=titleimg src="pix/auth.svg" alt="access control with nginx"/>
         <p>HTTP basic authentication will allow you to secure parts (or all) of your website with a username and password without the trouble of PHP or Javascript.
@@ -262,19 +262,19 @@ mkdir git</code></pre>
         <p>Reload nginx and you're good to go!</p>
         <strong>Contributor</strong>  -  <a href="https://tomfasano.xyz" target="_blank">tomfasano.xyz</a>
     </main>
-	
+
 ]]></description>
 </item>
 
 
 <item>
 <title>Cronjobs &ndash; LandChad.net</title>
-<guid>https://lukesmith.xyz/cron.html</guid>
-<link>https://lukesmith.xyz/cron.html</link>
+<guid>https://landchad.net/cron.html</guid>
+<link>https://landchad.net/cron.html</link>
 <pubDate>Thu, 01 Jul 2021 07:19:04 -0400</pubDate>
 <description><![CDATA[
     <header><h1>Using Cronjobs to run scheduled tasks</h1></header>
-    
+
     <main>
         <p>
         Cron is a service that lets you run scheduled tasks. These tasks are called <strong> cronjobs. </strong> If you have already followed the initial course you will have already used cron when you set up certbot.
@@ -398,15 +398,15 @@ mkdir git</code></pre>
                 <li>Edits and examples by Luke</li>
             </ul>
     </main>
-	
+
 ]]></description>
 </item>
 
 
 <item>
 <title>Mirror your site over tor</title>
-<guid>https://lukesmith.xyz/tor.html</guid>
-<link>https://lukesmith.xyz/tor.html</link>
+<guid>https://landchad.net/tor.html</guid>
+<link>https://landchad.net/tor.html</link>
 <pubDate>Thu, 01 Jul 2021 07:15:39 -0400</pubDate>
 <description><![CDATA[
     <header><h1>Mirror Your Site Over Tor</h1></header>
