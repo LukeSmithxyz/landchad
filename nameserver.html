@@ -66,7 +66,7 @@
             Install BIND9 by running:
         </p>
 
-        <pre><code># apt install bind9 dnsutils</code></pre>
+        <pre><code>apt install bind9 dnsutils</code></pre>
 
         <h3>Configuration</h3>
 
@@ -90,21 +90,21 @@ dnssec-validation auto;</code></pre>
             Run the following commands to create the required directories:
         </p>
 
-        <pre><code># rndc-confgen -a
-# mkdir /var/cache/bind/keys
-# chown bind:bind /var/cache/bind/keys
-# mkdir /var/cache/bind/dynamic
-# chown bind:bind /var/cache/bind/dynamic</code></pre>
+        <pre><code>rndc-confgen -a
+mkdir /var/cache/bind/keys
+chown bind:bind /var/cache/bind/keys
+mkdir /var/cache/bind/dynamic
+chown bind:bind /var/cache/bind/dynamic</code></pre>
 
         <p>
-            Create a zone file for your domain in the <code>dynamic</code> directory. Name it according to your domain with a <code>.db</code> extension. Example: <code>landchad.net.db</code>. Add the following to the file, replacing <code>landchad.net</code> with your domain name and the IP addresses with your server's IP addresses.
+            Create a zone file for your domain in the <code>dynamic</code> directory. Name it according to your domain with a <code>.db</code> extension. Example: <code>example.org.db</code>. Add the following to the file, replacing <code>example.org</code> with your domain name and the IP addresses with your server's IP addresses.
         </p>
 
-        <pre><code>; landchad.net
+        <pre><code>; example.org
 $TTL 86400
 
 ; Start of Authority
-@           IN      SOA ns1.landchad.net. hostmaster.landchad.net. (
+@           IN      SOA ns1.example.org. hostmaster.example.org. (
                             2021070100      ; serial number YYYYMMDD##
                             28800
                             7200
@@ -112,8 +112,8 @@ $TTL 86400
                             86400           ; minimum TTL
                         )
 
-                    NS  ns1.landchad.net.
-                    NS  ns2.landchad.net.
+                    NS  ns1.example.org.
+                    NS  ns2.example.org.
 
 ns1         IN      A       1.2.3.4
                     AAAA    1000::2000:3000:4000
@@ -124,10 +124,10 @@ ns2         IN      A       1.2.3.4
 ; Your Records
 
 
-$ORIGIN landchad.net.</code></pre>
+$ORIGIN example.org.</code></pre>
 
         <p>
-            In the zone file syntax, a trailing <code>.</code> in a domain signifies the root, meaning it is a full dns name. Any domain without a trailing <code>.</code> is relative to the current zone. For example, <code>ns1</code> is translated to <code>ns1.landchad.net.</code>. <code>@</code> signifies the current zone apex. <code>;</code> marks a comment.
+            In the zone file syntax, a trailing <code>.</code> in a domain signifies the root, meaning it is a full dns name. Any domain without a trailing <code>.</code> is relative to the current zone. For example, <code>ns1</code> is translated to <code>ns1.example.org.</code>. <code>@</code> signifies the current zone apex. <code>;</code> marks a comment.
         </p>
 
         <h4>Adding Existing Records</h4>
@@ -141,16 +141,16 @@ $ORIGIN landchad.net.</code></pre>
 @   IN  A       1.2.3.4
         AAAA    1000::2000:3000:4000
 
-www IN  CNAME   landchad.net.</code></pre>
+www IN  CNAME   example.org.</code></pre>
 
         <h4>Finish Server Configuration</h4>
         <p>
             Next, add your zone to the end of <code>/etc/bind/named.conf.local</code>
         </p>
 
-        <pre><code>zone "landchad.net" {
+        <pre><code>zone "example.org" {
     type master;
-    file "/var/cache/bind/dynamic/landchad.net.db";
+    file "/var/cache/bind/dynamic/example.org.db";
     auto-dnssec maintain;
     inline-signing yes;
 };</code></pre>
@@ -161,16 +161,16 @@ www IN  CNAME   landchad.net.</code></pre>
             For zone, we will create 2 keys: A <code>Key Signing Key</code> and a <code>Zone Signing Key</code>. Run the following commands to create them. Note that the <code>dnssec-dsfromkey</code> command references the <code>KSK</code>. The file name will always be different so be sure to update accordingly.
         </p>
 
-        <pre><code># cd /var/cache/bind/keys
-# dnssec-keygen -a ECDSAP384SHA384 -f KSK -n ZONE landchad.net
+        <pre><code>cd /var/cache/bind/keys
+dnssec-keygen -a ECDSAP384SHA384 -f KSK -n ZONE example.org</code>
 Generating key pair.
-Klandchad.net.+014+09673
-# dnssec-keygen -a ECDSAP384SHA384 -n ZONE landchad.net
+Kexample.org.+014+09673
+<code>dnssec-keygen -a ECDSAP384SHA384 -n ZONE example.org</code>
 Generating key pair.
-Klandchad.net.+014+32388
-# chown -R bind:bind ./
-# dnssec-dsfromkey Klandchad.net.+014+09673.key
-landchad.net. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479ECE38A8762B4499</code></pre>
+Kexample.org.+014+32388
+<code>chown -R bind:bind ./
+dnssec-dsfromkey Kexample.org.+014+09673.key</code>
+example.org. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479ECE38A8762B4499</pre>
         
         <p>
             Take note of the output of <code>dnssec-dsfromkey</code>.
@@ -182,7 +182,7 @@ landchad.net. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479E
             To start the server, run the following: 
         </p>
 
-        <pre><code># systemctl restart named</code></pre>
+        <pre><code>systemctl restart named</code></pre>
 
         <h3>Registrar Setup</h3>
 
@@ -201,7 +201,7 @@ landchad.net. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479E
         <h3>Testing</h3>
 
         <p>
-            Verify that your custom dns settings are working by running <code>dig</code> on <code>ns1.landchad.net</code> from a client computer. Then go to <a href="https://dnssec-analyzer.verisignlabs.com">dnssec-analyzer.verisignlabs.com</a> and enter your domain name. Check that there are no errors.
+            Verify that your custom dns settings are working by running <code>dig</code> on <code>ns1.example.org</code> from a client computer. Then go to <a href="https://dnssec-analyzer.verisignlabs.com">dnssec-analyzer.verisignlabs.com</a> and enter your domain name. Check that there are no errors.
         </p>
 
         <a href="pix/nameserver-dnssec-verify.png"><img src="pix/nameserver-dnssec-verify.png" alt="Verisign Result Image"></a>
@@ -209,10 +209,10 @@ landchad.net. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479E
         <h3>Important: Updating Zone File</h3>
 
         <p>
-            To update the zone in the future, open the <code>landchad.net.db</code> file and edit the records. You must change the SOA serial number according to <code>YYYYMMDD##</code>. Then run the following:
+            To update the zone in the future, open the <code>example.org.db</code> file and edit the records. You must change the SOA serial number according to <code>YYYYMMDD##</code>. Then run the following:
         </p>
 
-        <pre><code># rndc reload</code></pre>
+        <pre><code>rndc reload</code></pre>
 
         <h2></h2>
         <h3>Contributors</h3>
