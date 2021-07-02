@@ -184,7 +184,7 @@ aside.callout  {
     padding-left: 10px ;
     padding-right: 10px ;
 }
-.cryptoinfo code {
+.cryptoinfo code,.crypto {
 	font-size: small ;
 	overflow-wrap: break-word ;
 }
