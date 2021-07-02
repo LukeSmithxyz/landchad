@@ -85,8 +85,8 @@ WantedBy=multi-user.target</code></pre>
 		<p>Once you've gotten all of that set up, we'll reverse proxy our HTTPS to DNS proxy. Open up your Nginx config file, and add the following values:
 		</p>
 		<pre><code>location /dns-query {
-			proxy_pass http://127.0.0.1:8080/;
-		}</code></pre>
+	proxy_pass http://127.0.0.1:8080/;
+}</code></pre>
 		<p>Now, your configuration should look something like this:
 		</p>
 		<pre><code>server { 
