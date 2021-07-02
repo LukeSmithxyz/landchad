@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang=en>
+	<head>
+		<title>Personal DNS over HTTPS server &ndash; LandChad.net</title>
+		<meta charset="utf-8"/>
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<link rel='stylesheet' type='text/css' href='style.css'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+	</head>
+<body>
+	<header><h1>Run your own DNS over HTTPS server.</h1></header>
+	<nav></nav>
+	<main>
+		<p>Encrypted DNS can be a great tool for your online privacy if it's hosted by a trustworthy entity, and who can you trust more with your data than yourself?
+		</p>
+		
+		<h2>Installing Unbound.</h2>
+
+		<p>First of all, we need to install our DNS server, Unbound. Unbound is a validating, recursive and caching DNS server.
+		</p>
+		<pre><code>apt install -y unbound</code></pre>
+		
+		<h3>Now that Unbound is installed, we will configure it a bit.
+		</h3>
+		<p>Using your favorite editor, edit the file <code>/etc/unbound/unbound.conf</code> and add the following values, if they don't exist already:
+		<pre><code>include-toplevel: "/etc/unbound/unbound.conf.d/*.conf"
+server:
+	log-queries: no
+	log-replies: no
+	aggressive-nsec: yes
+	ratelimit: 150
+	verbosity: 1	
+		</code></pre>
+		
+		<p>Now restart Unbound to activate your new configuration:
+		</p>
+		<pre><code> systemctl restart unbound</code></pre>
+		<p>To test to see if your DNS server is resolving, add <code>nameserver 127.0.0.1</code> to your <code>/etc/resolv.conf</code>. If you are able to resolve domains, Unbound is working.
+		</p>
+		
+		<h2>Installing DNSS.</h2>
+
+		<p>Now we need to install a program to convert HTTP requests to DNS queries. <code>dnss</code> accomplishes that goal very well.
+		</p>
+		<p>To install DNSS, run the following command:
+		</p>
+		<code><pre>apt install -y dnss</code></pre>
+
+		<h3>Configuring DNSS.</h3>
+
+		<p>DNSS comes with a bad default configuration, disable it using the following command:
+		</p>
+		<pre><code>systemctl disable --now dnss dnss.socket</code></pre>
+		
+		<p>Now, using your favorite text editor, create a new file in <code>/etc/systemd/system</code> named <code>doh.service</code>. This will be the new DNSS configuration file. Add the following values to the file:
+		</p>
+		<pre><code>[Unit]
+Description=DNSS DNS over HTTPS Proxy
+[Service]
+ExecStart=/usr/bin/dnss \
+	-enable_https_to_dns \
+	-https_server_addr 127.0.0.1:8080 \
+	-insecure_http_server \
+	-dns_upstream 127.0.0.1:53 
+
+Type=simple
+Restart=always
+User=dnss
+Group=dnss
+
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target
+		</code></pre>
+
+		<p>Close the file and enable/start it using the command:
+		</p>
+		<pre><code>systemctl enable --now doh.service</code></pre>
+
+		<h2>Setting up Nginx.</h2>
+
+		<p>To set up Nginx with HTTPS, follow <a href="https://landchad.net/nginx.html">these</a> <a href=https://landchad.net/certbot.html>guides.</a>
+		</p>
+		<p>Once you've gotten all of that set up, we'll reverse proxy our HTTPS to DNS proxy. Open up your Nginx config file, and add the following values:
+		</p>
+		<pre><code>location /dns-query {
+			proxy_pass http://127.0.0.1:8080/;
+		}</code></pre>
+		<p>Now, your configuration should look something like this:
+		</p>
+		<pre><code>server { 
+	listen 80;
+	server_name landchad.net;
+	return 301 https://$host$request_uri;
+}
+server {
+	listen 443 ssl http2;
+	server_name landchad.net;
+	root /var/www/landchad;
+	ssl_certificate /etc/letsencrypt/live/landchad.net/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/landchad.net/privkey.pem;
+	location /dns-query {
+		proxy_pass http://127.0.0.1:8080/;
+	}
+}</code></pre>
+		
+		<p>Finally, you can check your Nginx config using <code>nginx -t</code>, if the check passes, restart Nginx using the command:
+		<pre><code>systemctl restart nginx</code></pre>
+
+		<h2>Using your DNS over HTTPS server.</h2>
+
+		<p>To use your new DNS over HTTPS server, go to your browser's settings and navigate to the "Network Settings" area. You should be able to set a custom secure DNS url. Once set, you can check to see if it's working by attempting to visit websites. 
+		</p>
+		<p><em>Written by <a href="https://ioens.is">Josiah.</a></em></p>
+	</main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
+
+		
