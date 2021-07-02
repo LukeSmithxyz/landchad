@@ -14,7 +14,7 @@
     <main>
 		<p>
 			<strong>Uncomplicated Firewall</strong> (UFW) is a front-facing program for the more involved <code>iptables</code> firewall program installed in most GNU/Linux distributions.
-			We can use <code>ufw</code> to restrict machines on the internet to only access the services (SSH, websites etc) you want them to, but it can also be used to prevent programs on the computer itself from accesing parts of the internet it shouldn't.
+			We can use <code>ufw</code> to restrict machines on the Internet to only access the services (SSH, websites etc) you want them to, but it can also be used to prevent programs on the computer itself from accessing parts of the Internet it shouldn't.
 		</p>
 
 		<h2 id="how-to-get-it">How to Get It</h2>
@@ -53,13 +53,13 @@ ufw enable</code></pre>
 
 		<aside>
 			<code>ufw</code> has an internal list of protocols applications, and the ports used by them.
-			In this case, it knwos SSH is on port 22.
+			In this case, it knows SSH is on port 22.
 			We'll go more in detail how to view all protocols <code>ufw</code> knows about.
 			By default, when you allow an incoming port, it allows that port both on IPv4 and IPv6.
 		</aside>
 
 		<p>
-			With the firewall enabled and allowing only SSH in, all other ports are prortected from incoming requests.
+			With the firewall enabled and allowing only SSH in, all other ports are protected from incoming requests.
 			To view all your rules, run:
 		</p>
 
@@ -105,7 +105,7 @@ ufw reload</pre></code>
         <pre><code>ufw allow 80
 ufw allow 443</code></pre>
 
-        <p>But <code>ufw</code> additionally knows the typical ports of common serives, so you can also run this:</p>
+        <p>But <code>ufw</code> additionally knows the typical ports of common services, so you can also run this:</p>
 
         <pre><code>ufw allow http
 ufw allow https</code></pre>

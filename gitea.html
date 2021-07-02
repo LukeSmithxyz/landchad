@@ -15,7 +15,7 @@
         <img class=titleimg src="pix/gitea.svg">
         <p>Gitea allows you to self-host your git repositories similar to <a href="git.html">bare repositories</a>, but comes with additional features that you might know from GitHub, such as issues, pull requests or multiple users. Its advantage over GitLab&mdash;another Free Software GitHub clone&mdash;is that it is much more lightweight and easier to setup.</p>
         <p>Head over to <a href="https://gitea.com">gitea.com</a> to see what it looks like in practice.</p>
-        <p>Although Gitea is lighter than Gitlab, if you have a VPS with only 512MB of RAM, you will probably have to upgrade. Gitea is more memory-intensive than having just a bare git repository.</p>
+        <p>Although Gitea is lighter than GitLab, if you have a VPS with only 512MB of RAM, you will probably have to upgrade. Gitea is more memory-intensive than having just a bare git repository.</p>
 
         <h2>Installing Gitea</h2>
         <p>First install a few dependencies:</p>
@@ -80,7 +80,7 @@ server {
 
         <h2>A few extras</h2>
         <h3>Automatically create a new repo on push</h3>
-        <p>This is an incredicly useful feature for me. Open up <code>/etc/gitea/app.ini</code> and add <code>DEFAULT_PUSH_CREATE_PRIVATE = true</code> to the <code>repository</code> section like so:</p>
+        <p>This is an incredibly useful feature for me. Open up <code>/etc/gitea/app.ini</code> and add <code>DEFAULT_PUSH_CREATE_PRIVATE = true</code> to the <code>repository</code> section like so:</p>
         <img src=pix/gitea-push-create.png>
         <br>
         <p>If you now add a remote to a repository like this</p>
