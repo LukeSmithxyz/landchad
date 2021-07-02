@@ -75,8 +75,7 @@
             Add the following lines to <code>/etc/bind/named.conf.options</code> in the <code>options</code> block. If an option already exists, edit the existing line, don't duplicate.
         </p>
 
-        <pre><code>
-// IP addresses to listen on
+        <pre><code>// IP addresses to listen on
 // Replace 1.2.3.4 with the server's IPv4 address.
 // Replace 1000::2000:3000:4000 with your server's IPv6 address.
 listen-on { 127.0.0.1; 1.2.3.4; }; 
@@ -84,28 +83,24 @@ listen-on-v6 { ::1; 1000::2000:3000:4000; };
 
 // enables DNSSEC
 key-directory "/var/cache/bind/keys";
-dnssec-validation auto;
-        </code></pre>
+dnssec-validation auto;</code></pre>
         
         <h4>Zone File Creation</h4>
         <p>
             Run the following commands to create the required directories:
         </p>
 
-        <pre><code>
-# rndc-confgen -a
+        <pre><code># rndc-confgen -a
 # mkdir /var/cache/bind/keys
 # chown bind:bind /var/cache/bind/keys
 # mkdir /var/cache/bind/dynamic
-# chown bind:bind /var/cache/bind/dynamic
-        </code></pre>
+# chown bind:bind /var/cache/bind/dynamic</code></pre>
 
         <p>
             Create a zone file for your domain in the <code>dynamic</code> directory. Name it according to your domain with a <code>.db</code> extension. Example: <code>landchad.net.db</code>. Add the following to the file, replacing <code>landchad.net</code> with your domain name and the IP addresses with your server's IP addresses.
         </p>
 
-        <pre><code>
-; landchad.net
+        <pre><code>; landchad.net
 $TTL 86400
 
 ; Start of Authority
@@ -129,8 +124,7 @@ ns2         IN      A       1.2.3.4
 ; Your Records
 
 
-$ORIGIN landchad.net.
-        </code></pre>
+$ORIGIN landchad.net.</code></pre>
 
         <p>
             In the zone file syntax, a trailing <code>.</code> in a domain signifies the root, meaning it is a full dns name. Any domain without a trailing <code>.</code> is relative to the current zone. For example, <code>ns1</code> is translated to <code>ns1.landchad.net.</code>. <code>@</code> signifies the current zone apex. <code>;</code> marks a comment.
@@ -141,29 +135,25 @@ $ORIGIN landchad.net.
             Add all of your records to this file below the comment. For example if you are running a web server:
         </p>
 
-        <pre><code>
-; zone file syntax:
+        <pre><code>; zone file syntax:
 ; (name) IN (record type) (parameters)
 
 @   IN  A       1.2.3.4
         AAAA    1000::2000:3000:4000
 
-www IN  CNAME   landchad.net.
-        </code></pre>
+www IN  CNAME   landchad.net.</code></pre>
 
         <h4>Finish Server Configuration</h4>
         <p>
             Next, add your zone to the end of <code>/etc/bind/named.conf.local</code>
         </p>
 
-        <pre><code>
-zone "landchad.net" {
+        <pre><code>zone "landchad.net" {
     type master;
     file "/var/cache/bind/dynamic/landchad.net.db";
     auto-dnssec maintain;
     inline-signing yes;
-};
-        </code></pre>
+};</code></pre>
 
         <h4>Creating DNSSEC Keys</h4>
 
@@ -171,8 +161,7 @@ zone "landchad.net" {
             For zone, we will create 2 keys: A <code>Key Signing Key</code> and a <code>Zone Signing Key</code>. Run the following commands to create them. Note that the <code>dnssec-dsfromkey</code> command references the <code>KSK</code>. The file name will always be different so be sure to update accordingly.
         </p>
 
-        <pre><code>
-# cd /var/cache/bind/keys
+        <pre><code># cd /var/cache/bind/keys
 # dnssec-keygen -a ECDSAP384SHA384 -f KSK -n ZONE landchad.net
 Generating key pair.
 Klandchad.net.+014+09673
@@ -181,8 +170,7 @@ Generating key pair.
 Klandchad.net.+014+32388
 # chown -R bind:bind ./
 # dnssec-dsfromkey Klandchad.net.+014+09673.key
-landchad.net. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479ECE38A8762B4499
-        </code></pre>
+landchad.net. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479ECE38A8762B4499</code></pre>
         
         <p>
             Take note of the output of <code>dnssec-dsfromkey</code>.
@@ -194,9 +182,7 @@ landchad.net. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479E
             To start the server, run the following: 
         </p>
 
-        <pre><code>
-# systemctl restart named
-        </code></pre>
+        <pre><code># systemctl restart named</code></pre>
 
         <h3>Registrar Setup</h3>
 
@@ -226,9 +212,7 @@ landchad.net. IN DS 9673 14 2 0D4250A59AA7B77DE5CDE6807EBC80E0E3E8C8B3D9F517479E
             To update the zone in the future, open the <code>landchad.net.db</code> file and edit the records. You must change the SOA serial number according to <code>YYYYMMDD##</code>. Then run the following:
         </p>
 
-        <pre><code>
-# rndc reload
-        </code></pre>
+        <pre><code># rndc reload</code></pre>
 
         <h2></h2>
         <h3>Contributors</h3>
