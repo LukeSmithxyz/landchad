@@ -30,7 +30,7 @@
 <pre><code>apt install rsync</code></pre>
 <h2 id="uploading-files-with-rsync">Uploading files with rsync</h2>
 <p>From your local machine you can upload files to your server like this:</p>
-<pre><code>rsync -ruvzP <strong>/path/to/file</strong> <strong>root@example.org/path/on/the/server</strong></code></pre>
+<pre><code>rsync -ruvzP <strong>/path/to/file</strong> <strong>root@example.org:/path/on/the/server</strong></code></pre>
 <p>You will be prompted for the root password and then uploading will commence.</p>
 <p>If you omit <strong>root@</strong>, rsync will not attempt to log in as root, but whatever your local username is.</p>
 <h3>Options to rsync</h3>
