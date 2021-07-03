@@ -42,7 +42,12 @@ EXIT;</code></pre>
         <p>Check for the <code>www-data</code> user by running <code>id -u www-data</code>. If a number is output from that command, then the www-data user exists. If not. add the user simply by running <code>useradd www-data</code></p>
         <p>Next, we need to ensure that we have SSL certificates generated for your website. If you have not already done this, refer to <a href="certbot.html">this guide</a>. Although having SSL for your site is not required, it is highly recommended that you have it or you will risk attackers being able to steal passwords and data.</p>
         <p>In <code>/etc/nginx/sites-available/</code> we need to make a new configuration for Nextcloud (example: <code>/etc/nginx/sites-available/nextcloud</code>). Create it and open it, modify, and add the following lines:</p>
-        <pre><code>server {
+        <pre><code>upstream php-handler {
+    server unix:/var/run/php/php7.4-fpm.sock;
+    server 127.0.0.1:9000;
+}
+
+server {
     listen 80;
     listen [::]:80;
     server_name <strong>yourwebsite.com</strong>;
@@ -124,11 +129,7 @@ server {
 
             fastcgi_param modHeadersAvailable true;
             fastcgi_param front_controller_active true;
-            
-            # PHP-FPM with Unix socket (seems to work better)
-            fastcgi_pass unix:/run/php/php7.4-fpm.sock;
-            # PHP-FPM with Local server
-            #fastcgi_pass 127.0.0.1:9000
+            fastcgi_pass php-handler;
 
             fastcgi_intercept_errors on;
             fastcgi_request_buffering off;
