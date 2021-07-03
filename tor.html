@@ -82,7 +82,9 @@ HiddenServicePort 80 127.0.0.1:80</code></pre>
         <p>
         Now we are almost done, all we have to do is enable the site and reload nginx which, is also covered in <a href="nginx.html#enable">the webserver tutorial</a>.
         </p>
-
+	<h3>Redirect Tor browser to the onion address</h3>
+	<p>The <a href="https://community.torproject.org/onion-services/advanced/onion-location/">Onion Location</a> header is for this. The easiest way is with the <code>&gt;meta&lt;</code> tag.</p>
+	<code>&lt;meta http-equiv="onion-location" content="http://&lt;your-onion-service-address&gt;.onion" /&gt;</code>
         <h3>Update regularly!</h3>
 
         <p>Make sure to update Tor on a regular basis by running:</p>
