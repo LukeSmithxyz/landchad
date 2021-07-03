@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Using rsync for your website or server</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+
+<header><h1 id="using-rsync-for-website-and-servers">Using rsync for website and servers</h1></header>
+<nav></nav>
+<main>
+<p>So you have a website and you have ssh setup on your server. Rsync is a way of uploading and downloading files to and from your server. Here is how.</p>
+<h2 id="installing-rsync">Installing rsync</h2>
+<p>Run the following on your server and on your local machine.</p>
+<pre><code>apt install rsync</code></pre>
+<h2 id="uploading-files-with-rsync">Uploading files with rsync</h2>
+<p>From your local machine you can upload files to your server like this:</p>
+<pre><code>rsync -avz /path/to/file landchad.net:/path/on/the/server</code></pre>
+<p>You will be prompted to enter a password. By default it will use the username that you are logged in with on you local machine. To use a different user, do this:</p>
+<pre><code>rsync -avz /path/to/file username@landchad.net:/path/on/the/server</code></pre>
+<h2 id="downloading-file-with-rsync">Downloading file with rsync</h2>
+<p>Basically like downloading, you just swap the last two arguments, like this:</p>
+<pre><code>rsync -avz landchad.net:/path/to/file /path/to/file</code></pre>
+<p>Again, with a different username on you server:</p>
+<pre><code>rsync -avz username@landchad.net:/path/to/file /path/to/file</code></pre>
+<h3 id="contribution">Contribution</h3>
+<p>el3ctr0lyte: <a href="https://github.com/el3ctr0lyte">github</a>, XMR: <code>86DBJdiG83ZDea6kJgsbVN5tMae5ScfuhJ3PihEMTHatCrGEw2gctyUB92V2fz4R4YhwRaQeAGL5M4gPRXvVvtkULJi4ayk</code></p>
+</main>
+<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
