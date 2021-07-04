@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Self hosting &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Self hosting</h1></header>
+    <nav></nav>
+    <main>
+	    <h2>Introduction</h2>
+	    <p>When you have a(n old) computer lying around, and you have cheap electricity and a good internet connection, self hosting might be a good option for you.</p>
+	    <h3>Why would you choose selfhosting?</h2>
+	    <ul>
+		    <li>
+			    You have control over the hardware, and you can upgrade your server in the future. For example: if you host a file server and your hard drive goes full, you can simply add another hard drive or upgrade it.
+		    </li>
+		    <li>
+			    No bandwith limits, storage limits, etc. (some VPSes have this)
+		    </li>
+		    <li>
+			    It <strong>can</strong> be cheaper than using a VPS. This is only the case if you got the server for really cheap and your electricity is cheap.
+		    </li>
+		    <li>
+			    You can have a media server to consoom your content (for example with <code>Jellyfin</code>). You can technically do this on a VPS, but that will be more expensive than self hosting. If you have a media server, you can stream media from your server to more devices. (I recommend just downloading it on your device, but if you have multiple devices, this could be a good solution)
+		    </li>
+	    </ul>
+
+	    <h2>Hardware</h2>
+
+	    <h3>What kind of hardware should you choose?</h3>
+	    <p>If you pay your own electricity bill, power consumption is a big factor. Most old laptop computers are ideal in the sense that they don't use a lot of power, and if the battery still works, you have a built-in UPS! The bad thing is, is that most old laptop computers aren't that powerful, and they lack in upgradability. (you shouldn't really be using anything older than 2006, and I recommend at least a power equivalant of a Core 2 CPU)  
+	    </p>
+	    <p>
+	    If you can find an energy efficient desktop (under 100W), that is a great option. They are pretty upgradable and they don't use a lot of power. They can also be pretty cheap, but old laptops are usually cheaper. If you can afford new hardware, and are willing to build a PC, you can find really power effecient CPU/motherboard combos, and they can be cheap. For example the Celeron J3060. I recommend a low wattage power supply or an effecient one for these kinds of builds.
+	    </p>
+	    <p>
+	    Of course, if you don't pay your electricity bill or cost is not a problem for you, you can use just about any old desktop.
+	    </p>
+	    <h3>Usecases</h3>
+	    <p>Of course, hardware choices depend on the usecase. The above recommendations I gave you work fine for e-mail server, webserver and fileserver types of applications, but they will struggle transcoding video if you are going to host a media server. You'll need a faster CPU, but also a faster GPU. As an example the Athlon 200GE or 3000G are good and efficient choices for these builds.
+	    </p>
+	    <h2>Getting started</h2>
+	    <h3>Installing Debian</h3>
+	    <p>Once you have the machine, you can install the OS. I recommend Debian, as all of the guides on this website are Debian specific. Debian just werks as a server OS.</p>
+</p>
+<p>You'll need to burn a Debian install image onto a USB flash drive or a CD. You can download the image <a href="https://www.debian.org/CD/netinst/">here</a>, and you can also find information on how to burn the image onto a USB flash drive or CD there. 
+</p>
+<p>
+While installing, do not install any desktop environment, but do install the SSH server.
+</p>
+<h3>Port forwaring</h3>
+<p>Every time you are going to use a port, you need to forward it. For example, HTTP is port 80, HTTPS is 443, etc. You need to set this up on your router's NAT settings (sometimes just port forwarding, differs per router). These steps differ for each router. Refer to your routers manual. A simple command to see what your IP address is, is <code>ifconfig</code>. This shows a lot of network info, but it will also show your local IP address needed for port forwarding.
+</p>
+<p>Basic ports:</p>
+<ul>
+	<li>
+		SSH: port 22 (open this port if you want to admin your server outside your network)
+	</li>
+	<li>
+		HTTP: port 80 (open this port if you want basic webserver functionality)
+	</li>
+	<li>
+		HTTPS: port 443 (you should open this port if you are setting up a webserver)
+	</li>
+
+<h3>Static or dynamic IP address</h3>
+
+
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
