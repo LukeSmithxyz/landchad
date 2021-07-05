@@ -35,17 +35,14 @@ Next we'll install the required packages:
 
 <pre><code>apt install -y curl unzip nginx certbot php-fpm php-mysql php-cli php7.3-mbstring php7.3-curl php7.3-xml php7.3-sqlite3 php7.3-json</code></pre>
 
-<p>
-We now have to create the website configuration file
-<pre><code>vim /etc/nginx/sites-available/rss-bridge</code></pre> 
-<p>and you can add the following as a basic template.</p>
-<p> Remember to change the the domain name</p>
-</p>
+<p>We now have to create the website configuration file. Create/open the a file below:</p>
+<pre><code>nano /etc/nginx/sites-available/rss-bridge</code></pre>
+<p>And add the following content:</p>
 
 <pre><code>server {
     root /var/www/rss-bridge;
     index index.php index.html index.htm index.nginx-debian.html;
-    server_name rss-bridge.example.org;
+    server_name rss-bridge.<strong>example.org</strong>;
 
     location / {
             try_files $uri $uri/ =404;
@@ -62,48 +59,37 @@ We now have to create the website configuration file
 }
 </code></pre>
 
-<p>After you have saved the file, you need to create a symlink so the server actually will read the file</p>
+<p>After you have saved the file, you need to create a symlink so the server actually will read the file.</p>
 <pre><code>ln -s /etc/nginx/sites-available/rss-bridge /etc/nginx/sites-enabled/rss-bridge</code></pre>
 
-<p>
-    Then we have to create the folder where the service will reside in</p>
-<pre><code>cd /var/www
-mkdir rss-bridge
-cd rss-bridge
+<p>Then we have to create the folder where the service will reside in.</p>
+<pre><code>mkdir -p /var/www/rss-bridge
+cd /var/www/rss-bridge
 </code></pre>
 
-<p>Lets download the latest version of RSS-Bridge in the directory</p>
-<p>The newest version can be found <a href="https://github.com/RSS-Bridge/rss-bridge/releases">here</a>, at the time of writing that is "RSS-Bridge 2021-04-25"</p>
-
-<p>
-    <pre><code>wget https://github.com/RSS-Bridge/rss-bridge/archive/refs/tags/2021-04-25.zip</code></pre>
-</p>
-<p>
-    Unzip the file
-</p>
-<pre><code>unzip 2021-04-25.zip</code></pre>
+<p>Lets download the latest version of RSS-Bridge in the directory.</p>
+<p>The newest version can be found <a href="https://github.com/RSS-Bridge/rss-bridge/releases">here</a>, at the time of writing that is "RSS-Bridge 2021-04-25."</p>
+    <pre><code>wget https://github.com/RSS-Bridge/rss-bridge/archive/refs/tags/<strong>2021-04-25.zip</strong></code></pre>
+<p>Unzip the file:</p>
+<pre><code>unzip <strong>2021-04-25.zip</strong></code></pre>
 <p>This will create a directory called rss-bridge-version-number, we now want to move all the file contents of the newly created directory to the one we are in</p>
-<pre><code>cd rss-bridge-2021-04-25
-mv * ..
-cd ..
-rm -r rss-bridge-2021-04-25 2021-04-25.zip
+<pre><code>mv <strong>rss-bridge-2021-04-25</strong>/* .
+rm -rf <strong>rss-bridge-2021-04-25 2021-04-25.zip</strong>
 </code></pre>
 
-<p>Now all we need to do is grant read/write permissions and reload the web server</p>
+<p>Now all we need to do is grant read/write permissions and reload the web server.</p>
 
 <pre><code>chown -R www-data:www-data /var/www/rss-bridge
 systemctl reload nginx
 </code></pre>
 
-<p>That's it, you should now have a working rss-bridge installed. But you should definately get an SSL certifcate installed</p>
-
-<a href="https://landchad.net/certbot.html">Which you can read how to do here</a>
+<p>That's it, you should now have a working rss-bridge installed. But you should definately get an SSL certifcate installed <a href="https://landchad.net/certbot.html">which is done briefly here</a>.</p>
 
 
 <ul>
     <li><a href="https://handskemager.xyz">handskemager.xyz</a></li>
     <li>Bitcoin: <code class=crypto>bc1qhfjgwjzksf2auqjefwpvq20wvyugq3lhqgkxvu</code></li>
-    <li>Monero: <code>88cPx6Gzv5RWRRJLstUt6hACF1BRKPp1RMka1ukyu2iuHT7iqzkNfMogYq3YdDAC8AAYRqmqQMkCgBXiwdD5Dvqw3LsPGLU</code></li>
+    <li>Monero: <code class=crypto>88cPx6Gzv5RWRRJLstUt6hACF1BRKPp1RMka1ukyu2iuHT7iqzkNfMogYq3YdDAC8AAYRqmqQMkCgBXiwdD5Dvqw3LsPGLU</code></li>
 </ul>
 
     </main>
