@@ -45,7 +45,7 @@ We now have to create the website configuration file
 <pre><code>server {
     root /var/www/rss-bridge;
     index index.php index.html index.htm index.nginx-debian.html;
-    server_name rss-bridge.landchad.net;
+    server_name rss-bridge.example.org;
 
     location / {
             try_files $uri $uri/ =404;
