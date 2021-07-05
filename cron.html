@@ -19,13 +19,13 @@
         <p>
         You can schedule anything! Some examples of what you might have done already include:
         <ul>
-            <li> <code> updatedb </code> to update your <code> locate </code> database </li>
-            <li> <code> certbot </code> to update renewing of your https certs </li>
+            <li><code>updatedb</code> to update your <code>locate</code> database</li>
+            <li><code>certbot</code> to update renewing of your https certs</li>)
         </ul>
         Some tasks that you might <em>want</em> to schedule may include:
         <ul>
-            <li> Package updates - if you really just want to leave your server alone you can automated updating packages on your server </li>
-            <li> Backups - you may want to backup certain files every day and some every week, this is possible with cron </li>
+            <li>Package updates - if you really just want to leave your server alone you can automated updating packages on your server</li>
+            <li>Backups - you may want to backup certain files every day and some every week, this is possible with cron</li>
         </ul>
             <p>
             And many more, anything you can do can be turned into a cronjob.
@@ -34,25 +34,25 @@
             <h2>Basic Cronjobs</h2>
 
             <p>
-            This the preferred method for personal tasks and scripts, it's also the easiest to get started with. Run the command <code> crontab -e </code> to access your users crontab
+            This the preferred method for personal tasks and scripts; it's also the easiest to get started with. Run the command <code>crontab -e</code> to access your user's crontab
             </p>
 
             <p>
-            Once you have figured out the command you want to run you need to figure out how often you want to run it and when. I am going to schedule my system updates once a week on at 3:30 AM on a Monday.
+            Once you have figured out the command you want to run you need to figure out how often you want to run it and when. I am going to schedule my system updates once a week on at 3:30 AM on Mondays.
             </p>
             <p>
             We now have to convert this time (Every Monday at 3:30 AM) into a cron time. Cron uses a simple but effective way of scheduling when to run things.
             </p>
             <p>
-            Crontab expressions look like this <code> * * * * * command-to-run </code>
+            Crontab expressions look like this <code>* * * * * command-to-run</code>
             The five elements before the command tell when the command is supposed to be run automatically.
             <p>
             So for our Monday at 3:30AM job we would do the following:
             <p>
-            <pre><code> .---------------- minute (0 - 59)
+            <pre><code>.---------------- minute (0 - 59)
  | .------------- hour (0 - 23)
  | | .---------- day of month (1 - 31)
- | | | .------- month (1 - 12
+ | | | .------- month (1 - 12)
  | | | | .---- day of week (0 - 6)
  | | | | |
  * * * * *
@@ -67,7 +67,9 @@
 
             <h3>More examples</h3>
             <p>
-            Let's add another job, our backup job (for the purposes of this our backup command is just called <code> backup</code>) We want to run <code> backup </code> Every evening at 11PM, once we work out the timings for this we can add the to the same file as the above by running <code> crontab -e </code> This would mean our full crontab would look like this:
+            Let's add another job, our backup job (for the purposes of this our backup command is just called <code>backup</code>).
+            We want to run <code>backup</code> every evening at 11PM.
+            Once we work out the timings for this we can add the to the same file as the above by running <code>crontab -e</code> This would mean our full crontab would look like this:
             <pre><code>0 23 * * * backup</code></pre>
 
             <h3>Consecutive times</h3>
@@ -87,21 +89,18 @@
             <p>
             We can also randomly specify non-consecutive arguments with a comma.
             Suppose you have a script you want to run at the midday of the 1st, 15th, and 20th day of every month.
-            You can specify that my putting <code>1,15,20</code> for the day of the month argument:
+            You can specify that by putting <code>1,15,20</code> for the day of the month argument:
             </p>
 
             <pre><code>0 12 1,15,20 * * /usr/bin/pay_bills_script</code></pre>
 
             <h3>"Every X minutes/days/months"</h3>
 
-            <p>We can also easily run a command very several minutes or months, without specifying the specific times:
-            </p>
+            <p>We can also easily run a command every several minutes or months, without specifying the specific times:</p>
 
             <pre><code>*/15 * * * * updatedb</code></pre>
 
-            <p>
-            This cronjob will run the <code>updatedb</code> command every 15 minutes.
-            </p>
+            <p>This cronjob will run the <code>updatedb</code> command every 15 minutes.</p>
 
             <h3>Beware of this Rookie Mistake Though...</h3>
 
@@ -146,13 +145,14 @@
             </p>
 
             <p>
-            Run the command <code> ls /etc/cron* </code> you should see a list of directories and there contents. The directories should be something like the below
+            Run the command <code>ls /etc/cron*</code> you should see a list of directories and there contents. The directories should be something like the below:
+            </p>
             <ul>
-                <li> /etc/cron.d  <em> This is a crontab like the ones that you create with </em> <code> crontab -e </code> </li>
-                <li> /etc/cron.hourly </li>
-                <li> /etc/cron.daily </li>
-                <li> /etc/cron.weekly </li>
-                <li> /etc/cron.monthly </li>
+                <li>/etc/cron.d  <em>This is a crontab like the ones that you create with</em> <code>crontab -e</code></li>
+                <li>/etc/cron.hourly</li>
+                <li>/etc/cron.daily</li>
+                <li>/etc/cron.weekly</li>
+                <li>/etc/cron.monthly</li>
             </ul>
 
             <p>

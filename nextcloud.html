@@ -42,7 +42,12 @@ EXIT;</code></pre>
         <p>Check for the <code>www-data</code> user by running <code>id -u www-data</code>. If a number is output from that command, then the www-data user exists. If not. add the user simply by running <code>useradd www-data</code></p>
         <p>Next, we need to ensure that we have SSL certificates generated for your website. If you have not already done this, refer to <a href="certbot.html">this guide</a>. Although having SSL for your site is not required, it is highly recommended that you have it or you will risk attackers being able to steal passwords and data.</p>
         <p>In <code>/etc/nginx/sites-available/</code> we need to make a new configuration for Nextcloud (example: <code>/etc/nginx/sites-available/nextcloud</code>). Create it and open it, modify, and add the following lines:</p>
-        <pre><code>server {
+        <pre><code>upstream php-handler {
+    server unix:/var/run/php/php7.4-fpm.sock;
+    server 127.0.0.1:9000;
+}
+
+server {
     listen 80;
     listen [::]:80;
     server_name <strong>yourwebsite.com</strong>;
@@ -89,8 +94,6 @@ server {
         gzip_min_length 256;
         gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
         gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
-
-        pagespeed off;
 
         add_header Referrer-Policy                      "no-referrer"   always;
         add_header X-Content-Type-Options               "nosniff"       always;
@@ -140,7 +143,7 @@ server {
 
         location ~ \.woff2?$ {
             try_files $uri /nextcloud/index.php$request_uri;
-            expires 7d; 
+            expires 7d;
             access_log off;
         }
 
@@ -155,7 +158,7 @@ server {
 }</code></pre>
         <p>Enable the site by running this command:</p>
         <pre><code>ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/</code></pre>
-        <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
+        <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
         <pre><code>wget https://download.nextcloud.com/server/releases/nextcloud-21.0.2.tar.bz2</code></pre>
         <p>Now we need to extract the Nextcloud tarball. Run the following command:</p>
         <pre><code>tar -xjf nextcloud*.tar.bz2 -C /var/www</code></pre>

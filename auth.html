@@ -21,8 +21,8 @@
         <p>We will be using the command <code>htpasswd</code> to make username and password pairs.</p>
         <pre><code>apt install apache2-utils</code></pre>
         <aside>
-            <p>The apache utils has a small username-password pair encryption tool.</p>
-            <p>Like the other on this site, this tutorial is for Nginx, <strong>not</strong> for Apache servers.</p>
+            <p>The apache utils include a small username-password pair encryption tool.</p>
+            <p>Like the other tutorials on this site, this tutorial is for Nginx, <strong>not</strong> for Apache servers.</p>
         </aside>
 
         <p>
@@ -81,7 +81,7 @@
         <p>If you want to check both a username and password with an ip address, use the <code>satisfy</code> directive.</p>
         <pre><code>location /api {
     #...
-    satify all ;
+    satisfy all ;
 
     allow 192.168.1.23:8080 ;
     deny 127.0.0.1 ;
