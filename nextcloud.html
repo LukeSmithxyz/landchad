@@ -140,7 +140,7 @@ server {
 
         location ~ \.woff2?$ {
             try_files $uri /nextcloud/index.php$request_uri;
-            expires 7d; 
+            expires 7d;
             access_log off;
         }
 
@@ -155,7 +155,7 @@ server {
 }</code></pre>
         <p>Enable the site by running this command:</p>
         <pre><code>ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/</code></pre>
-        <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
+        <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
         <pre><code>wget https://download.nextcloud.com/server/releases/nextcloud-21.0.2.tar.bz2</code></pre>
         <p>Now we need to extract the Nextcloud tarball. Run the following command:</p>
         <pre><code>tar -xjf nextcloud*.tar.bz2 -C /var/www</code></pre>
