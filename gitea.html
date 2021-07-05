@@ -61,7 +61,7 @@ server {
 
         <h2>Setting up Gitea</h2>
 
-        <p>If everything worked fine you should now see a setup screen when you go to your configured domain in the browser. The options should be pretty self-explanatory, it is only important to select SQLite3 and to replace the base url and SSH server domain with your own.</p>
+        <p>If everything worked fine you should now see a setup screen when you go to your configured domain in the browser. The options should be pretty self-explanatory, it is only important to select SQLite3 and to replace the base URL and SSH server domain with your own.</p>
 
         <dl>
             <dt>Database Type:</dt>
@@ -80,10 +80,10 @@ server {
 
         <h2>A few extras</h2>
         <h3>Automatically create a new repo on push</h3>
-        <p>This is an incredicly useful feature for me. Open up <code>/etc/gitea/app.ini</code> and add <code>DEFAULT_PUSH_CREATE_PRIVATE = true</code> to the <code>repository</code> section like so:</p>
+        <p>This is an incredibly useful feature for me. Open up <code>/etc/gitea/app.ini</code> and add <code>DEFAULT_PUSH_CREATE_PRIVATE = true</code> to the <code>repository</code> section like so:</p>
         <img src=pix/gitea-push-create.png>
         <br>
-        <p>If you now add a remote to a repository like this</p>
+        <p>If you now add a remote to a repository like this:</p>
         <pre><code>git remote add origin 'ssh://gitea@git.<strong>example.org</strong>/<strong>username</strong>/<strong>coolproject</strong>.git'</code></pre>
         <p>and push, Gitea will automatically create a private <code>coolproject</code> repository in your account!</p>
 
