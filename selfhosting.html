@@ -35,12 +35,8 @@
 	    <h3>What kind of hardware should you choose?</h3>
 	    <p>If you pay your own electricity bill, power consumption is a big factor. Most old laptop computers are ideal in the sense that they don't use a lot of power, and if the battery still works, you have a built-in UPS! The bad thing is, is that most old laptop computers aren't that powerful, and they lack in upgradability. (you shouldn't really be using anything older than 2006, and I recommend at least a power equivalant of a Core 2 CPU)  
 	    </p>
-	    <p>
-	    If you can find an energy efficient desktop (under 100W), that is a great option. They are pretty upgradable and they don't use a lot of power. They can also be pretty cheap, but old laptops are usually cheaper. If you can afford new hardware, and are willing to build a PC, you can find really power effecient CPU/motherboard combos, and they can be cheap. For example the Celeron J3060. I recommend a low wattage power supply or an effecient one for these kinds of builds.
-	    </p>
-	    <p>
-	    Of course, if you don't pay your electricity bill or cost is not a problem for you, you can use just about any old desktop.
-	    </p>
+	    <p>If you can find an energy efficient desktop (under 100W), that is a great option. They are pretty upgradable and they don't use a lot of power. They can also be pretty cheap, but old laptops are usually cheaper. If you can afford new hardware, and are willing to build a PC, you can find really power effecient CPU/motherboard combos, and they can be cheap. For example the Celeron J3060. I recommend a low wattage power supply or an effecient one for these kinds of builds.</p>
+	    <p>Of course, if you don't pay your electricity bill or cost is not a problem for you, you can use just about any old desktop.</p>
 	    <h3>Usecases</h3>
 	    <p>Of course, hardware choices depend on the usecase. The above recommendations I gave you work fine for e-mail server, webserver and fileserver types of applications, but they will struggle transcoding video if you are going to host a media server. You'll need a faster CPU, but also a faster GPU. As an example the Athlon 200GE or 3000G are good and efficient choices for these builds.
 	    </p>
@@ -70,8 +66,38 @@ While installing, do not install any desktop environment, but do install the SSH
 	</ul>
 
 <h3>Static or dynamic IP address</h3>
+<p>If you want to selfhost, make sure you have a static IP address, or you can change your dynamic IP address to a static one. Refer to your router settings, some ISPs will have options on this here. If you can't find anything on this, get in touch with your ISP.</p>
+<p>Once you've made sure you have a static IP address, you can find out what the IP address is with various websites. You can use a search engine to easily find this out. Write this down as you'll need it later.</p>
+<p>Once you're done, you can pretty much follow every guide on this website, the only difference is that you'll need to forward the ports you'll be using for the server.</p>
+<h3>Finding the ports you'll need to forward</h3>
+<p>If you need to know what port you'll need to forward, there's a command for that. Just type <code>netstat -tulpn</code> in your servers command line. If you want to see the name of the programs, you need to run it as a root user. You can do this by putting <code>sudo</code> before the command.</p>
+<pre><code>
+Local Address                    State       PID/Program name
+0.0.0.0:25                       LISTEN      887/master
+0.0.0.0:1883                     LISTEN      22452/mosquitto
+0.0.0.0:445                      LISTEN      798/smbd
+0.0.0.0:993                      LISTEN      381/dovecot
+127.0.0.1:3306                   LISTEN      560/mysqld
+0.0.0.0:587                      LISTEN      887/master
+0.0.0.0:139                      LISTEN      798/smbd
+127.0.1.1:12301                  LISTEN      412/opendkim
+0.0.0.0:143                      LISTEN      381/dovecot
+0.0.0.0:465                      LISTEN      887/master
+0.0.0.0:22                       LISTEN      472/sshd
+:::25                            LISTEN      887/master
+:::443                           LISTEN      1769/apache2
+:::1883                          LISTEN      22452/mosquitto
+:::445                           LISTEN      798/smbd
+</code></pre>
+<p><em>Example output</em></p>
+
+<p>In this example, if you need to find the port number from <code>dovecot</code>, you can look for it in the <code>Program name</code> column. Then you can see in the local address that the reported local address is <code>0.0.0.0:993</code>. You need to look for the part after the semicolon. In this case it's 993. So you'll need to forward port 993.</p>
 
 
+<span class="next"><a href="dns.html">Next: Connect Your Domain and Server</a></span>
+
+<hr>
+<p><em>Written by <a href="https://github.com/hidde-j">hiddej</a></em>
     </main>
 	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
 </body>
