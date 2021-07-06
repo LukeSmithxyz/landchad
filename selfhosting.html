@@ -36,23 +36,20 @@
 	    <p>If you pay your own electricity bill, power consumption is a big factor. Most old laptop computers are ideal in the sense that they don't use a lot of power, and if the battery still works, you have a built-in UPS! The bad thing is, most old laptop computers aren't that powerful, and they lack in upgradability. (you shouldn't really be using anything older than 2006, and I recommend at least a performance equivalant of a Core 2 CPU)  
 	    </p>
 	    <p>If you can find an energy efficient desktop (under 100W), that is a great option. They are pretty upgradable and they don't use a lot of power. They can also be pretty cheap, but old laptops are usually cheaper. If you can afford new hardware, and are willing to build a PC, you can find really power effecient CPU/motherboard combos, and they can be cheap, for example the Celeron J3060. I recommend a low wattage power supply or an effecient one for these kinds of builds. Pico PSUs are pretty tiny and efficient solutions in these builds.</p>
-	    <p>Of course, if you don't pay your electricity bill or cost is not a problem for you, you can use just about any old desktop.</p>
+	    <p>Of course, if you don't pay your electricity bill or cost is not a problem for you, you can use just about any old desktop (as long as it's not from the 90's, I recommend at least a Core 2 chip again, or an Athlon 64 X2).</p>
 	    <h3>Usecases</h3>
-	    <p>Of course, hardware choices depend on the usecase. The above recommendations I gave you work fine for e-mail server, webserver and fileserver types of applications, but they will struggle transcoding video if you are going to host a media server. You'll need a faster CPU, but also a faster GPU. As an example the Athlon 200GE or 3000G are good and efficient choices for these builds. 
-	    </p>
+	    <p>Of course, hardware choices depend on the usecase. The above recommendations I gave you work fine for e-mail server, webserver and fileserver types of applications, but they will struggle to transcode video if you are going to host a media server. You'll need a faster CPU, but also a faster GPU. As an example, the Athlon 200GE or 3000G are good and efficient choices for these builds. They are decent CPUs, but also have a built in GPU that will transcode video just fine.</p>
 	    <p>
-	    If you need a lot of storage, go for a case with a lot of mounts for hard drives, this way you can easily mount multiple hard drives. Pros of multiple hard drives are redundancy and speed. Cons could be that they create more heat and noise. You can't use a laptop if you want multiple drives, except if you use a hard drive caddy for the CD/DVD drive bay. Some business laptops even support RAID 1 (redundancy) and 0 (speed and more storage, but you lose your files if one hard drive breaks) this way.</p>
+	    If you need a lot of storage, go for a case with a lot of mounts for hard drives, this way you can easily mount multiple hard drives. Pros of multiple hard drives are redundancy and speed. Cons could be that they create more heat and noise. You can't use a laptop if you want multiple drives, except if you use a hard drive caddy for the CD/DVD drive bay. Some business laptops even support RAID 1 (redundancy) and RAID 0 (speed and more storage, but you lose your files if one hard drive breaks) this way.</p>
 	    <h2>Getting started</h2>
 	    <h3>Installing Debian</h3>
 	    <p>Once you have the machine, you can install the OS. I recommend Debian, as all of the guides on this website are Debian specific. Debian just werks as a server OS.</p>
 </p>
 <p>You'll need to burn a Debian install image onto a USB flash drive or a CD. You can download the image <a href="https://www.debian.org/CD/netinst/">here</a>, and you can also find information on how to burn the image onto a USB flash drive or CD there. 
 </p>
-<p>
-While installing, do not install any desktop environment, but do install the SSH server.
-</p>
+<p>While installing Debian, do not install any desktop environment. But install an SSH server when you get the chance. Also leave webserver unchecked, even if you want to use it as a webserver. You'll have a chance to install this later.</p>
 <h3>Port forwaring</h3>
-<p>Every time you are going to use a port, you need to forward it. For example, HTTP is port 80, HTTPS is 443, etc. You need to set this up on your router's NAT settings (sometimes just port forwarding, differs per router). These steps differ for each router. Refer to your routers manual. A simple command to see what your servers IP address is, is to run <code>ifconfig</code> on your server. This shows a lot of network info, but it will also show your local IP address needed for port forwarding.
+<p>Every time you are going to set up a new server program, you need to forward a port corresponding to that program. For example, HTTP is port 80, HTTPS is 443, etc. You need to set this up on your router's NAT settings (sometimes just called port forwarding, this differs per router). These steps differ for each router. Refer to your routers manual. A simple command to see what your servers IP address is, is to run <code>ifconfig</code> on your server. This shows a lot of network info, but it will also show your local IP address needed for port forwarding.
 </p>
 <p>Basic ports:</p>
 <ul>
@@ -68,13 +65,12 @@ While installing, do not install any desktop environment, but do install the SSH
 	</ul>
 
 <h3>Static or dynamic IP address</h3>
-<p>If you want to selfhost, make sure you have a static IP address, or you can change your dynamic IP address to a static one. Refer to your router settings, some ISPs will have options on this here. If you can't find anything on this, get in touch with your ISP.</p>
+<p>If you want to host your server at home, make sure you have a static IP address, or you can change your dynamic IP address to a static one. Refer to your router settings, some ISPs will have options on this here. If you can't find anything on this, get in touch with your ISP.</p>
 <p>Once you've made sure you have a static IP address, you can find out what the IP address is with various websites. You can use a search engine to easily find this out. Write this down as you'll need it later.</p>
 <p>Once you're done, you can pretty much follow every guide on this website, the only difference is that you'll need to forward the ports you'll be using for the server.</p>
 <h3>Finding the ports you'll need to forward</h3>
 <p>If you need to know what port you'll need to forward, there's a command for that. Just type <code>netstat -tulpn</code> in your servers command line. If you want to see the name of the programs, you need to run it as a root user. You can do this by putting <code>sudo</code> before the command.</p>
-<pre><code>
-Local Address                    State       PID/Program name
+<pre><code>Local Address                    State       PID/Program name
 0.0.0.0:25                       LISTEN      887/master
 0.0.0.0:1883                     LISTEN      22452/mosquitto
 0.0.0.0:445                      LISTEN      798/smbd
@@ -89,11 +85,10 @@ Local Address                    State       PID/Program name
 :::25                            LISTEN      887/master
 :::443                           LISTEN      1769/apache2
 :::1883                          LISTEN      22452/mosquitto
-:::445                           LISTEN      798/smbd
-</code></pre>
+:::445                           LISTEN      798/smbd</code></pre>
 <p><em>Example output</em></p>
 
-<p>In this example, if you need to find the port number from <code>dovecot</code>, you can look for it in the <code>Program name</code> column. Then you can see in the local address that the reported local address is <code>0.0.0.0:993</code>. You need to look for the part after the semicolon. In this case it's 993. So you'll need to forward port 993.</p>
+<p>In this example, if you need to find the port number from <code>dovecot</code>, you can look for it in the <code>Program name</code> column. Then you can see in the local address column that the reported local address is <code>0.0.0.0:993</code>. You need to look for the part after the semicolon. In this case it's 993. So you'll need to forward port 993.</p>
 
 
 <span class="next"><a href="dns.html">Next: Connect Your Domain and Server</a></span>
