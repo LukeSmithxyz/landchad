@@ -13,7 +13,7 @@
     <nav></nav>
     <main>
         <p>
-            The Calibre library server is a great way to store your e-books.
+            The Calibre library server is a great way to store your eBooks.
             It allows you to:
             <li>Share your books with others.</li>
             <li>Easily transfer your books between devices and access them from anywhere.</li>
@@ -29,17 +29,18 @@
 mkdir /opt/calibre</code></pre>
 
         <p>
-            Either upload your existing library using <code>scp</code>. For example to <code>/opt/calibre/</code>
+            Either upload your existing library using <code>rsync</code>. For example to <code>/opt/calibre/</code>.
         </p>
 
         <p>
             On client:
         </p>
 
-        <pre><code>scp -r ~/Documents/your_library root@example.org:/opt/calibre/</code></pre>
+        <pre><code>cd ~/Documents
+rsync -avuP your_library root@example.org:/opt/calibre/</code></pre>
 
         <p>
-            Or create a library and add a book to it.
+            Or create a library and add a book to it:
         </p>
 
 <pre><code>cd /opt/calibre
@@ -52,9 +53,9 @@ calibredb add book.epub --with-library your_library</code></pre>
         </aside>
 
         <p>
-            Add a new user.
+            Add a new user to protect your server:
         </p>
-        
+
         <pre><code>calibre-server --manage-users</code></pre>
 
         <h2>Creating a service</h2>
@@ -71,7 +72,7 @@ After=network.target
 Type=simple
 User=root
 Group=root
-ExecStart=/usr/bin/calibre-server --enable-auth --enable-local-write /opt/calibre/your_library
+ExecStart=/usr/bin/calibre-server --enable-auth --enable-local-write /opt/calibre/your_library --listen-on 127.0.0.1
 
 [Install]
 WantedBy=multi-user.target
@@ -103,7 +104,7 @@ systemctl start calibre-server</code></pre>
     listen 80;
     client_max_body_size 64M; # to upload large books
     server_name calibre.example.org;
-	
+
     location / {
         proxy_pass http://127.0.0.1:8080;
     }
@@ -116,7 +117,7 @@ systemctl start calibre-server</code></pre>
         <pre><code>certbot --nginx</code></pre>
 
         <p>
-            Now just go to calibre.example.org. The server will request an username and password.
+            Now just go to calibre.example.org. The server will request an username and a password.
         </p>
 
         <a href="pix/calibre-1.png">
@@ -140,4 +141,3 @@ systemctl start calibre-server</code></pre>
 <footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
 </body>
 </html>
-
