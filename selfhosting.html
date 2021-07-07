@@ -30,6 +30,23 @@
 		    </li>
 	    </ul>
 
+	    <h3>Downsides</h3>
+	    <p>Some possible downsides of choosing to host at home could be:</p>
+	    <ul>
+		    <li>
+			    Your ISP not approving of what you're doing. Some ISP's do not condone you hosting at home. Usually when this is the case, it could be harder if you want to forward ports, or it could be impossible to get a static IP address. Check your ISP's terms of service. Sometimes, it will say that hosting a webserver, email server, and more, is not allowed.
+		    </li>
+		    <li>
+			    Security. Opening your network to the public could bring security risks. For example, never open a Samba server to the public, because it's a pretty old protocol and it has some security vulnerabilities. Be sure you are forwarding the right port, and don't just forward random ports to the internet. Also, if you are getting DDoSed, your ISP will temporarily shut down your whole internet connection. 
+		    </li>
+		    <li>
+			    When setting up an email server, it can be way harder to not have your email show up as spam in other's people email. If you use a VPS, this is way easier.
+		    </li>
+		    <li>
+			    Space and noise. Of course, this differs per server.
+		    </li>
+	    </ul>
+	    <p>For me, the upsides outweighed the downsides, which is why I chose to host at home. But, this differs with each person and scenario. Go and research what your exact situation is, before trying anything. Otherwise you'll have to face some bad surprises.</p>
 	    <h2>Hardware</h2>
 
 	    <h3>What kind of hardware should you choose?</h3>
@@ -89,7 +106,6 @@
 <p><em>Example output</em></p>
 
 <p>In this example, if you need to find the port number from <code>dovecot</code>, you can look for it in the <code>Program name</code> column. Then you can see in the local address column that the reported local address is <code>0.0.0.0:993</code>. You need to look for the part after the semicolon. In this case it's 993. So you'll need to forward port 993.</p>
-
 
 <span class="next"><a href="dns.html">Next: Connect Your Domain and Server</a></span>
 
