@@ -81,6 +81,9 @@
 listen-on { 127.0.0.1; 1.2.3.4; }; 
 listen-on-v6 { ::1; 1000::2000:3000:4000; };
 
+// prevents zone transfers
+allow-transfer { localhost; };
+
 // enables DNSSEC
 key-directory "/var/cache/bind/keys";
 dnssec-validation auto;</code></pre>
@@ -106,8 +109,8 @@ $TTL 86400
 ; Start of Authority
 @           IN      SOA ns1.example.org. hostmaster.example.org. (
                             2021070100      ; serial number YYYYMMDD##
-                            28800
-                            7200
+                            28800           ; refresh
+                            7200            ; retry
                             864000          ; expire
                             86400           ; minimum TTL
                         )
