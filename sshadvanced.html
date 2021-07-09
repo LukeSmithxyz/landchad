@@ -71,7 +71,7 @@
       Don't even mention <code>admin@very.long.hostname.example1.com</code>!
     </p>
     <p>In the given example, the config file could look like this:
-<code><pre>Host server1
+<pre><code>Host server1
   HostName very.long.hostname.example1.com
   User admin
   IdentityFile ~/.ssh/id_rsa
@@ -89,7 +89,7 @@ Host server3
 
 Host *
   IdentityFile /path/to/some/other/key
-</pre></code>
+</code></pre>
     </p>
     <p>You can see here usage of <code>Host *</code>. Options specified in this section will affect all other hosts.</p>
     <h3>But where do I put this file?</h3>
@@ -102,11 +102,11 @@ Host *
       </ol>
     </p>
     <p>You can also specify a custom path with the <code>-F</code> argument, for example:
-    <code><pre>ssh -F ~/Documents/projects/someproject/config/ssh production</pre></code>
+    <pre><code>ssh -F ~/Documents/projects/someproject/config/ssh production</code></pre>
     </p>
     <p>
       ...or discard any config file:
-      <code><pre>ssh -F /dev/null username@hostname</pre></code>
+      <pre><code>ssh -F /dev/null username@hostname</code></pre>
     </p>
     <p>There's more to ssh config files, but I direct you to <code>man ssh_config</code> for more information</p>
     <h2>SSH Tunneling ("port&nbsp;forwarding")</h2>
@@ -123,14 +123,14 @@ Host *
       You can route traffic from your local network to the remote server's network by using the <code>-L</code> option.
       Let's say you want to access a MySQL service on the remote server. You can tell SSH to route any
       traffic that comes to your 3000 port to port 3306 on the remote server with the following example:
-      <code><pre>ssh -L 3000:localhost:3306 username@example.com</pre></code>
+      <pre><code>ssh -L 3000:localhost:3306 username@example.com</code></pre>
     </p>
     <p>
       The above command states that anyone connecting to your port 3000 will be routed via the SSH connection to the localhost:3306 from the remote server's perspective
     </p>
     <p>
       If you can't understand the above description, let's take a look at another example:
-      <code><pre>ssh -L localhost:8080:192.168.178.25:80 username@example.com</pre></code>
+      <pre><code>ssh -L localhost:8080:192.168.178.25:80 username@example.com</code></pre>
     </p>
     <p>
       The above command states that any traffic coming from your device (and only yours, because of <code>localhost</code>) will be routed via the
@@ -138,7 +138,7 @@ Host *
     </p>
     <p>
       In general, the argument's structure is as follows:
-      <code><pre>-L [local_address:][local_port]:[remote_address]:[remote_port]</pre></code>
+      <pre><code>-L [local_address:][local_port]:[remote_address]:[remote_port]</code></pre>
     </p>
     <p>
       The <code>local_address</code> can be your LAN IP, <code>localhost</code> or any other address that your device has. Depending on it, other devices in
@@ -148,7 +148,7 @@ Host *
       The <code>remote_address</code> can be any address reachable from the server.
     </p>
     <p>You can, of course, route multiple ports. For example:
-      <code><pre>ssh -L 8000:localhost:8000 -L 8001:localhost:8001 username@example.com</pre></code>
+      <pre><code>ssh -L 8000:localhost:8000 -L 8001:localhost:8001 username@example.com</code></pre>
     </p>
     <p>
       Please, remember, this works <b>only</b> on TCP based services, <b>not</b> UDP based.
@@ -167,16 +167,16 @@ Host *
       edit <code>/etc/ssh/sshd_config</code> file, to instruct SSH server to route traffic to the other end of SSH connection - your device.
       <br/>
       Find and uncomment or append the one of the following lines to the file:
-      <code><pre>GatewayPorts yes # to allow all remote devices
+      <pre><code>GatewayPorts yes # to allow all remote devices
 GatewayPorts clientspecified # to allow only specific remote devices
-</pre></code>
+</code></pre>
     </p>
     <p>You can then specify the forwarding rule with the <code>-R</code> option, for example open <code>192.168.178.2:21</code> on your local network,
     to be accessible from a remote server on port 2100:
-    <code><pre>ssh -R 2100:localhost:21 username@example.com</pre></code>
+    <pre><code>ssh -R 2100:localhost:21 username@example.com</code></pre>
     </p>
     <p>...or provide access only to your friend with an IP <code>111.111.111.111</code>:
-    <code><pre>ssh -R 111.111.111.111:2100:localhost:21 username@example.com</pre></code></p>
+    <pre><code>ssh -R 111.111.111.111:2100:localhost:21 username@example.com</code></pre></p>
     <p>
       You can replace <code>localhost</code> with any host accessible from your local device, for example your local media server etc.
     </p>
@@ -187,13 +187,13 @@ GatewayPorts clientspecified # to allow only specific remote devices
     </p>
     <p>
       You can easily jump as shown in the following example:
-      <code><pre>ssh -J username1@example1.com username2@example2.com</pre></code>
+      <pre><code>ssh -J username1@example1.com username2@example2.com</code></pre>
     </p>
     <p>You can also specify multiple intermediaries, by separating them with a comma:
-      <code><pre>ssh -J username1@example2.com,username2@example.com username3@example3.com</pre></code>
+      <pre><code>ssh -J username1@example2.com,username2@example.com username3@example3.com</code></pre>
     </p>
     <p>There is also a possibility to set up "jumping" connection in a config file:
-<code><pre>Host intermediary1
+<pre><code>Host intermediary1
   HostName target.intermediary-example.com
   User john
 
@@ -204,7 +204,7 @@ Host target1
 Host target2
   HostName target2.example.com
   ProxyJump username@example1.com
-</pre></code>
+</code></pre>
     </p>
   </main>
   <footer>
