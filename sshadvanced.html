@@ -133,7 +133,7 @@ Host *
       <code><pre>ssh -L localhost:8080:192.168.178.25:80 username@example.com</pre></code>
     </p>
     <p>
-      The above command states that any traffic comming from your device (and only yours, because of <code>localhost</code>) will be routed via the
+      The above command states that any traffic coming from your device (and only yours, because of <code>localhost</code>) will be routed via the
       SSH channel to <code>192.168.178.25:80</code> in the server's network.
     </p>
     <p>
@@ -150,23 +150,22 @@ Host *
     <p>You can, of course, route multiple ports. For example:
       <code><pre>ssh -L 8000:localhost:8000 -L 8001:localhost:8001 username@example.com</pre></code>
     </p>
+    <p>
+      Please, remember, this works <b>only</b> on TCP based services, <b>not</b> UDP based.
+    </p>
   </main>
   <footer>
     <a href="https://landchad.net">LandChad.net</a>
     </br>Because Everyone should be an Internet LandChad.</br>
     <a href="index.html">
-      <li><img src="pix/chad.gif" alt="chad"></li>
-    </a>
+      <li><img src="pix/chad.gif" alt="chad"></li></a>
     <a href="rss.xml">
-      <li><img src="pix/rss.svg" alt="RSS"></li>
-    </a>
+      <li><img src="pix/rss.svg" alt="RSS"></li></a>
     <a href="pix/btc.png">
-      <li><img src="pix/btc.svg" alt="BTC"></li>
-    </a>
+      <li><img src="pix/btc.svg" alt="BTC"></li></a>
     <a href="pix/xmr.png">
-      <li><img src="pix/xmr.svg" alt="XMR"></li>
-    </a>
+      <li><img src="pix/xmr.svg" alt="XMR"></li></a>
     <a href="https://github.com/lukesmithxyz/landchad">
-      <li><img src="pix/git.svg" alt="Github"></li>
-    </a></footer>
+      <li><img src="pix/git.svg" alt="Github"></li></a>
+  </footer>
 </body>
