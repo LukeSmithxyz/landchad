@@ -153,6 +153,33 @@ Host *
     <p>
       Please, remember, this works <b>only</b> on TCP based services, <b>not</b> UDP based.
     </p>
+    <h3>Remote to local</h3>
+    <p>
+      There might come a need for you to open your locally running service (for example a game server) to external connections.
+      Let's say you can't or don't want to set up port forwarding on your router.
+    </p>
+    <p>
+      You can use SSH to forward any traffic that is coming to a port on remote server to a port on your local network host.
+      The same as in the case "Local to remote", but the other way around.
+    </p>
+    <p>
+      However, there is one additional step that is neccessary and requires you to have a root access to the remote server. You have to
+      edit <code>/etc/ssh/sshd_config</code> file, to instruct SSH server to route traffic to the other end of SSH connection - your device.
+      <br/>
+      Find and uncomment or append the one of the following lines to the file:
+      <code><pre>GatewayPorts yes # to allow all remote devices
+GatewayPorts clientspecified # to allow only specific remote devices
+</pre></code>
+    </p>
+    <p>You can then specify the forwarding rule with the <code>-R</code> option, for example open <code>192.168.178.2:21</code> on your local network,
+    to be accessible from a remote server on port 2100:
+    <code><pre>ssh -R 2100:localhost:21 username@example.com</pre></code>
+  </p>
+  <p>...or provide access only to your friend with an IP <code>111.111.111.111</code>:
+  <code><pre>ssh -R 111.111.111.111:2100:localhost:21 username@example.com</pre></code></p>
+  <p>
+    You can replace <code>localhost</code> with any host accessible from your local device, for example your local media server etc.
+  </p>
   </main>
   <footer>
     <a href="https://landchad.net">LandChad.net</a>
