@@ -109,6 +109,47 @@ Host *
       <code><pre>ssh -F /dev/null username@hostname</pre></code>
     </p>
     <p>There's more to ssh config files, but I direct you to <code>man ssh_config</code> for more information</p>
+    <h2>SSH Tunneling ("port forwarding")</h2>
+    <p>
+      SSH tunneling gives you the ability to route TCP traffic from your location to the remote server or the other way around (if server allows for this).
+      Thanks to it, you can set up a secure connection with a service that doesn't provide any encryption by default. You can treat it like a lite VPN.
+    </p>
+    <p>
+      You can for example access your SQL server via SSH without opening the port for public - you just need SSH port opened on the server's firewall.
+      It's also a great way of creating a secure channel for connecting with other hosts on the server's network.
+    </p>
+    <h3>Local to remote</h3>
+    <p>
+      You can route traffic from your local network to the remote server's network by using the <code>-L</code> option.
+      Let's say you want to access a MySQL service on the remote server. You can tell SSH to route any
+      traffic that comes to your 3000 port to port 3306 on the remote server with the following example:
+      <code><pre>ssh -L 3000:localhost:3306 username@example.com</pre></code>
+    </p>
+    <p>
+      The above command states that anyone connecting to your port 3000 will be routed via the SSH connection to the localhost:3306 from the remote server's perspective
+    </p>
+    <p>
+      If you can't understand the above description, let's take a look at another example:
+      <code><pre>ssh -L localhost:8080:192.168.178.25:80 username@example.com</pre></code>
+    </p>
+    <p>
+      The above command states that any traffic comming from your device (and only your's, because of <code>localhost</code>) will be routed via the
+      SSH channel to <code>192.168.178.25:80</code> in the server's network.
+    </p>
+    <p>
+      In general, the argument's structure is as follows:
+      <code><pre>-L [local_address:][local_port]:[remote_address]:[remote_port]</pre></code>
+    </p>
+    <p>
+      The <code>local_address</code> can be your LAN IP, <code>localhost</code> or any other address that your device has. Depending on it, other devices in
+      the specified network will be able to connect to you or not.
+    </p>
+    <p>
+      The <code>remote_address</code> can be any address reachable from the server.
+    </p>
+    <p>You can, of course, route multiple ports. For example:
+      <code><pre>ssh -L 8000:localhost:8000 -L 8001:localhost:8001 username@example.com</pre></code>
+    </p>
   </main>
   <footer>
     <a href="https://landchad.net">LandChad.net</a>
