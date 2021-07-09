@@ -215,3 +215,9 @@ aside.callout  {
 .next:before {
 	content: "👉" ;
 }
+
+/* I just think it looks nicer when text is justified, but I made it optional
+ * If you want your text to be justified, just add 'class="justified-paragraphs"' to your <main> */
+main.justified-paragraphs p {
+	text-align: justify;
+}

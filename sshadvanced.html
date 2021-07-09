@@ -13,7 +13,7 @@
     <h1>SSH - Advanced Usage</h1>
   </header>
   <nav></nav>
-  <main>
+  <main class="justified-paragraphs">
     <h2>Introduction</h2>
     <p>
       This page is dedicated to advanced SSH usage examples. We will discuss the following concepts:
@@ -32,7 +32,7 @@
     </p>
     <h3>Why even bother?</h3>
     <p>
-      You might say that SSH client doesn't need any special configuration - you just type the user@host and that's it.
+      You might say that SSH client doesn't need any special configuration - you just type user@host and that's it.
       Well, what happens when you manage multiple servers? Maybe you want to use a different pair of keys for each servers?
       Maybe the server uses a port other than the default 22 to avoid automated bots trying to log in?
     </p>
@@ -109,7 +109,7 @@ Host *
       <code><pre>ssh -F /dev/null username@hostname</pre></code>
     </p>
     <p>There's more to ssh config files, but I direct you to <code>man ssh_config</code> for more information</p>
-    <h2>SSH Tunneling ("port forwarding")</h2>
+    <h2>SSH Tunneling ("port&nbsp;forwarding")</h2>
     <p>
       SSH tunneling gives you the ability to route TCP traffic from your location to the remote server or the other way around (if server allows for this).
       Thanks to it, you can set up a secure connection with a service that doesn't provide any encryption by default. You can treat it like a lite VPN.
@@ -174,12 +174,38 @@ GatewayPorts clientspecified # to allow only specific remote devices
     <p>You can then specify the forwarding rule with the <code>-R</code> option, for example open <code>192.168.178.2:21</code> on your local network,
     to be accessible from a remote server on port 2100:
     <code><pre>ssh -R 2100:localhost:21 username@example.com</pre></code>
-  </p>
-  <p>...or provide access only to your friend with an IP <code>111.111.111.111</code>:
-  <code><pre>ssh -R 111.111.111.111:2100:localhost:21 username@example.com</pre></code></p>
-  <p>
-    You can replace <code>localhost</code> with any host accessible from your local device, for example your local media server etc.
-  </p>
+    </p>
+    <p>...or provide access only to your friend with an IP <code>111.111.111.111</code>:
+    <code><pre>ssh -R 111.111.111.111:2100:localhost:21 username@example.com</pre></code></p>
+    <p>
+      You can replace <code>localhost</code> with any host accessible from your local device, for example your local media server etc.
+    </p>
+    <h2>SSH Jumping</h2>
+    <p>
+      Jumping is a method of connecting to a target via one or more intermediate servers. This can be used to access servers behind firewalls&nbsp;etc.
+      All connections on the chain are encrypted and routed via SSH.
+    </p>
+    <p>
+      You can easily jump as shown in the following example:
+      <code><pre>ssh -J username1@example1.com username2@example2.com</pre></code>
+    </p>
+    <p>You can also specify multiple intermediaries, by separating them with a comma:
+      <code><pre>ssh -J username1@example2.com,username2@example.com username3@example3.com</pre></code>
+    </p>
+    <p>There is also a possibility to set up "jumping" connection in a config file:
+<code><pre>Host intermediary1
+  HostName target.intermediary-example.com
+  User john
+
+Host target1
+  HostName target.example.com
+  ProxyJump intermediary1
+
+Host target2
+  HostName target2.example.com
+  ProxyJump username@example1.com
+</pre></code>
+    </p>
   </main>
   <footer>
     <a href="https://landchad.net">LandChad.net</a>
