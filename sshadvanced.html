@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <title>SSH - Advanced Usage &ndash; LandChad.net</title>
+  <meta charset="utf-8" />
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+  <link rel='stylesheet' type='text/css' href='style.css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+</head>
+<body>
+  <header>
+    <h1>SSH - Advanced Usage</h1>
+  </header>
+  <nav></nav>
+  <main>
+    <h2>Introduction</h2>
+    <p>
+      This page is dedicated to advanced SSH usage examples. We will discuss the following concepts:
+      <ul>
+        <li>config files (for client)</li>
+        <li>tunneling</li>
+        <li>jumping</li>
+      </ul>
+    </p>
+    <h2>Config files</h2>
+    <p>
+      Config files allow you to specify certain rules for all or chosen hosts. The file has a really simple structure.
+      It is divided into sections which begin with the <code>Host</code> keyword. Sections are read one by one and <b>the first
+      matching section takes precedence over the remaining sections</b> - you write more specific sections at the top and the more general
+      sections below.
+    </p>
+    <h3>Why even bother?</h3>
+    <p>
+      You might say that SSH client doesn't need any special configuration - you just type the user@host and that's it.
+      Well, what happens when you manage multiple servers? Maybe you want to use a different pair of keys for each servers?
+      Maybe the server uses a port other than the default 22 to avoid automated bots trying to log in?
+    </p>
+    <p>
+      That's where config files come in handy!
+    </p>
+    <h3>Example scenario</h3>
+    <p>
+      Let's assume that you manage 3 servers, with the following access info:
+      <ol>
+        <li>very.long.hostname.example1.com
+          <ul>
+            <li>user: admin</li>
+            <li>port: 22</li>
+            <li>key name: id_rsa</li>
+          </ul>
+        </li>
+        <li>example2.com
+          <ul>
+            <li>user: billthemaster</li>
+            <li>port: 2222</li>
+            <li>key name: example2_ecdsa</li>
+          </ul>
+        </li>
+        <li>192.168.133.7
+          <ul>
+            <li>user: management</li>
+            <li>port: 22</li>
+            <li>key name: id_rsa</li>
+          </ul>
+        </li>
+      </ol>
+    </p>
+    <p>
+      You got tired having to always specify the identity file location with the <code>-i</code> option and the port with <code>-p</code> option for example2.com.
+      Don't even mention <code>admin@very.long.hostname.example1.com</code>!
+    </p>
+    <p>In the given example, the config file could look like this:
+<code><pre>Host server1
+  HostName very.long.hostname.example1.com
+  User admin
+  IdentityFile ~/.ssh/id_rsa
+
+Host server2
+  HostName example2.com
+  Port 2222
+  User billthemaster
+  IdentityFile ~/.ssh/example2_ecdsa
+
+Host server3
+  HostName 192.168.133.7
+  User management
+  IdentityFile ~/.ssh/id_rsa
+
+Host *
+  IdentityFile /path/to/some/other/key
+</pre></code>
+    </p>
+    <p>You can see here usage of <code>Host *</code>. Options specified in this section will affect all other hosts.</p>
+    <h3>But where do I put this file?</h3>
+    <p>
+      SSH looks for the options in the following order:
+      <ol>
+        <li>command line arguments</li>
+        <li><code>~/.ssh/config</code></li>
+        <li><code>/etc/ssh/ssh_config</code></li>
+      </ol>
+    </p>
+    <p>You can also specify a custom path with the <code>-F</code> argument, for example:
+    <code><pre>ssh -F ~/Documents/projects/someproject/config/ssh production</pre></code>
+    </p>
+    <p>
+      ...or discard any config file:
+      <code><pre>ssh -F /dev/null username@hostname</pre></code>
+    </p>
+    <p>There's more to ssh config files, but I direct you to <code>man ssh_config</code> for more information</p>
+  </main>
+  <footer>
+    <a href="https://landchad.net">LandChad.net</a>
+    </br>Because Everyone should be an Internet LandChad.</br>
+    <a href="index.html">
+      <li><img src="pix/chad.gif" alt="chad"></li>
+    </a>
+    <a href="rss.xml">
+      <li><img src="pix/rss.svg" alt="RSS"></li>
+    </a>
+    <a href="pix/btc.png">
+      <li><img src="pix/btc.svg" alt="BTC"></li>
+    </a>
+    <a href="pix/xmr.png">
+      <li><img src="pix/xmr.svg" alt="XMR"></li>
+    </a>
+    <a href="https://github.com/lukesmithxyz/landchad">
+      <li><img src="pix/git.svg" alt="Github"></li>
+    </a></footer>
+</body>
