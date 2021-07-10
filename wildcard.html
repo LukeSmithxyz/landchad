@@ -29,19 +29,19 @@ distinguished_name = dname
 req_extensions = reqext
 
 [ dname ]
-CN = <b>example.org</b>
-emailAddress = admin@<b>example.org</b>
+CN = <strong>example.org</strong>
+emailAddress = admin@<strong>example.org</strong>
 
 [ reqext ]
-subjectAltName = DNS:<b>example.org</b>, DNS:*.<b>example.org</b></code></pre>
+subjectAltName = DNS:<strong>example.org</strong>, DNS:*.<strong>example.org</strong></code></pre>
 			And leave it like this. Now you will generate your private key. We are
 			going to use ECC384. But obviously you can use whatever you want. To generate the key
-			do run this: <code>openssl ecparam -genkey -name secp384r1 -out <b>example.org.key</b></code>
+			do run this: <code>openssl ecparam -genkey -name secp384r1 -out <strong>example.org.key</strong></code>
 		</p>
 		<p>
 			After you have the private key and the openssl.conf key, you have to generate the
 			certificate request from the private key and the openssl.conf. To do this simply
-			run: <code>openssl req -new -config openssl.conf -key <b>example.org.key</b> -out csr.pem</code>
+			run: <code>openssl req -new -config openssl.conf -key <strong>example.org.key</strong> -out csr.pem</code>
 		</p>
 		<h2>Getting the certificate</h2>
 		<p>
@@ -69,11 +69,11 @@ subjectAltName = DNS:<b>example.org</b>, DNS:*.<b>example.org</b></code></pre>
 		</p>
 		<p>
 			Before pressing enter, verify if the records were added succesfully: open another
-			terminal and run <code>dig +short TXT _acme.challenge.<b>example.org</b></code>. It
+			terminal and run <code>dig +short TXT _acme.challenge.<strong>example.org</strong></code>. It
 			should return the code certbot gave you. If it does. Press enter, and certbot will
 			generate the certificate key we needed. Certbot will give you the name of the
-			generated cert (normally "0001_chain.pem"). Rename it to <b>example.org</b>.crt. And
-			put both <b>example.org.crt</b> and <b>example.org</b>.key somewhere safe
+			generated cert (normally "0001_chain.pem"). Rename it to <strong>example.org</strong>.crt. And
+			put both <strong>example.org.crt</strong> and <strong>example.org</strong>.key somewhere safe
 		</p>
 		<h2>Configuring nginx</h2>
 		<p>
@@ -81,10 +81,10 @@ subjectAltName = DNS:<b>example.org</b>, DNS:*.<b>example.org</b></code></pre>
 			/etc/nginx/sites-enabled/default). And add something like this:
 		</p>
 		<pre><code>server {
-    server_name <b>example.org</b>;
+    server_name <strong>example.org</strong>;
     listen 443 ssl;
-    ssl_certificate_key <b>/path/to/example.org</b>.key;
-    ssl_certificate <b>/path/to/example.org</b>.crt
+    ssl_certificate_key <strong>/path/to/example.org</strong>.key;
+    ssl_certificate <strong>/path/to/example.org</strong>.crt
 }</code></pre>
 
 		<p>
