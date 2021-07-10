@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang=en>
+	<head>
+		<title>Get a wildcard certificate using Certbot &ndash; LandChad.net</title>
+		<meta charset="utf-8"/>
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<link rel='stylesheet' type='text/css' href='style.css'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+	</head>
+	<body>
+		<header><h1>Get a wildcard certificate using Certbot</h1></header>
+		<main>
+		<p>
+			A wildcard certificate are those certs which are valid for *.example.org, meaning you
+			can use this cert for example.org and any subdomain. Whoever they have to be renewed
+			manually.
+		</p>
+		<h2>Creating a openssl config file</h2>
+		<p>
+			We are going to use openssl to create a <i>certificate request</i>. And later we will
+			give it to certbot so it can make a certificate out of that. To do this create a file
+			called openssl.conf with this content:
+			<pre><code>[ req ]
+prompt = no
+encrypt_key = no
+default_md = sha512
+distinguished_name = dname
+req_extensions = reqext
+
+[ dname ]
+CN = <b>example.org</b>
+emailAddress = admin@<b>example.org</b>
+
+[ reqext ]
+subjectAltName = DNS:<b>example.org</b>, DNS:*.<b>example.org</b></code></pre>
+			And leave it like this. Now you will generate your private key. We are
+			going to use ECC384. But obviously you can use whatever you want. To generate the key
+			do run this: <code>openssl ecparam -genkey -name secp384r1 -out <b>example.org.key</b></code>
+		</p>
+		<p>
+			After you have the private key and the openssl.conf key, you have to generate the
+			certificate request from the private key and the openssl.conf. To do this simply
+			run: <code>openssl req -new -config openssl.conf -key <b>example.org.key</b> -out csr.pem</code>
+		</p>
+		<h2>Getting the certificate</h2>
+		<p>
+			And this will simply generate the csr.pem file. Now we have to pass it to certbot so
+			we can get the actually signed certificate. Simply run this:
+		</p>
+		<p>
+			<code>certbot certonly --manual --csr csr.pem --agree-tos --no-bootstrap
+			--manual-public-ip-logging-ok --preferred-challenges dns-01 --server
+				https://acme-v02.api.letsencrypt.org/directory
+			</code>
+		</p>
+		<p>
+			We have used the dns-01 challenge, so you will have to edit the DNS records of your
+			domain to add a new TXT record (like you have done in the Mail server
+			tutorial). Certbot will give you the name of the key (_acme-challenge) and what you
+			have to add. To add them in your records, simply add it like this, the screenshot is
+			from the registrar "njalla". But it will be probably very similar in another
+			registrars
+		</p>
+		<img src="pix/njalla-txt-records.png" alt="Njalla txt records"/>
+		<p>
+			It can also ask you to add 2 _acme-challenge records, so just create another one,
+			this is perfectly valid.
+		</p>
+		<p>
+			Before pressing enter, verify if the records were added succesfully: open another
+			terminal and run <code>dig +short TXT _acme.challenge.<b>example.org</b></code>. It
+			should return the code certbot gave you. If it does. Press enter, and certbot will
+			generate the certificate key we needed. Certbot will give you the name of the
+			generated cert (normally "0001_chain.pem"). Rename it to <b>example.org</b>.crt. And
+			put both <b>example.org.crt</b> and <b>example.org</b>.key somewhere safe
+		</p>
+		<h2>Configuring nginx</h2>
+		<p>
+			To tell nginx to use the new certs, just edit your nginx config file (which could be
+			/etc/nginx/sites-enabled/default). And add something like this:
+		</p>
+		<pre><code>server {
+    server_name <b>example.org</b>;
+    listen 443 ssl;
+    ssl_certificate_key <b>/path/to/example.org</b>.key;
+    ssl_certificate <b>/path/to/example.org</b>.crt
+}</code></pre>
+
+		<p>
+			If you have use certbot with the automatic configuration before, just edit the path
+			of the certificates to the path of the new certificates
+		</p>
+		<h2>Notes</h2>
+		<p>
+			You will have to repeat this process every 3 months to renew the certificates!
+		</p>
+		<p>Contributor: <a href="qorg11.net">qorg11</a></p>
+</main>
+			<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="monero:47QTumjtqJabbo1s9pLDdXeJarLVLfs1AaEcbi1xrEiV852mqcbe5AHLNXTk7tH9MscxcxQDfJQnvH5LpxvfgwSJQZ3zbS6"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+
+	</body>
+</html>
