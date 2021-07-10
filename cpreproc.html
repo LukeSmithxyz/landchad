@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang=en>
+	<head>
+		<title>Preprocssing HTML as a 1990s koder &ndash; LandChad.net</title>
+		<meta charset="utf-8"/>
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<link rel='stylesheet' type='text/css' href='style.css'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+	</head>
+	<body>
+		<nav></nav>
+		<main>
+			<header><H1>Preprocessing HTML as a 1990s koder</h1></header>
+
+			<p>The C preprocessor can process more than just C source, in fact, it will operate on
+				any text file provided as an input. Which means that if you ever wanted to use constructs
+				like <strong>#define</strong>, <strong>#ifdef</strong> and most importantly <strong>#include</strong> in your files,
+				you're in luck. The C preprocessor is extremely simple and has very few operations,
+				making it easy to learn and lightweight. Moreover, all the dependencies to preprocess are almost always present on any system.</p>
+			<p>If all you need is the ability to include or do some conditionals/macros, then the C preprocessor is sufficient.
+				In other cases you will need a more complicated preprocessor or static site generator. (which do basically the same thing).
+				But this here is a nice little hack I wanted to share.</p>
+
+			<h2>Installing a compiler</h2>
+
+			<p>The most common C/C++ compiler/preprocessor is the <strong>GNU Compiler Collection</strong>. It is usually invoked
+				using the <code>gcc</code> command, which is usually already present on most operating systems. Just install <code>build-essential</code> with
+				<code>apt install build-essential</code> and you're set (equivalent to <code>base-devel</code>).</p>
+
+			<h2>Preprocessing files</h2>
+			<p>Preprocessing text files using gcc is performed with the following command.</p>
+			<pre><code>gcc -E -P -x c <strong>&lt;input&gt;</strong></code></pre>
+			<p>Where <code>-E</code> is used to signal to preprocess only,
+				<code>-P</code> to exclude extra compiler junk and <code>-x c</code> to interpret as C. The preprocessed file
+				is outputted to stdout and can be redirected using <code>&gt;</code> to a file.</p>
+
+			<p>Lets consider the following example of some HTML using <strong>#include</strong>,
+				which includes some file located relative to this one. The head.html file in this case just contains some basic
+				head which links to some stylesheet.</p>
+			<pre><code>&lt;!DOCTYPE html&gt;<br>&lt;html&gt;<br><br><strong>  #include "head.html"</strong><br><br>  &lt;body&gt;<br>    &lt;p&gt;Hello!&lt/p&gt;<br>  &lt;/body&gt<br>&lt;/html&gt;</code></pre>
+
+			<p>Passing this index.html to the gcc command above yields the following result as expected.</p>
+			<pre><code>&lt;!DOCTYPE html&gt;<br>&lt;html&gt;<br><br><strong>  &lt;head&gt;<br>    &lt;link rel='stylesheet' type='text/css' href='style.css'&gt;<br>  &lt;/head&gt;</strong><br><br>  &lt;body&gt;<br>    &lt;p&gt;Hello!&lt/p&gt;<br>  &lt;/body&gt<br>&lt;/html&gt;</code></pre>
+
+			<p>Do note that the preprocessor does not process within single/double quotation.
+				To get around this limitation you should substitute a placeholder string using something
+				like sed. I have done this in the script below.</p>
+
+			<h2>Static site generator script</h2>
+			<p>Using the C preprocessor as above, it is possible to write yourself a tiny static-site generator script,
+				which is what I did. The script is inside <a href="https://github.com/whitesolace/tiny-preproc.git">this github repo</a>. Below some features.</p>
+			<ul>
+				<li><strong>takes sources</strong> recursively from the locations you provide.</li>
+				<li><strong>preprocesses</strong> using the C preprocessor and <code>sed</code> (for quotation).</li>
+				<li><strong>detects out-of-date dependencies</strong>.</li>
+				<li><strong>can auto-rebuild</strong> using <code>entr</code>.</li>
+				<li>is <strong>44 lines</strong>.</li>
+			</ul>
+
+			<p>The sed command substitutes all occurences of <strong>@@</strong> with <strong>"</strong> and <strong>&&</strong> with <strong>'</strong>, which allows
+				you to do things like <br><code>href= <strong>@@</strong>IMAGE_PATH(coolpic.png)<strong>@@</strong> </code> which becomes <code>href=<strong>"</strong>/images/coolpic.png<strong>"</strong></code>, since
+				the preprocessor would not process the macro if it is inside quotes.</p>
+
+			<h2>Usage</h2>
+			<p>Using the C preprocessor and any simple script you can easily make HTML more bearable with basic includes,
+				macros and conditionals. Despite the simplicity of the preprocessor, you can achieve many things as many
+				C coders of the past have proven. The most useful ofcourse is the #include, with which you can finally centralize your navigation
+				and footers across all html. But the preprocessor does not only apply to C and HTML, it will work on any text file so long as the
+				syntax does not conflict.</p>
+			<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+		</main>
+	</body>
+</html>
