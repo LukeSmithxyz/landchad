@@ -37,7 +37,9 @@
 			    Your ISP not approving of what you're doing. Some ISP's do not condone you hosting at home. Usually when this is the case, it could be harder if you want to forward ports, or it could be impossible to get a static IP address. Check your ISP's terms of service. Sometimes, it will say that hosting a webserver, email server, and more, is not allowed.
 		    </li>
 		    <li>
-			    Security. Opening your network to the public could bring security risks. For example, never open a Samba server to the public, because it's a pretty old protocol and it has some security vulnerabilities. Be sure you are forwarding the right port, and don't just forward random ports to the internet. Also, if you are getting DDoSed, your ISP will temporarily shut down your whole internet connection. 
+			    This can also include blocked ports. ISPs can block certain ports to the world. Sometimes ISPs only block 445/139 (which is for the better as Samba, using these ports isn't really secure and it's outdated). But some ISPs (sadly) block crucial ports like 80 and/or 443. You need to check this before trying anything. If this is the case, a way to get around it is to get another ISP or use an alternative port. A great website to check this is: <a href="https://canyouseeme.org/">canyouseeme.org</a>. You can also check if you did the port forwaring correctly here.</li>
+		    <li>
+			    Security. Opening your network to the public could bring security risks. For example, never open a Samba server to the public, because it's a pretty old protocol, and it has some security vulnerabilities. Be sure you are forwarding the right port, and don't just forward random ports to the internet. Also, if you are getting DDoSed, your ISP will temporarily shut down your whole internet connection. 
 		    </li>
 		    <li>
 			    When setting up an email server, it can be way harder to not have your email show up as spam in other's people email. If you use a VPS, this is way easier.
@@ -46,7 +48,7 @@
 			    Space, power consumption and noise. Of course, this differs per server.
 		    </li>
 	    </ul>
-	    <p>Your mileage may vary, go and check each of these points and see if selfhosting is the right choice for you. Try and calculate your power consumption and see if your electricity cost is not too expensive.</p>
+	    <p>Your mileage may vary, go and check each of these points, and see if selfhosting is the right choice for you. Try and calculate your power consumption and see if your electricity cost is not too expensive.</p>
 	    <p>For me, the upsides outweighed the downsides, which is why I chose to host at home. But, this differs with each person and scenario. Go and research what your exact situation is, before trying anything. Otherwise you'll have to face some bad surprises.</p>
 	    <h2>Hardware</h2>
 
