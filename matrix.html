@@ -53,22 +53,22 @@ this tutorial</p>
 <p>Replace all <code>matrix.example.com</code> with the domain name you registered.</p>
 <h2 id="installing-packages">Installing packages</h2>
 <p>To actually install Matrix-Synapse on Debian, first add the official Matrix Debian repo to your system:</p>
-<p><pre><code>sudo apt install -y lsb-release wget apt-transport-https
-sudo wget -O /usr/share/keyrings/matrix-org-archive-keyring.gpg https://packages.matrix.org/debian/matrix-org-archive-keyring.gpg
+<p><pre><code>apt install -y lsb-release wget apt-transport-https
+wget -O /usr/share/keyrings/matrix-org-archive-keyring.gpg https://packages.matrix.org/debian/matrix-org-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/matrix-org-archive-keyring.gpg] https://packages.matrix.org/debian/ $(lsb_release -cs) main"
-sudo tee /etc/apt/sources.list.d/matrix-org.list</pre></code></p>
+tee /etc/apt/sources.list.d/matrix-org.list</pre></code></p>
 <p>Then update the repository database and install the <code>matrix-synapse-py3</code> package:</p>
-<p><pre><code>sudo apt update
-sudo apt install matrix-synapse-py3</pre></code></p>
+<p><pre><code>apt update
+apt install matrix-synapse-py3</pre></code></p>
 <p>Now simply reload the following services with <code>systemctl</code>:</p>
-<p><pre><code>sudo systemctl restart nginx matrix-synapse</pre></code></p>
+<p><pre><code>systemctl restart nginx matrix-synapse</pre></code></p>
 <p>And you've done it! Matrix-Synapse is now successfully installed;</p>
 <h2 id="further-server-configuration">Further Server Configuration</h2>
 <p>Now that the Matrix-Synapse server has been installed and some basic configuration has been done, it's highly recommended to further configure it to enable things such as SSL encryption, a PostgreSQL database, and user registration.</p>
 <h3 id="encryption-with-certbot">Encryption with Certbot</h3>
 <p>We can enable SSL encryption with certbot by running the following<br />
 command:</p>
-<p><pre><code>sudo certbot --nginx -d YOUR_DOMAIN</pre></code></p>
+<p><pre><code>certbot --nginx -d matrix.example.com</pre></code></p>
 <h3 id="enabling-user-registration">Enabling user registration</h3>
 <p>Enabling user registration means anyone will be able to register a Matrix account to your instance; This includes yourself, and enabling this feature is required to register an admin account. <strong>Please note, Matrix accounts cannot be deleted, only "deactivated".</strong></p>
 <p>Enabling registration is as simple as uncommenting and changing one line in the <code>/etc/matrix-synapse/homeserver.yaml</code> file:</p>
@@ -77,9 +77,9 @@ command:</p>
 <p><pre><code>registration_shared_secret: ???</pre></code></p>
 <p>Replace <code>???</code> with a secure password that you will remember. This password will be used for the admin account.</p>
 <p>Then simply restart Matrix-Synapse with:</p>
-<p><pre><code>sudo systemctl restart matrix-synapse</code></pre></p>
+<p><pre><code>systemctl restart matrix-synapse</code></pre></p>
 <p>Now, use the <code>register_new_matrix_user</code>command, which is installed alongside the <code>matrix-synapse-py3<</code> package, to create a new admin user on your server:</p>
-<p><pre><code>sudo register_new_matrix_user -u YOUR_USERNAME -p YOUR_PASSWORD -a -c /etc/matrix-synapse/homeserver.yaml </pre></code></p>
+<p><pre><code>register_new_matrix_user -u YOUR_USERNAME -p YOUR_PASSWORD -a -c /etc/matrix-synapse/homeserver.yaml </pre></code></p>
 <h3 id="federation">Federation</h3>
 <p>The nginx configuration that we setup already sets up federation, so no extra setup is required!</p>
 <p>You can test the federation <a href="https://federationtester.matrix.org">here.</a></p>
