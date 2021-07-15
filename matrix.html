@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Setting up a Matrix Server &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Setting up a Matrix Server</h1></header>
+    <nav></nav>
+<main>
+<p><a href="https://matrix.org">Matrix</a> is a free/libre API and protocol for chat and voice communication; Think DIY Discord, except without all the spyware. One can setup their own Matrix homeserver using either the <a href="https://github.com/matrix-org/synapse">Matrix-Synapse</a> or <a href="https://github.com/matrix-org/dendrite">Dendrite</a> software; A Matrix server supports messaging, encrypted messaging, voice and video calls (once a turn server is set up), and many other services.</p>
+<h2 id="initial-server-setup">Initial Server Setup</h2>
+<p>This section covers base installation and setup of Matrix-Synapse, about enough to get the homeserver running; If you wish to actually register an account to the instance and use it, consult the further server configuration part. I am assuming you are using Debian 10 Buster for
+this tutorial</p>
+<h2 id="webserver-configuration">Webserver Configuration</h2>
+<p>Before you install any packages, there has to be an appropriate configuration for Matrix-Synapse in your nginx config. Add the following to your config:</p>
+<pre><code>server {
+         server_name matrix.example.com;
+        
+        root /var/www/matrix.example.com;
+        index index.html;
+
+        listen 80;
+        listen [::]:80;
+
+        listen 443 ssl http2 default_server;
+        listen [::]:443 ssl http2 default_server;
+
+        listen 8448 ssl http2 default_server;
+        listen [::]:8448 ssl http2 default_server; 
+
+    location / {
+        proxy_pass http://localhost:8008;
+    }
+
+    location ~* ^(\/_matrix|\/_synapse\/client) {
+        proxy_pass http://localhost:8008;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        client_max_body_size 50M;
+        }
+
+    location /.well-known/matrix/client {
+        return 200 &#39;{&quot;m.homeserver&quot;: {&quot;base_url&quot;: &quot;https://matrix.example.com&quot;}}&#39;;
+        default_type application/json;
+        add_header Access-Control-Allow-Origin *;
+        }
+}</code></pre>
+<p><strong>(This example configuration file contains all configuration needed to utilize both federation and client Well-Known URI)</strong></p>
+<p>Replace all <code>matrix.example.com</code> with the domain name you registered.</p>
+<h2 id="installing-packages">Installing packages</h2>
+<p>To actually install Matrix-Synapse on Debian, first add the official Matrix Debian repo to your system:</p>
+<p><pre><code>sudo apt install -y lsb-release wget apt-transport-https
+sudo wget -O /usr/share/keyrings/matrix-org-archive-keyring.gpg https://packages.matrix.org/debian/matrix-org-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/matrix-org-archive-keyring.gpg] https://packages.matrix.org/debian/ $(lsb_release -cs) main"
+sudo tee /etc/apt/sources.list.d/matrix-org.list</pre></code></p>
+<p>Then update the repository database and install the <code>matrix-synapse-py3</code> package:</p>
+<p><pre><code>sudo apt update
+sudo apt install matrix-synapse-py3</pre></code></p>
+<p>Now simply reload the following services with <code>systemctl</code>:</p>
+<p><pre><code>sudo systemctl restart nginx matrix-synapse</pre></code></p>
+<p>And you've done it! Matrix-Synapse is now successfully installed;</p>
+<h2 id="further-server-configuration">Further Server Configuration</h2>
+<p>Now that the Matrix-Synapse server has been installed and some basic configuration has been done, it's highly recommended to further configure it to enable things such as SSL encryption, a PostgreSQL database, and user registration.</p>
+<h3 id="encryption-with-certbot">Encryption with Certbot</h3>
+<p>We can enable SSL encryption with certbot by running the following<br />
+command:</p>
+<p><pre><code>sudo certbot --nginx -d YOUR_DOMAIN</pre></code></p>
+<h3 id="enabling-user-registration">Enabling user registration</h3>
+<p>Enabling user registration means anyone will be able to register a Matrix account to your instance; This includes yourself, and enabling this feature is required to register an admin account. <strong>Please note, Matrix accounts cannot be deleted, only "deactivated".</strong></p>
+<p>Enabling registration is as simple as uncommenting and changing one line in the <code>/etc/matrix-synapse/homeserver.yaml</code> file:</p>
+<p><pre><code>enable_registration: true</pre></code></p>
+<p>To be able to create users from your homeserver with the <code>register_new_matrix_user</code> command, you also need to uncomment this line in your matrix config:</p>
+<p><pre><code>registration_shared_secret: ???</pre></code></p>
+<p>Replace <code>???</code> with a secure password that you will remember. This password will be used for the admin account.</p>
+<p>Then simply restart Matrix-Synapse with:</p>
+<p><pre><code>sudo systemctl restart matrix-synapse</code></pre></p>
+<p>Now, use the <code>register_new_matrix_user</code>command, which is installed alongside the <code>matrix-synapse-py3<</code> package, to create a new admin user on your server:</p>
+<p><pre><code>sudo register_new_matrix_user -u YOUR_USERNAME -p YOUR_PASSWORD -a -c /etc/matrix-synapse/homeserver.yaml </pre></code></p>
+<h3 id="federation">Federation</h3>
+<p>The nginx configuration that we setup already sets up federation, so no extra setup is required!</p>
+<p>You can test the federation <a href="https://federationtester.matrix.org">here.</a></p>
+<p>However, some extra features can be enabled to increase the usability of your homeserver over federation. In <code>homeserver.yaml</code>, the following lines can be edited:</p>
+<p><pre><code>allow_public_rooms_over_federation: true</pre></code></p>
+<p>This can be un-commented to allow users to add your homserver to their list of servers (in a client like Element) and see a list of all the public rooms.</p>
+<p><pre><code>allow_public_rooms_without_auth: true</pre></code></p>
+<p>This can be un-commented to enable guests to see public rooms without authenticating.</p>
+<h3 id="url-previews">URL Previews</h3>
+<p>Matrix-Synapse supports URL previews; To enable them, change this line to <code>true</code> in <code>/etc/matrix-synapse/homeserver.yaml</code>:</p>
+<p><pre><code>url_preview_enabled: true</pre></code></p>
+<p><strong>And</strong> make sure to uncomment the <code>url_preview_ip_range_blacklist:</code> section; <strong>Otherwise, Synapse will refuse to start up again!</strong></p>
+<h2 id="client-recommendations">Client Recommendations</h2>
+<p>The most popular client is <a href="https://element.io">Element</a> but its user interface might not be what everyone is used to. <a href="https://schildi.chat">Schildi Chat</a> is a fork of Element to have a user interface that resembles the user interface of traditional instant messangers like whatsapp and telegram. Some people might prefer this, they want a UI that looks like whatsapp or telegram.</p>
+<h2>Contributions</h2>
+<p>Originally by <a href="https://wiki.denshi.live/index.php/Matrix">DenshiVideo</a>, adapted by <a href="https://github.com/el3ctr0lyte">el3ctr0lyte</a></p>
+<p><a href="https://www.youtube.com/watch?v=Yvrts8us4OU">Video tutorial</a> by DenshiVideo</p>
+</main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
