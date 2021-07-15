@@ -69,8 +69,7 @@ HiddenServicePort 80 127.0.0.1:80</code></pre>
         <p></p>
 
         <aside>
-          <p>If you get the "No such file or directory" error, then try to restart the tor service and nginx 
-          with <code>systemctl restart tor@default.service</code> and <code>systemctl restart nginx.service</code>.</p>
+          <p>If you get the "No such file or directory" error, try with <code>cat /var/lib/tor/other_hidden_service/hostname</code>.</p>
         </aside>
 
         <h2>Adding the Nginx Config</h2>
