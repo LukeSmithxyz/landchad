@@ -47,18 +47,18 @@
         <h3>Installation</h3>
 
         <p>
-            Since we will be installing BIND 9.16 which is not supported by Debian stable, add the following line to your <code>/etc/apt/sources.list</code>:
+            Since we will be installing BIND 9.16 which is not supported by Debian buster, add the following line to your <code>/etc/apt/sources.list</code>:
         </p>
         
-        <pre><code>deb http://ftp.debian.org/debian sid main</code></pre>
+        <pre><code>deb http://deb.debian.org/debian buster-backports main</code></pre>
 
         <p>
-            Then run <code>apt update</code>. Verify by running <code>apt list bind9</code> and making sure the version is 9.16.
+            Then run <code>apt update</code>. Verify by running <code>apt list bind9/buster-backports</code> and making sure the version is 9.16.
         </p>
         
         <aside>
             <p>
-                Be advised that any future package installations will default to Debian unstable (This is Debian's standard for "unstable", so still pretty stable).
+                Be advised that this will add backports to Debian buster. These backports are part of Debian bullseye, the next stable release. If tutorials are updated for Debian bullseye, this step is not required and packages can be installed from the main repository.
             </p>
         </aside>
 
@@ -66,7 +66,7 @@
             Install BIND9 by running:
         </p>
 
-        <pre><code>apt install bind9 dnsutils</code></pre>
+        <pre><code>apt install bind9/buster-backports dnsutils/buster-backports</code></pre>
 
         <h3>Configuration</h3>
 
