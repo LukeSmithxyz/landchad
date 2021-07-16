@@ -83,6 +83,11 @@ drwxr-xr-x 2 ergo ergo   12288 Jul  1 09:01 languages
 <pre><code>sudo -i -u ergo
 cd ~/server</code></pre>
 
+        <p>To start configuring, we need to copy some files:</p>
+
+<pre><code>cp default.yaml ircd.yaml
+cp ergo.motd ircd.motd</code></pre>
+
         <p>
           Next, generate certificate files for TLS:
         </p>
@@ -94,11 +99,6 @@ cd ~/server</code></pre>
           This guide will help you setup the server for a typical use-case, but if you see any settings that you would like to change along the way,
           go ahead and change them, as long as you know what you're doing.
         </p>
-
-        <p>To start configuring, we need to copy some files:</p>
-
-<pre><code>cp default.yaml ircd.yaml
-cp ergo.motd ircd.motd</code></pre>
 
         <p>
           The next steps involve editing the newly copied <code>ircd.yaml</code> file. If you do not know how to edit text files from the comment line,
