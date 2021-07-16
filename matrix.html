@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Matrix Synapse Server &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Matrix Synapse Server</h1></header>
+    <nav></nav>
+    <main>
+    <p>Matrix is easy-to-use, decentralized and encrypted private chat software.
+    Matrix is federated, meaning that with a Matrix account on any server, including your own, you can talk to any other Matrix account on the internet, similar to email.
+    Matrix also allows fully end-to-end encrypted group chats.
+    </p>
+
+    <p><strong>Synapse</strong> is the name of the default Matrix server. It is written in Python.</p>
+
+    <h2>Installation</h2>
+
+    <p>Synapse is not in the Debian package repositories by default, but we can easily add Matrix's repository including it:</p>
+
+<pre><code>apt install -y lsb-release wget apt-transport-https
+wget -O /usr/share/keyrings/matrix-org-archive-keyring.gpg https://packages.matrix.org/debian/matrix-org-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/matrix-org-archive-keyring.gpg] https://packages.matrix.org/debian/ $(lsb_release -cs) main" &gt; /etc/apt/sources.list.d/matrix-org.list</code></pre>
+    <p>After we update our packages lists, we will be able to install Synapse with <code>apt</code>.</p>
+
+<pre><code>apt update
+apt install matrix-synapse-py3</code></pre>
+
+<p>When prompted, give your main domain name (not a subdomain). This will be the domain appended to your Matrix address, e.g. <code>@chad:landchad.net</code>.</p>
+
+    <h2>Nginx configuration</h2>
+
+    <p>Create an Nginx configuration file for Matrix, say <code>/etc/nginx/sites-available/matrix</code> and add the content below:
+    </p>
+
+    <pre><code>server {
+         server_name matrix.<strong>example.org</strong> ;
+        listen 80;
+        listen [::]:80;
+        location / {
+                proxy_pass http://localhost:8008;
+        }
+        location ~* ^(\/_matrix|\/_synapse\/client) {
+                proxy_pass http://localhost:8008;
+                proxy_set_header X-Forwarded-For $remote_addr;
+                client_max_body_size <strong>50M</strong> ;
+        }
+        location /.well-known/matrix/client {
+                return 200 '{"m.homeserver": {"base_url": "https://matrix.<strong>example.org</strong>"}}';
+                default_type application/json;
+                add_header Access-Control-Allow-Origin *;
+        }
+}</code></pre>
+
+    <aside>
+    <p>Note the <code>client_max_body_size</code> variable. By default, Nginx caps the size of files it can transfer. We increase that to 50M if needed by Matrix. (Note however that both Matrix and Nginx have seperate settings for this and to raise it to something much larger, you will have to increase the value in both congfiguration files.)
+    </p>
+    </aside>
+
+    <p>Now let's enable the Nginx Matrix site and reload Nginx to make it active.</p>
+
+    <pre><code>ln -s /etc/nginx/sites-available/matrix /etc/nginx/sites-enabled
+systemctl reload nginx</code></pre>
+
+    <h3>Encryption</h3>
+
+    <p>Obviously, we need to encrypt our <code>matrix</code> subdomain as well. Let's do that with certbot:</p>
+
+<pre><code>certbot --nginx -d matrix.<strong>example.org</strong></code></pre>
+
+    <h2>Configuration</h2>
+
+    <p>
+    The configuration file for Matrix is in <code>/etc/matrix-synapse/homeserver.yaml</code>.
+    It is well documented and commented, so you can read about the settings, but let's change the essential ones here.
+    </p>
+
+    <p><strong>This article isn't finished. Deal with basic settings and registering accounts.</strong></p>
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
