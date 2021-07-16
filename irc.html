@@ -26,7 +26,7 @@
 
         <p>
           An IRCd is short for "IRC daemon", which just means an IRC server.
-          The most easy IRCd to setup is <a href="https://ergo.chat/">Ergo</a>.
+          The most easy IRCd to set up is <a href="https://ergo.chat/">Ergo</a>.
         </p>
 
         <p>
@@ -46,7 +46,7 @@ mkdir server</code></pre>
         <p>
           You can find the latest release of Ergo on its GitHub <a href="https://github.com/ergochat/ergo/releases/latest">latest release</a> page.<br>
           There are several platforms available, but you want to choose Linux, most likely <code>linux-x86_64</code>.<br>
-          Once you have selected the correct package, copy its URL and replace <code><i>&lt;release url&gt;</i></code> with the package URL (still as the <code>ergo</code> user):
+          Once you have selected the correct package, copy its URL and replace the release url with the package URL (still as the <code>ergo</code> user):
         </p>
 
 <pre><code>wget https://github.com/ergochat/ergo/releases/download/v2.7.0/ergo-2.7.0-linux-x86_64.tar.gz
@@ -83,6 +83,11 @@ drwxr-xr-x 2 ergo ergo   12288 Jul  1 09:01 languages
 <pre><code>sudo -i -u ergo
 cd ~/server</code></pre>
 
+        <p>To start configuring, we need to copy some files:</p>
+
+<pre><code>cp default.yaml ircd.yaml
+cp ergo.motd ircd.motd</code></pre>
+
         <p>
           Next, generate certificate files for TLS:
         </p>
@@ -95,15 +100,10 @@ cd ~/server</code></pre>
           go ahead and change them, as long as you know what you're doing.
         </p>
 
-        <p>To start configuring, we need to copy some files:</p>
-
-<pre><code>cp default.yaml ircd.yaml
-cp ergo.motd ircd.motd</code></pre>
-
         <p>
-          The next steps involve editing the newly copied <code>ircd.yaml</code> file. If you do not know how to edit text files from the comment line,
+          The next steps involve editing the newly copied <code>ircd.yaml</code> file. If you do not know how to edit text files from the command line,
           you can use <code>nano</code>, which is very simple, using arrow keys to navigate, <code>CTRL+O</code> to save, and <code>CTRL+X</code> to exit.<br>
-          Another option is <code>vim</code>, which is a much more powerful text editor, but has a learning curve. It is only recommended for this guide if you already know it.<br>
+          Another option is <code>vim</code>, which is a much more powerful text editor, but has a learning curve. It is only recommended for this guide if you already know how to use it.<br>
           Lastly, you can copy the <code>ircd.yaml</code> file to a text editor on your computer and edit it with a GUI text editor of your choice.
           If that is what you choose to do, you may want to just download the file from <a href="https://raw.githubusercontent.com/ergochat/ergo/master/default.yaml">Ergo's GitHub</a>,
           edit it on your computer, clear the <code>ircd.yaml</code> file on the server, and then paste the contents from your computer into the blank file.<br>
@@ -210,9 +210,9 @@ ip-cloaking:
         <h3 id="configuring-hexchat-password">Password enforcement adjustments for HexChat (and possibly other clients)</h3>
         <p>
           Ergo offers account registration to allow users to do things like use history and bouncer features, register channels, etc.<br>
-          In clients such as HexChat, server password may conflict with account passwords, so the following setting should be enable if you wish to use accounts with clients such as HexChat.<br>
+          In clients such as HexChat, server passwords may conflict with account passwords, so the following setting should be enabled if you wish to use accounts with clients such as HexChat.<br>
           Note that this could under some circumstances be considered a security hazard, as a user with an account does not need to know the server password to connect,
-          although that user would have needed to register an account before the server had a password, and then a password would need to have been set after the fact, so this can be considered a very small concern if your setup always has had a password.<br>
+          although that user would have needed to register an account before the server had a password, and then a password would need to have been set after the fact, so this can be considered a very small concern if your setup has always had a password.<br>
           Also keep in mind that this setting has no effect if your network does not even have a password at all.
         </p>
 
