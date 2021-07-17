@@ -66,17 +66,12 @@ HiddenServicePort 80 127.0.0.1:80</code></pre>
         <p>Now your server is on the dark web. The following command will give you your onion address:</p>
         <pre><code> cat /var/lib/tor/hidden_service/hostname</code></pre>
 
-        <p></p>
-
-        <aside>
-          <p>If you get the "No such file or directory" error, try with <code>cat /var/lib/tor/other_hidden_service/hostname</code>.</p>
-        </aside>
-
         <h2>Adding the Nginx Config</h2>
         <p>
-        From here, the steps are almost identical to setting up a normal website configuration file.
-        Follow the steps as if you were making a new website in the webserver
-        <a href="nginx.html">tutorial</a> up until the server block of code. Instead, paste this:
+            From here, the steps are almost identical to setting up a normal website configuration file.
+            Follow the steps as if you were making a new website in the webserver <a href="nginx.html">tutorial</a>
+            <i>(you could just add it at the bottom of the <code>mywebsite</code> file you previously created)</i>,
+            but in the server block of code, instead, paste this:
         </p>
 
         <pre><code>server {
@@ -104,9 +99,15 @@ HiddenServicePort 80 127.0.0.1:80</code></pre>
         <pre><code>apt update
 apt install tor</code></pre>
 
-        <p><strong>Contributor</strong>  -  <a href="https://tomfasano.xyz" target="_blank">tomfasano.xyz</a></p>
+        <h3>Customize the first digits of your onion address</h3>
 
-    </main>
+        <p>It is actually possible to customize the first digits of your onion address with tools like <a href="https://github.com/cathugger/mkp224o">mkp224o</a>. Check out the README of that project to know how.</p>
+
+        <p>I would recommend customizing no more than 6 digits, otherwise the tool would need to run for a long time, maybe days o weeks.</p>
+
+        <br>
+        
+        <p><strong>Contributor</strong>  -  <a href="https://tomfasano.xyz" target="_blank">tomfasano.xyz</a></p>
 	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
 </body>
 </html>
