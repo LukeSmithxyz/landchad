@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Static Site Generation from Markdown &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Static Site Generation from Markdown</h1></header>
+    <nav></nav>
+    <main>
+<p>Knowing HTML for making your website is great, but writing .html-files can be a pain! After following this short tutorial you will be able to write all your content in Markdown and let Make take care of the rest.</p>
+<p>This workflow is highly extensible. At the end I'll be showing you how to set default templates and styles, custom templates and styles for individual pages and, as a little bonus, how you can even automate uploading your generated html-files to your server.</p>
+<p>If you already have a solid understanding of bash and GNU make, feel free to skip ahead to the <a href="#summary">summary</a>.</p>
+<h2 id="the-markdown-files">The Markdown files</h2>
+<p>If you haven't already done so, create a new directory for your website project. In this directory, create another directory called <code>markdown</code>. This is where your Markdown-files reside. Let's create a little test markdown file at <strong>markdown/index.md</strong> with the following content:</p>
+<pre><code>---
+title: My Website
+---
+
+# This is a heading
+
+This is a paragraph. Let&#39;s also try out a [link](test.html) to another         
+page. This is another paragraph. Let&#39;s insert another [link](subdir/test2.html) 
+to a page in a subdirectory.</code></pre>
+<p>This is not a tutorial on Markdown. If you have trouble understanding the above you should check out the corresponding <a href="https://pandoc.org/MANUAL.html#pandocs-markdown">section</a> in the pandoc documentation. It takes minutes to learn Markdown.</p>
+<p>For the two links to have somewhere to point to. Let's create a directory <strong>markdown/subdir</strong> and two more markdown files, <strong>markdown/test.md</strong> and <strong>markdown/subdir/test2.md</strong>. Write anything you want into the files. They are only for demonstration.</p>
+<h2 id="basic-makefile">Basic Makefile</h2>
+<p>Now the fun part: automation. Create a file called <strong>Makefile</strong> in the project root directory. The contents of the file are as follows:</p>
+<pre><code>MD_DIR      := markdown/
+BUILD_DIR   := build/
+
+MD_FILES    := $(shell find $(MD_DIR) -type f -name &quot;*.md&quot;)
+HTML_FILES  := $(patsubst $(MD_DIR)%.md,$(BUILD_DIR)%.html,$(MD_FILES))
+
+.PHONY: all clean
+
+all: $(HTML_FILES)
+
+$(BUILD_DIR)%.html: $(MD_DIR)%.md $(TMPL_FILES)
+    if [ ! -d &quot;$(@D)&quot; ]; then mkdir -p &quot;$(@D)&quot;; fi
+    pandoc -o &quot;$@&quot; &quot;$&lt;&quot;
+
+clean:
+    rm -rf $(BUILD_DIR)</code></pre>
+<p>The first two lines define the locations of our source files (.md) and our build files (.html). You can rename or change them, but keep in mind that <code>make</code> will be looking for your markdown files in the <code>MD_DIR</code> directory and fails if it doesn't find them.</p>
+<p>The next two lines set the file names for the markdown and html files, respectively. The first variable (<code>MD_FILES</code>) invokes the <code>find</code> command to look for all files with the *.md extension in <code>MD_DIR</code> and its subdirectories. The second variable (<code>HTML_FILES</code>) takes the same file and directory structure and substitutes *.html for all *.md extensions.</p>
+<p>The line <code>.PHONY: all clean</code> just tells <code>make</code> that it is not actually creating any files called "all" or "clean".</p>
+<p>The line <code>all: $(HTML_FILES)</code> tells <code>make</code> to create all the targets defined in <code>HTML_FILES</code> as a default upon calling <code>make</code> from the command line (or from inside vim if you fancy)</p>
+<p>The next block is where the magic happens. It basically says: to create the html files, go through all the markdown files in their (sub)directories, create the directory if it does not exist, and finally create the .html-file using pandoc. In makefile syntax, the variables <code>$(@D)</code>, <code>$@</code>, and <code>$&lt;</code> are the target directory, target file, and source file, respectively.</p>
+<p>The last block is a little convenience script that removes the html directory whenever you call <code>make clean</code> (if the directory exists).</p>
+<p>Congratulations, you now have a Makefile that automatically converts your markdown files to html files and copies the directory structure in your markdown directory whenever you call <code>make</code> in your project directory. If this is all that you came for, great! If you want to see some examples how to extend this setup, read on.</p>
+<h2 id="custom-and-default-stylesheets">Custom and Default Stylesheets</h2>
+<p>By default, Pandoc uses its own stylesheet to do some rudimentary styling of your html files. For your own website, you probably want to use your own css files. Thankfully, pandoc makes it extremely easy to include your own stylesheets on a per-document basis. All you need to do is to add a little line to the YAML header (the top of the document between the <code>---</code> tags) of your markdown files. For example:</p>
+<pre><code>---
+title: My Website
+css: path/to/my/stylesheet.css
+---</code></pre>
+<p>Please note that the path to your css file is always relative to the (generated) html file, not the markdown file! For pages in subdirectories, you need to append <code>../</code> to the path.</p>
+<p>Adding multiple css files is as simple as putting them in a comma-seperated list enclosed by brackets: <code>css: [style1.css, style2.css]</code>.</p>
+<p>If we want to use a certain stylesheet for all pages in our website, we can either include the corresponding line in each of our markdown files or extend our makefile slightly to add a default css file to all pages. The latter is preferred, because we do not want to edit all of our markdown files if we change the name or location of our main stylesheet. This is our new Makefile:</p>
+<pre><code>MD_DIR      := markdown/
+BUILD_DIR   := build/
+CSS_DIR     := css/
+
+DEFAULT_CSS := $(CSS_DIR)default.css
+
+MD_FILES    := $(shell find $(MD_DIR) -type f -name &quot;*.md&quot;)
+HTML_FILES  := $(patsubst $(MD_DIR)%.md,$(BUILD_DIR)%.html,$(MD_FILES))
+CSS_FILES   := $(patsubst $(CSS_DIR)%,$(BUILD_DIR)$(CSS_DIR)%, \
+           $(wildcard $(CSS_DIR)*.css))
+
+.PHONY: all upload clean
+
+all: $(CSS_FILES) $(HTML_FILES)
+
+$(BUILD_DIR)$(CSS_DIR)%.css: $(CSS_DIR)%.css
+    if [ ! -d &quot;$(@D)&quot; ]; then mkdir -p &quot;$(@D)&quot;; fi
+    cp $&lt; $@
+
+$(BUILD_DIR)%.html: $(MD_DIR)%.md
+    if [ ! -d &quot;$(@D)&quot; ]; then mkdir -p &quot;$(@D)&quot;; fi
+    pandoc --css=$(shell sed &#39;s/[^/]//g; s/\//..\//g&#39; &lt;&lt;&lt;$(@D))$(DEFAULT_CSS) \
+        -o &quot;$@&quot; &quot;$&lt;&quot;
+
+clean:
+    rm -rf $(BUILD_DIR)</code></pre>
+<p>I added a new block which looks for all css files in <code>CSS_DIR</code> and copies them to <code>$(BUILD_DIR)$(CSS_DIR)</code> which in this case evaluates to <code>build/css/</code>. Notice that this is not strictly necessary, because our html files could easily link to the “original” css files outside the <code>build</code> directory. I do prefer it this way though, because it puts all files needed to render our website into one location (the <code>build</code> directory). This will make moving, copying and uploading the website much easier.</p>
+<p>The other important addition is the fancy looking command following <code>pandoc  --css=</code>. It takes the directory of the target html file (<code>$(@D)</code>), removes everything except for any <code>/</code> and prepends them with two dots <code>../</code>, before appending the default css path. This makes sure that the targets are linking to the correct css file, even if they are in a subdirectory.</p>
+<h2 id="custom-and-default-templates">Custom and default templates</h2>
+<p>A template in this context is a skeleton html file which defines the structure of the html target generated by pandoc. By default, pandoc uses its own template (which you can actually look at by typing <code>pandoc -D html</code> in the command line). If you want more control over the structure of your pages, you want to define your own templates.</p>
+<p>Using a custom template is as easy as giving pandoc the <code>--template=path/to/template.html</code> option. If we want to use the same default template for every page, we can therefore simply add this to our Makefile:</p>
+<pre><code>$(BUILD_DIR)%.html: $(MD_DIR)%.md
+    if [ ! -d &quot;$(@D)&quot; ]; then mkdir -p &quot;$(@D)&quot;; fi
+    pandoc --css=$(shell sed &#39;s/[^/]//g; s/\//..\//g&#39; &lt;&lt;&lt;$(@D))$(DEFAULT_CSS) \
+        --template=path/to/default.html \
+        -o &quot;$@&quot; &quot;$&lt;&quot;</code></pre>
+<p>However, you may want to have the flexibility of defining a custom template for a certain page. An example might be your landing page which you might want to have a different layout than the rest of your pages.</p>
+<p>Wouldn’t it be nice if we could just add something like <code>template: custom.html</code> to our YAML header? Unfortunately, pandoc does not support this functionality out of the box. However, our Makefile comes to the rescue. Here are the modified lines in the Makefile:</p>
+<pre><code>...
+# Somewhere at the top of the file
+TMPL_DIR        := templates/
+DEFAULT_TMPL    := default.html
+TMPL_FILES      := $(shell find $(TMPL_DIR) -type f -name &quot;*.html&quot;)
+
+CUSTOM_TMPL = $(shell sed -n &#39;s/^template: *\([^ ]*\) */\1/p&#39; $&lt;)
+...
+
+$(BUILD_DIR)%.html: $(MD_DIR)%.md $(TMPL_FILES)
+    if [ ! -d &quot;$(@D)&quot; ]; then mkdir -p &quot;$(@D)&quot;; fi
+    pandoc --css=$(shell sed &#39;s/[^/]//g; s/\//..\//g&#39; &lt;&lt;&lt;$(@D))$(DEFAULT_CSS) \
+        --template=$(TMPL_DIR)$(if $(CUSTOM_TMPL),$(CUSTOM_TMPL),$(DEFAULT_TMPL)) \
+        -o &quot;$@&quot; &quot;$&lt;&quot;
+...</code></pre>
+<p>First, we define the location of our template files and our default template. Note that the variable <code>CUSTOM_TMPL</code> is assigned its value using <code>=</code> rather than <code>:=</code>. This tells Make that we want it to (re)evaluate the expression every time the variable is called. The expression looks for a line starting with “template:” and returns the filename that follows after.</p>
+<p>We take advantage of this in the command block. Following <code>--template=</code> we append the template directory and then check whether the current markdown file (referred to by <code>$&lt;</code>) includes the string “template:”. If it does, it inserts the correspoinding value. If it does not, it appends the name of the default template.</p>
+<h2 id="some-more-tricks">Some more tricks</h2>
+<p>We are now done and have a very useful little workflow to automatically generate our own static website using markdown, pandoc, and make. Here are some more tricks to make your life just the tiniest bit easier while working on your website.</p>
+<h3 id="automatic-upload">Automatic upload</h3>
+<p>If you have rsync installed on your local machine and your server (see <a href="rsync.html">this</a> tutorial, you can add the following little command block to your Makefile to upload your website to the server every time you type <code>make  upload</code> in the command line:</p>
+<pre><code>upload: $(HTML_FILES)
+    rsync -rtvzP $(BUILD_DIR) user@example.org:/path/to/website</code></pre>
+<h3 id="auto-make-on-file-save-vim">Auto make on file save (VIM)</h3>
+<p>If you are on this website, chances are you use vim. I like to keep a little vim script that tells vim to run <code>make</code> everytime I save a file. Obviously, you don’t want this as a global setting, so one way is to put it in a file in your project directory and source it in vim using <code>:so script.vim</code>. An even lazier method is to call the file <strong>.exrc</strong> and put <code>set exrc</code> in your global vim config. The latter saves you a single command when you open vim but it <em>can</em> be a security risk (type <code>:h exrc</code> in vim for more info).</p>
+<p>Anyway, this script executes <code>make</code> everytime you save a markdown or html file in your project directory:</p>
+<pre><code>au BufWritePost *.html,*.md silent !make</code></pre>
+<p>The <code>silent</code> in the command tells vim to not prompt the user to “Press ENTER or type command to continue”. It also doesn’t show any errors so if something unexpected happens, you should run <code>make</code> manually.</p>
+<p>Isn’t this overkill? The nice thing about <code>make</code> is that it only updates targets that have a timestamp older than the corresponding source file. If there is nothing to update, <code>make</code> literally does nothing (other than to check if a file needs to be updated). I personally think the convenience far outweighs the additional milliseconds of calling <code>make</code> when it might not be necessary.</p>
+<h2 id="summary">Summary</h2>
+<p>For those of you who are in a rush, here is the final Makefile:</p>
+<pre><code>MD_DIR      := markdown/
+CSS_DIR     := css/
+TMPL_DIR    := templates/
+BUILD_DIR   := build/
+
+DEFAULT_TMPL    := default.html
+DEFAULT_CSS := $(CSS_DIR)default.css
+
+MD_FILES    := $(shell find $(MD_DIR) -type f -name &quot;*.md&quot;)
+HTML_FILES  := $(patsubst $(MD_DIR)%.md,$(BUILD_DIR)%.html,$(MD_FILES))
+CSS_FILES   := $(patsubst $(CSS_DIR)%,$(BUILD_DIR)$(CSS_DIR)%, \
+           $(wildcard $(CSS_DIR)*.css))
+TMPL_FILES  := $(shell find $(TMPL_DIR) -type f -name &quot;*.html&quot;)
+
+CUSTOM_TMPL = $(shell sed -n &#39;s/^template: *\([^ ]*\) */\1/p&#39; $&lt;)
+
+.PHONY: all upload clean
+
+all: $(CSS_FILES) $(HTML_FILES)
+
+$(BUILD_DIR)$(CSS_DIR)%.css: $(CSS_DIR)%.css
+    if [ ! -d &quot;$(@D)&quot; ]; then mkdir -p &quot;$(@D)&quot;; fi
+    cp $&lt; $@
+
+$(BUILD_DIR)%.html: $(MD_DIR)%.md $(TMPL_FILES)
+    if [ ! -d &quot;$(@D)&quot; ]; then mkdir -p &quot;$(@D)&quot;; fi
+    pandoc --template=$(TMPL_DIR)$(if $(CUSTOM_TMPL),$(CUSTOM_TMPL),$(DEFAULT_TMPL)) \
+        --css=$(shell sed &#39;s/[^/]//g; s/\//..\//g&#39; &lt;&lt;&lt;$(@D))$(DEFAULT_CSS) \
+        -o &quot;$@&quot; &quot;$&lt;&quot;
+
+upload: $(HTML_FILES)
+    rsync -rtvzP $(BUILD_DIR) user@example.org:/path/to/website
+
+clean:
+    rm -rf $(BUILD_DIR)</code></pre>
+<p>And the corresponding folder structure (without the auto-generated <code>build/</code> directory):</p>
+<pre><code>├── Makefile
+├── markdown
+│   ├── index.md
+│   ├── subdir
+│   │   └── ...
+│   └── ...
+├── css
+│   ├── default.css
+│   └── ...
+└── templates
+    ├── default.html
+    └── ...</code></pre>
+<h2 id="contribution">Contribution</h2>
+<ul>
+<li>David Herok
+<ul>
+<li>Email: <a href="mailto:davidj@gmail.com">david@davidherok.com</a></li>
+<li>Monero: <code>42GNLNCBpfuXq5nxgpTzEwKXkzU9dfSERDGsCYyQb6TsGjNVBEgiAkESCVYjMJDJzGLR3WMYcF52rKbfAcbL3SuqK3YVSkj</code></li>
+</ul></li>
+</ul>
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
