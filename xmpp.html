@@ -13,6 +13,8 @@
     <nav></nav>
     <main>
 
+        <img class=titleimg src="pix/xmpp.svg" alt="XMPP Logo and Icon">
+
         <p>XMPP is a fantastically simple protocol that's usually used as a messenger.
         It's highly extensible,
         better than IRC,
@@ -171,6 +173,40 @@ With any system service, use <code>systemctl reload</code> or <code>systemctl re
 </p>
 
 <pre><code>systemctl restart prosody</code></pre>
+
+<h2>Using your Server!</h2>
+
+<p>
+Once your server is set up, you just need an XMPP client to use your new and secure chat system.
+</p>
+
+<ul>
+    <li>GNU/Linux: <a href="https://dino.im/">Dino</a> or <a href="https://gajim.org/">Gajim</a></li>
+    <li>Windows: <a href="https://gajim.org/">Gajim</a> also runs on Windows.</li>
+    <li>Android: <a href="https://conversations.im/">Conversations.im</a></li>
+    <li>Mac/iOS: <a href="https://monal.im/">Monal IM</a> or <a href="https://siskin.im/">Siskin</a> for iOS alone</li>
+    <li>command-line (GNU/Linux, MacOS, Windows): <a href="https://profanity-im.github.io/">Profanity</a></li>
+    <li><a href="https://xmpp.org/software/clients.html">See a more complete list kept by XMPP</a></li>
+</ul>
+
+<p>
+Install whichever of these clients you want on your computer or phone and you can log into your new XMPP server with the account you made.
+Note that if you enabled public registration, anyone can create an account on your server through one of these clients.
+</p>
+
+<h3>Account addresses</h3>
+
+<p>
+XMPP account addressed look just like email addresses: <code><strong>username@example.org</strong></code>.
+You can message any account on any XMPP server on the internet with that format.
+</p>
+
+<h3>Note on MUCs (multi-user chats)</h3>
+
+<p>
+Remember that MUCs are kept on a separate subdomain that we created and should've gotten a certificate for above, for example, <code><strong>muc.example.org</strong></code>.
+Chatrooms are created and referred to in the following format: <code><strong>#chatroomname@muc.example.org</strong></code>.
+</p>
 
     </main>
 	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
