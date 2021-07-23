@@ -16,6 +16,161 @@
 <!-- LB -->
 
 <item>
+<title>XMPP Server (Prosody)</title>
+<guid>https://landchad.net/xmpp.html</guid>
+<link>https://landchad.net/xmpp.html</link>
+<pubDate>Wed, 21 Jul 2021 22:58:21 -0400</pubDate>
+<description><![CDATA[
+    <header><h1>XMPP Server (Prosody)</h1></header>
+
+    <main>
+        <img class=titleimg src="pix/xmpp.svg" alt="XMPP Logo and Icon">
+        <p>XMPP is a fantastically simple protocol that's usually used as a messenger.
+        It's highly extensible,
+        better than IRC,
+        lighter and more decentralized and Matrix
+        and Telegram and normie social media can't hold a candle to it.
+        </p>
+        <p>
+        XMPP is so decentralized and extensible that there are many <em>different</em> XMPP servers.
+        Here, let's set up an <a href="https://prosody.im/">Prosody</a> XMPP server.
+        </p>
+        <h2>Installation</h2>
+        <p>
+        Prosody is in the Debian repositories, so we can easily install it on our server with the following command:
+        </p>
+        <pre><code>apt install prosody</code></pre>
+<h2>Configuration</h2>
+<p>
+The Prosody configuration file is in <code>/etc/prosody/prosody.cfg.lua</code>.
+To set it all up, we will be changing several things.
+</p>
+<h3>Setting Admins</h3>
+<p>
+Let's go ahead and set who our admin(s) will be.
+Find the line that says <code>admins = { }</code> and to this we can specify one or more server admins.
+</p>
+<pre><code># To add one admin:
+admins = { "chad@example.org" }
+# We can add more than one by separating them by commas. (This file is written in Lua.)
+admins = { "chad@example.org", "chadmin@example.org" }</code></pre>
+<p>
+Note that we have not created these accounts yet, we will do this <a href=#user>below</a>.
+</p>
+<h3>Set the Server URL</h3>
+<p>
+Find the line <code>VirtualHost "localhost"</code> and replace <code>localhost</code> with your domain.
+In our case, we will have <code>VirtualHost "example.org"</code>
+</p>
+<h3>Multi-User Chats</h3>
+<p>
+Most people will probably want the ability to have chats with more than two users.
+This is easily enough to enable.
+In the config file, add the following:
+</p>
+<pre><code>Component "<strong>chat.example.org</strong>" "muc"
+    modules_enabled = { "muc_mam" }
+    restrict_room_creation = "admin"</code></pre>
+<p>
+On the first line, you must have a separate subdomain for your multi-user chats.
+I use the <code>chat.</code> subdomain, but some use <code>muc.</code>.
+Anything if possible.
+</p>
+<p>
+The second line is important because it prevents non-admins from creating and squatting rooms on your server.
+The only situation where you might not want that is if you indend to open a general public chat system for people you don't know.
+</p>
+<aside>
+<p>
+Read more about the <code>muc</code> plugin on the Prosody documentation page <a href="https://prosody.im/doc/modules/mod_muc">here</a>.
+</p>
+</aside>
+<h3>End-to-end Encryption</h3>
+<p>
+Importantly, we'll want end-to-end encryption enabled for user privacy.
+</p>
+<p>
+Find the array beginning with <code>modules_enabled</code>.
+This includes a list of modules to be used.
+Add
+<code>"omemo_all_access";</code> to that list.
+Additionally, be sure to change the module <code>pep</code> to <code>pep_simple</code> or this will cause a conflict.</p>
+<p>
+This module is not installed by default,
+but you can easily download it by running the following command on the command prompt
+to download and install the module to the correct directory.
+</p>
+<pre class=wide><code>curl -sL https://hg.prosody.im/prosody-modules/raw-file/785389a2d2b3/mod_omemo_all_access/mod_omemo_all_access.lua &gt; /usr/lib/prosody/modules/mod_omemo_all_access.lua</code></pre>
+<h3>Other things to check</h3>
+<p>Check the config file for other settings you might want to change.
+For example, if you want to run a general public XMPP server, you can allow anyone to create an account by changing <code>allow_registration</code> to <code>true</code>.
+</p>
+<h2>Certificates</h2>
+<p>
+Obviously, we want to have client-to-server and server-to-server encryption.
+Nowadays, use can use Certbot to generate certificates and use a convenient command below <code>prosodyctl</code> to import them.
+</p>
+<p>
+<strong>If you have multi-user chat enabled, be sure to get a certificate for that subdomain as well.</strong>
+Include the <code>--nginx</code> option assuming you have an Nginx server running.
+</p>
+<pre><code>certbot -d <strong>chat.example.org</strong> --nginx</code></pre>
+<p>
+Once you have the certificates for encryption, run the following to import them into Prosody.
+</p>
+<pre><code>prosodyctl --root cert import /etc/letsencrypt/live/</code></pre>
+<p>
+Note that you might get an error that a certificate has not been found if your <code>muc</code> subdomain and your main domain share a certificate.
+It should still work, this is just notifying you that no specific
+</p>
+<p>
+For user privacy, we will definitely want to install and enable encryption with OMEMO.
+</p>
+<h2 id=user>Creating users/admins manually</h2>
+<p>
+Let's manually create the admin user we prepared for above.
+Note that you can indeed do this in your XMPP client if you have not disabled registration, but this is how it is done on the command line:
+</p>
+<pre><code>prosodyctl adduser <strong>chad@example.org</strong></code></pre>
+<p>This will prompt you to create a password as well.</p>
+<h2>Make changes active</h2>
+<p>
+With any system service, use <code>systemctl reload</code> or <code>systemctl restart</code> to make the new settings active:
+</p>
+<pre><code>systemctl restart prosody</code></pre>
+<h2>Using your Server!</h2>
+<p>
+Once your server is set up, you just need an XMPP client to use your new and secure chat system.
+</p>
+<ul>
+    <li>GNU/Linux: <a href="https://dino.im/">Dino</a> or <a href="https://gajim.org/">Gajim</a></li>
+    <li>Windows: <a href="https://gajim.org/">Gajim</a> also runs on Windows.</li>
+    <li>Android: <a href="https://conversations.im/">Conversations.im</a></li>
+    <li>Mac/iOS: <a href="https://monal.im/">Monal IM</a> or <a href="https://siskin.im/">Siskin</a> for iOS alone</li>
+    <li>command-line (GNU/Linux, MacOS, Windows): <a href="https://profanity-im.github.io/">Profanity</a></li>
+    <li><a href="https://xmpp.org/software/clients.html">See a more complete list kept by XMPP</a></li>
+</ul>
+<p>
+Install whichever of these clients you want on your computer or phone and you can log into your new XMPP server with the account you made.
+Note that if you enabled public registration, anyone can create an account on your server through one of these clients.
+</p>
+<h3>Account addresses</h3>
+<p>
+XMPP account addressed look just like email addresses: <code><strong>username@example.org</strong></code>.
+You can message any account on any XMPP server on the internet with that format.
+</p>
+<h3>Note on MUCs (multi-user chats)</h3>
+<p>
+Remember that MUCs are kept on a separate subdomain that we created and should've gotten a certificate for above, for example, <code><strong>muc.example.org</strong></code>.
+Chatrooms are created and referred to in the following format: <code><strong>#chatroomname@muc.example.org</strong></code>.
+</p>
+    </main>
+
+]]></description>
+</item>
+
+
+<item>
 <title>Setting up RSS Bridge</title>
 <guid>https://landchad.net/rss-bridge.html</guid>
 <link>https://landchad.net/rss-bridge.html</link>
