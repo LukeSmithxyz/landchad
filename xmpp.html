@@ -96,28 +96,6 @@ Read more about the <code>muc</code> plugin on the Prosody documentation page <a
 </p>
 </aside>
 
-
-<h3>End-to-end Encryption</h3>
-
-<p>
-Importantly, we'll want end-to-end encryption enabled for user privacy.
-</p>
-
-<p>
-Find the array beginning with <code>modules_enabled</code>.
-This includes a list of modules to be used.
-Add
-<code>"omemo_all_access";</code> to that list.
-Additionally, be sure to change the module <code>pep</code> to <code>pep_simple</code> or this will cause a conflict.</p>
-
-<p>
-This module is not installed by default,
-but you can easily download it by running the following command on the command prompt
-to download and install the module to the correct directory.
-</p>
-
-<pre class=wide><code>curl -sL https://hg.prosody.im/prosody-modules/raw-file/785389a2d2b3/mod_omemo_all_access/mod_omemo_all_access.lua &gt; /usr/lib/prosody/modules/mod_omemo_all_access.lua</code></pre>
-
 <h3>Other things to check</h3>
 
 <p>Check the config file for other settings you might want to change.
