@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>PeerTube Instance &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+	<header><h1>PeerTube Instance</h1></header>
+    <nav></nav>
+    <main>
+
+        <img class=titleimg src="pix/peertube.svg" alt="PeerTube logo">
+
+        <p>PeerTube is a self-hosted and (optionally) federated video sharing platform that saves bandwith on videos the more people watch.
+	PeerTube instances can follow each other to share videos and grow the federated network,
+	but you can always keep your instance to yourself if you choose to.</p>
+
+        <h2>Prerequisites</h2>
+
+	<p><strong>Most</strong> of PeerTube's dependencies can be installed with this command:</p>
+
+	<pre><code>apt install -y curl sudo unzip vim ffmpeg postgresql postgresql-contrib g++ make redis-server git python-dev cron wget</code></pre>
+
+	<p>It's also important to start all associated daemons:</p>
+
+	<pre><code>systemctl start postgresql redis</code></pre>
+
+	<p>PeerTube also requires <strong>NodeJS 14</strong> and <strong>yarn</strong> which cannot be installed from the Debian repositories. This means they have to be installed from separate, external repos:</p>
+
+	<pre><code>curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+apt install -y nodejs
+npm install --global yarn</code></pre>
+
+        <p>In addition to these dependencies, it's recommended to create a dedicated PeerTube user to install and manage PeerTube.</p>
+
+	<pre><code>useradd -m -d /var/www/peertube -s /bin/bash -p peertube peertube</code></pre>
+
+	<h2>Database</h2>
+
+	<p>PeerTube requires a PostgreSQL database to function. To create it, first make a new Postgres user named PeerTube:</p>
+
+	<pre><code>su postgres
+createuser -P peertube
+createdb -O peertube -E UTF8 -T template0 peertube_prod
+psql -c "CREATE EXTENSION pg_trgm;" peertube_prod
+psql -c "CREATE EXTENSION unaccent;" peertube_prod
+exit</code></pre>
+
+	<p>Be sure to <strong>make note of your Postgres user password,</strong> as it will be needed later when setting up PeerTube.</p>
+
+        <h2>Installation</h2>
+
+	<p>This handy one-liner can be used to determine the latest PeerTube version:</p>
+
+	<pre><code>VERSION=$(curl -s https://api.github.com/repos/chocobozzz/peertube/releases/latest | grep tag_name | cut -d '"' -f 4) && echo "Latest Peertube version is $VERSION"</code></pre>
+
+	<p>Next, a basic directory structure needs to be setup in the PeerTube user's home directory (/var/www/peertube).</p>
+
+	<p>To ensure permissions remain the same while managing files as PeerTube, <code>sudo</code> can be used to perform actions:</p>
+
+	<pre><code>sudo -u peertube mkdir config storage versions
+sudo -u peertube chmod 750 config</code></pre>
+
+	<p>Finally, a PeerTube release can be downloaded from the GitHub page and installed using yarn:</p>
+
+	<pre><code>cd versions
+sudo -u peertube ln -s versions/peertube-${VERSION} ./peertube-latest
+cd ./peertube-latest && sudo -H -u peertube yarn install --production --pure-lockfile</code></pre>
+
+	<h2>Configuration</h2>
+
+	<p>PeerTube's default config file can be copied over to <code>/var/www/peertube/config.production.yaml</code> so it can actually be used:</p>
+
+	<pre><code>cd /var/www/peertube
+	sudo -u peertube cp peertube-latest/production.yaml config/production.yaml</code></pre>
+
+	<p>Now the <code>production.yaml</code> file must be edited in the following ways:</p>
+
+	<p>First, add the hostname:</p>
+
+	<pre><code>webserver:
+  https: true
+  hostname: <strong>'example.org'</strong>
+  port: 443</code></pre>
+
+	<p>Then, the database:</p>
+
+	<pre><code>database:
+  hostname: 'localhost'
+  port: 5432
+  ssl: false
+  suffix: '_prod'
+  username: <strong>'peertube'</strong>
+  password: <strong>'your_password'</strong>
+  pool:
+     max: 5</code></pre>
+
+	<p>An email to generate the admin user:</p>
+
+	<pre><code>admin:
+  # Used to generate the root user at first startup
+  # And to receive emails from the contact form
+  email: <strong>'chad@example.org'</strong></code></pre>
+
+	<p>And <strong>optionally,</strong> email server information:</p>
+
+	<pre><code>smtp:
+  # smtp or sendmail
+  transport: smtp
+  # Path to sendmail command. Required if you use sendmail transport
+  sendmail: null
+  hostname: <strong>mail.example.org</strong>
+  port: 465 # If you use StartTLS: 587
+  username: <strong>your_email_username</strong>
+  password: <strong>your_email_password</strong>
+  tls: true # If you use StartTLS: false
+  disable_starttls: false
+  ca_file: null # Used for self signed certificates
+  from_address: <strong>'admin@example.org'</strong></code></pre>
+
+	<h2>NGINX</h2>
+
+	<p>PeerTube includes an NGINX configuration that can be copied over to <code>/etc/nginx/sites-available:</code>
+
+	<pre><code>cp /var/www/peertube/peertube-latest/support/nginx/peertube /etc/nginx/sites-available/peertube</code></pre>
+
+	<p>Because the PeerTube config is so long, it's recommended to use <code>sed</code> to modify the contents of the file,
+	replacing <code>${WEBSERVER_HOST}</code> with your hostname,
+	and <code>$(PEERTUBE_HOST)</code> with your localhost and port, which by default should be <code>127.0.0.1:9000</code>:
+
+	<pre><code>sed -i 's/${WEBSERVER_HOST}/<strong>example.org</strong>/g' /etc/nginx/sites-available/peertube
+sed -i 's/${PEERTUBE_HOST}/127.0.0.1:9000/g' /etc/nginx/sites-available/peertube</code></pre>
+
+	<p>Once you're happy with the NGINX config file, link it to <code>sites-enabled</code> to activate it:</p>
+
+	<pre><code>ln -s /etc/nginx/sites-available/peertube /etc/nginx/sites-enabled/peertube</code></pre>
+
+	<h3>Encryption with Certbot</h3>
+
+	<p>It's <strong>highly recommended</strong> to generate certificates for use with your PeerTube site, and this can be easily done with Let's Encrypt's <code>certbot</code> command:</p>
+
+	<pre><code>systemctl stop nginx
+certbot certonly --standalone -d <strong>example.org</strong>
+sudo systemctl restart nginx</code></pre>
+
+	<p>The certificates are generated <strong>standalone</strong> since the PeerTube NGINX config file already includes configuration for certbot.</p>
+
+	<h2>Running PeerTube</h2>
+
+	<p>A config file for a systemd daemon is included in PeerTube and can be setup like so:</p>
+
+	<pre><code>cp /var/www/peertube/peertube-latest/support/systemd/peertube.service /etc/systemd/system/
+systemctl daemon-reload</code></pre>
+
+	<p>Now, finally, run the PeerTube daemon to start PeerTube:</p>
+
+	<pre><code>systemctl start peertube</pre></code>
+
+	<h2>Using PeerTube</h2>
+
+	<p>To set a password for your admin user, run:</p>
+
+	<pre><code>cd /var/www/peertube/peertube-latest &amp;&amp; NODE_CONFIG_DIR=/var/www/peertube/config NODE_ENV=production npm run reset-password -- -u root</code></pre>
+
+	<p>Login to your PeerTube instance using the admin email specified in your <code>production.yaml</code> file and the admin password you just set.</p>
+
+	<img src="pix/peertube-login.jpg" height=400px>
+
+	<p>Once logged in, it's recommended to create a separate user without admin privileges for uploading videos to PeerTube.
+	This can be done easily from the users tab in the administration section:</p>
+
+	<p>Enjoy your PeerTube instance!</p>
+
+    <hr>
+
+    <h2>Updating PeerTube</h2>
+
+    <p>PeerTube is constantly adding new features, so it's a good idea to <a href="https://github.com/Chocobozzz/PeerTube/blob/develop/CHANGELOG.md">check for new updates</a> and add them if you wish. Just in the past year, they have added livestreaming and more.</p>
+
+    <p>Updating is fairly easy now since an <code>upgrade.sh</code> script has been added. Just run:</p>
+
+    <pre><code>cd /var/www/peertube/peertube-latest/scripts &amp;&amp; sudo -H -u peertube ./upgrade.sh</code></pre>
+
+    <p>
+    Although check the <a href="https://github.com/Chocobozzz/PeerTube/blob/develop/CHANGELOG.md">changelog</a> to see if there are additional manual requirements for particular updates.
+    </p>
+
+	<hr>
+	<p><em>Written by <a href="https://denshi.live">Denshi.</a> Donate Monero <a href="https://denshi.live/donate.html">here</a> <a href="https://denshi.live/images/monero.png">[QR]</a></em></p>
+
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
