@@ -15,15 +15,15 @@
 
         <img class=titleimg src="pix/peertube.svg" alt="PeerTube logo">
 
-        <p>PeerTube is a self-hosted and (optionally) federated video sharing platform that saves bandwith on videos the more people watch. 
-	PeerTube instances can follow each other to share videos and grow the federated network, 
+        <p>PeerTube is a self-hosted and (optionally) federated video sharing platform that saves bandwith on videos the more people watch.
+	PeerTube instances can follow each other to share videos and grow the federated network,
 	but you can always keep your instance to yourself if you choose to.</p>
 
         <h2>Prerequisites</h2>
 
 	<p><strong>Most</strong> of PeerTube's dependencies can be installed with this command:</p>
 
-	<pre><code>apt install curl sudo unzip vim ffmpeg postgresql postgresql-contrib g++ make redis-server git python-dev cron wget</code></pre>
+	<pre><code>apt install -y curl sudo unzip vim ffmpeg postgresql postgresql-contrib g++ make redis-server git python-dev cron wget</code></pre>
 
 	<p>It's also important to start all associated daemons:</p>
 
@@ -32,7 +32,7 @@
 	<p>PeerTube also requires <strong>NodeJS 14</strong> and <strong>yarn</strong> which cannot be installed from the Debian repositories. This means they have to be installed from separate, external repos:</p>
 
 	<pre><code>curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
-apt-get install -y nodejs
+apt install -y nodejs
 npm install --global yarn</code></pre>
 
         <p>In addition to these dependencies, it's recommended to create a dedicated PeerTube user to install and manage PeerTube.</p>
@@ -40,7 +40,7 @@ npm install --global yarn</code></pre>
 	<pre><code>useradd -m -d /var/www/peertube -s /bin/bash -p peertube peertube</code></pre>
 
 	<h2>Database</h2>
-	
+
 	<p>PeerTube requires a PostgreSQL database to function. To create it, first make a new Postgres user named PeerTube:</p>
 
 	<pre><code>su postgres
@@ -128,8 +128,8 @@ cd ./peertube-latest && sudo -H -u peertube yarn install --production --pure-loc
 
 	<pre><code>cp /var/www/peertube/peertube-latest/support/nginx/peertube /etc/nginx/sites-available/peertube</code></pre>
 
-	<p>Because the PeerTube config is so long, it's recommended to use <code>sed</code> to modify the contents of the file, 
-	replacing <code>${WEBSERVER_HOST}</code> with your hostname, 
+	<p>Because the PeerTube config is so long, it's recommended to use <code>sed</code> to modify the contents of the file,
+	replacing <code>${WEBSERVER_HOST}</code> with your hostname,
 	and <code>$(PEERTUBE_HOST)</code> with your localhost and port, which by default should be <code>127.0.0.1:9000</code>:
 
 	<pre><code>sed -i 's/${WEBSERVER_HOST}/<strong>example.org</strong>/g' /etc/nginx/sites-available/peertube
@@ -163,8 +163,8 @@ systemctl daemon-reload</code></pre>
 	<h2>Using PeerTube</h2>
 
 	<p>To set a password for your admin user, run:</p>
-	
-	<pre><code>cd /var/www/peertube/peertube-latest && NODE_CONFIG_DIR=/var/www/peertube/config NODE_ENV=production npm run reset-password -- -u root</code></pre>
+
+	<pre><code>cd /var/www/peertube/peertube-latest &amp;&amp; NODE_CONFIG_DIR=/var/www/peertube/config NODE_ENV=production npm run reset-password -- -u root</code></pre>
 
 	<p>Login to your PeerTube instance using the admin email specified in your <code>production.yaml</code> file and the admin password you just set.</p>
 
@@ -173,7 +173,21 @@ systemctl daemon-reload</code></pre>
 	<p>Once logged in, it's recommended to create a separate user without admin privileges for uploading videos to PeerTube.
 	This can be done easily from the users tab in the administration section:</p>
 
-	<p>Enjoy your PeerTube instance!</p>	
+	<p>Enjoy your PeerTube instance!</p>
+
+    <hr>
+
+    <h2>Updating PeerTube</h2>
+
+    <p>PeerTube is constantly adding new features, so it's a good idea to <a href="https://github.com/Chocobozzz/PeerTube/blob/develop/CHANGELOG.md">check for new updates</a> and add them if you wish. Just in the past year, they have added livestreaming and more.</p>
+
+    <p>Updating is fairly easy now since an <code>upgrade.sh</code> script has been added. Just run:</p>
+
+    <pre><code>cd /var/www/peertube/peertube-latest/scripts &amp;&amp; sudo -H -u peertube ./upgrade.sh</code></pre>
+
+    <p>
+    Although check the <a href="https://github.com/Chocobozzz/PeerTube/blob/develop/CHANGELOG.md">changelog</a> to see if there are additional manual requirements for particular updates.
+    </p>
 
 	<hr>
 	<p><em>Written by <a href="https://denshi.live">Denshi.</a> Donate Monero <a href="https://denshi.live/donate.html">here</a> <a href="https://denshi.live/images/monero.png">[QR]</a></em></p>
