@@ -16,6 +16,511 @@
 <!-- LB -->
 
 <item>
+<title>PeerTube Instance</title>
+<guid>https://landchad.net/peertube.html</guid>
+<link>https://landchad.net/peertube.html</link>
+<pubDate>Thu, 29 Jul 2021 10:44:56 -0400</pubDate>
+<description><![CDATA[
+	<header><h1>PeerTube Instance</h1></header>
+    
+    <main>
+        <img class=titleimg src="pix/peertube.svg" alt="PeerTube logo">
+        <p>PeerTube is a self-hosted and (optionally) federated video sharing platform that saves bandwith on videos the more people watch.
+	PeerTube instances can follow each other to share videos and grow the federated network,
+	but you can always keep your instance to yourself if you choose to.</p>
+        <h2>Prerequisites</h2>
+	<p><strong>Most</strong> of PeerTube's dependencies can be installed with this command:</p>
+	<pre><code>apt install -y curl sudo unzip vim ffmpeg postgresql postgresql-contrib g++ make redis-server git python-dev cron wget</code></pre>
+	<p>It's also important to start all associated daemons:</p>
+	<pre><code>systemctl start postgresql redis</code></pre>
+	<p>PeerTube also requires <strong>NodeJS 14</strong> and <strong>yarn</strong> which cannot be installed from the Debian repositories. This means they have to be installed from separate, external repos:</p>
+	<pre><code>curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+apt install -y nodejs
+npm install --global yarn</code></pre>
+        <p>In addition to these dependencies, it's recommended to create a dedicated PeerTube user to install and manage PeerTube.</p>
+	<pre><code>useradd -m -d /var/www/peertube -s /bin/bash -p peertube peertube</code></pre>
+	<h2>Database</h2>
+	<p>PeerTube requires a PostgreSQL database to function. To create it, first make a new Postgres user named PeerTube:</p>
+	<pre><code>su postgres
+createuser -P peertube
+createdb -O peertube -E UTF8 -T template0 peertube_prod
+psql -c "CREATE EXTENSION pg_trgm;" peertube_prod
+psql -c "CREATE EXTENSION unaccent;" peertube_prod
+exit</code></pre>
+	<p>Be sure to <strong>make note of your Postgres user password,</strong> as it will be needed later when setting up PeerTube.</p>
+        <h2>Installation</h2>
+	<p>This handy one-liner can be used to determine the latest PeerTube version:</p>
+	<pre><code>VERSION=$(curl -s https://api.github.com/repos/chocobozzz/peertube/releases/latest | grep tag_name | cut -d '"' -f 4) && echo "Latest Peertube version is $VERSION"</code></pre>
+	<p>Next, a basic directory structure needs to be setup in the PeerTube user's home directory (/var/www/peertube).</p>
+	<p>To ensure permissions remain the same while managing files as PeerTube, <code>sudo</code> can be used to perform actions:</p>
+	<pre><code>sudo -u peertube mkdir config storage versions
+sudo -u peertube chmod 750 config</code></pre>
+	<p>Finally, a PeerTube release can be downloaded from the GitHub page and installed using yarn:</p>
+	<pre><code>cd versions
+sudo -u peertube ln -s versions/peertube-${VERSION} ./peertube-latest
+cd ./peertube-latest && sudo -H -u peertube yarn install --production --pure-lockfile</code></pre>
+	<h2>Configuration</h2>
+	<p>PeerTube's default config file can be copied over to <code>/var/www/peertube/config.production.yaml</code> so it can actually be used:</p>
+	<pre><code>cd /var/www/peertube
+	sudo -u peertube cp peertube-latest/production.yaml config/production.yaml</code></pre>
+	<p>Now the <code>production.yaml</code> file must be edited in the following ways:</p>
+	<p>First, add the hostname:</p>
+	<pre><code>webserver:
+  https: true
+  hostname: <strong>'example.org'</strong>
+  port: 443</code></pre>
+	<p>Then, the database:</p>
+	<pre><code>database:
+  hostname: 'localhost'
+  port: 5432
+  ssl: false
+  suffix: '_prod'
+  username: <strong>'peertube'</strong>
+  password: <strong>'your_password'</strong>
+  pool:
+     max: 5</code></pre>
+	<p>An email to generate the admin user:</p>
+	<pre><code>admin:
+  # Used to generate the root user at first startup
+  # And to receive emails from the contact form
+  email: <strong>'chad@example.org'</strong></code></pre>
+	<p>And <strong>optionally,</strong> email server information:</p>
+	<pre><code>smtp:
+  # smtp or sendmail
+  transport: smtp
+  # Path to sendmail command. Required if you use sendmail transport
+  sendmail: null
+  hostname: <strong>mail.example.org</strong>
+  port: 465 # If you use StartTLS: 587
+  username: <strong>your_email_username</strong>
+  password: <strong>your_email_password</strong>
+  tls: true # If you use StartTLS: false
+  disable_starttls: false
+  ca_file: null # Used for self signed certificates
+  from_address: <strong>'admin@example.org'</strong></code></pre>
+	<h2>NGINX</h2>
+	<p>PeerTube includes an NGINX configuration that can be copied over to <code>/etc/nginx/sites-available:</code>
+	<pre><code>cp /var/www/peertube/peertube-latest/support/nginx/peertube /etc/nginx/sites-available/peertube</code></pre>
+	<p>Because the PeerTube config is so long, it's recommended to use <code>sed</code> to modify the contents of the file,
+	replacing <code>${WEBSERVER_HOST}</code> with your hostname,
+	and <code>$(PEERTUBE_HOST)</code> with your localhost and port, which by default should be <code>127.0.0.1:9000</code>:
+	<pre><code>sed -i 's/${WEBSERVER_HOST}/<strong>example.org</strong>/g' /etc/nginx/sites-available/peertube
+sed -i 's/${PEERTUBE_HOST}/127.0.0.1:9000/g' /etc/nginx/sites-available/peertube</code></pre>
+	<p>Once you're happy with the NGINX config file, link it to <code>sites-enabled</code> to activate it:</p>
+	<pre><code>ln -s /etc/nginx/sites-available/peertube /etc/nginx/sites-enabled/peertube</code></pre>
+	<h3>Encryption with Certbot</h3>
+	<p>It's <strong>highly recommended</strong> to generate certificates for use with your PeerTube site, and this can be easily done with Let's Encrypt's <code>certbot</code> command:</p>
+	<pre><code>systemctl stop nginx
+certbot certonly --standalone -d <strong>example.org</strong>
+sudo systemctl restart nginx</code></pre>
+	<p>The certificates are generated <strong>standalone</strong> since the PeerTube NGINX config file already includes configuration for certbot.</p>
+	<h2>Running PeerTube</h2>
+	<p>A config file for a systemd daemon is included in PeerTube and can be setup like so:</p>
+	<pre><code>cp /var/www/peertube/peertube-latest/support/systemd/peertube.service /etc/systemd/system/
+systemctl daemon-reload</code></pre>
+	<p>Now, finally, run the PeerTube daemon to start PeerTube:</p>
+	<pre><code>systemctl start peertube</pre></code>
+	<h2>Using PeerTube</h2>
+	<p>To set a password for your admin user, run:</p>
+	<pre><code>cd /var/www/peertube/peertube-latest &amp;&amp; NODE_CONFIG_DIR=/var/www/peertube/config NODE_ENV=production npm run reset-password -- -u root</code></pre>
+	<p>Login to your PeerTube instance using the admin email specified in your <code>production.yaml</code> file and the admin password you just set.</p>
+	<img src="pix/peertube-login.jpg" height=400px>
+	<p>Once logged in, it's recommended to create a separate user without admin privileges for uploading videos to PeerTube.
+	This can be done easily from the users tab in the administration section:</p>
+	<p>Enjoy your PeerTube instance!</p>
+    <hr>
+    <h2>Updating PeerTube</h2>
+    <p>PeerTube is constantly adding new features, so it's a good idea to <a href="https://github.com/Chocobozzz/PeerTube/blob/develop/CHANGELOG.md">check for new updates</a> and add them if you wish. Just in the past year, they have added livestreaming and more.</p>
+    <p>Updating is fairly easy now since an <code>upgrade.sh</code> script has been added. Just run:</p>
+    <pre><code>cd /var/www/peertube/peertube-latest/scripts &amp;&amp; sudo -H -u peertube ./upgrade.sh</code></pre>
+    <p>
+    Although check the <a href="https://github.com/Chocobozzz/PeerTube/blob/develop/CHANGELOG.md">changelog</a> to see if there are additional manual requirements for particular updates.
+    </p>
+	<hr>
+	<p><em>Written by <a href="https://denshi.live">Denshi.</a> Donate Monero <a href="https://denshi.live/donate.html">here</a> <a href="https://denshi.live/images/monero.png">[QR]</a></em></p>
+    </main>
+	
+]]></description>
+</item>
+
+
+<item>
+<title>Server-Side Scripting with CGI</title>
+<guid>https://landchad.net/cgi.html</guid>
+<link>https://landchad.net/cgi.html</link>
+<pubDate>Sun, 25 Jul 2021 14:29:44 -0400</pubDate>
+<description><![CDATA[
+    <header><h1>Server-Side Scripting with CGI</h1></header>
+    
+    <main>
+        <p>
+        The basic website tutorial here describes how to set up a static
+        website &mdash; one that just serves HTML files saved on your server,
+        and until you change something manually, the same content will be served
+        each time a given page is requested. This is perfectly enough for most
+        personal website needs. This is how blogs should be implemented, instead
+        of relying on bloatware like WordPress!
+        </p>
+        <p>
+        But sometimes you genuinely <i>do</i> need something more. You need your
+        website to serve different contents depending on the time, on who the
+        requester is, on the contents of a database, or maybe process user input
+        from a form.
+        </p>
+        <h2>CGI</h2>
+        <p>
+        CGI, or the Common Gateway Interface, is a specification to allow you,
+        the server owner, to program your web server using pretty much any
+        programming language you might know. The specification is almost as old
+        as the Internet itself and for a long time CGI scripting was the primary
+        method of creating dynamic websites.
+        </p>
+        <p>
+        CGI is a very simple specification indeed. You write a script in your
+        favorite language, the script receives input about the request in
+        environment variables, and whatever you print to the standard output
+        will be the response. Most likely, though, you will want to use a
+        library for your language of choice that makes a lot of this
+        request/response handling simpler (e.g. parsing query parameters for
+        you, setting appropriate headers, etc.).
+        </p>
+        <h3>Limitations of CGI</h3>
+        <p>
+        While in theory you could implement any sort of functionality with CGI
+        scripts, it's going to get difficult managing a lot of separate scripts
+        if they're supposed to be working in tandem to implement a dynamic
+        website. If you want to build a full out web application, you'd probably
+        be better off learning a web framework than gluing together Perl
+        scripts.
+        </p>
+        <p>
+        That said, just as most of the web could be replaced with static
+        websites, much of the remaining non-static web could be replaced with a
+        few simple scripts, rather than bloated Ruby on Rails or Django
+        applications.
+        </p>
+        <h2>Let's write a CGI script!</h2>
+        <p>
+        We'll implement a simple example CGI script. I'll use Ruby for this
+        tutorial, but you'll be able to follow along even if you don't know
+        Ruby, just treat it as pseudocode then find a CGI library for your
+        language.
+        </p>
+        <h3>The working example</h3>
+        <p>
+        Our working example will be the Lazy Calculator. Yeah, you're probably
+        tired of seeing calculator examples in every programming tutorial, but
+        have you ever implemented one that takes the weekends off?
+        </p>
+        <p>
+        Here's how it will work. When in a browser you submit a request to your
+        website like
+        </p>
+        <pre><code>example.com/calculator.html?a=10&amp;b=32</code></pre>
+        <p>
+        you will receive a page with the result of the addition of 10 and 32:
+        42.
+        </p>
+        <p>
+        <i>Unless</i> you send your request on a weekend. Then the website will
+        respond with
+        </p>
+        <pre><code>I don't get paid to work on weekends! Come back Monday.</code></pre>
+        <p>
+        This example will show a few things that CGI scripts can do that you
+        wouldn't have been able to get using just file hosting in your
+        web server:
+        <ul>
+          <li> getting inputs from the user; </li>
+          <li>
+            getting external information (here just the system time, but you
+            could imagine instead connecting to a database);
+          </li>
+          <li> using the above to create dynamic output. </li>
+        </ul>
+        <h3>The code</h3>
+        <p>
+        Here's an implementation of the lazy calculator as a Ruby CGI script:
+        </p>
+        <pre><code>#!/bin/env ruby
+require 'cgi'
+require 'date'
+cgi = CGI.new
+today = Date::today
+a = cgi["a"].to_i
+b = cgi["b"].to_i
+if today.saturday? || today.sunday?
+  cgi.out do
+    "I don't get paid to work on weekends! Come back Monday."
+  end
+else
+  cgi.out do
+    (a + b).to_s
+  end
+end</code></pre>
+        <p>
+        Let's go through what's happening here.
+        </p>
+        <h3>The shebang line</h3>
+        <p>
+        CGI works by pointing your web server to an executable program. A Ruby
+        or Python script by itself is not immediately executable by a computer.
+        But on Unix-like systems you can specify the program that will be able
+        to execute your file in its first line if it starts with <code>#!</code>
+        (known as the shebang; read more about it on
+        <a href="https://en.wikipedia.org/wiki/Shebang_(Unix)">Wikipedia</a>).
+        </p>
+        <p>
+        So if you're going to be using a scripting language, you'll probably
+        need the appropriate shebang line at the top of your script. If you use
+        a compiled language, you'll just point your web server to the compiled
+        executable binary.
+        </p>
+        <h3>Query parameters</h3>
+        <p>
+        The next interesting lines of code are where we set the variables
+        <code>a</code> and <code>b</code>. Here we are getting user inputs from
+        the request.
+        </p>
+        <p>
+        In the example request we mentioned above
+        (<code>example.com/calculator.html?a=10&amp;b=32</code>), the part
+        starting from the question mark, <code>?a=10&amp;b=32</code>, is the
+        <i>query string</i>. This is how users can submit parameters with their
+        web requests. Usually these parameters are set by e.g. a form on your
+        website, but in our simple example we'll be just manually manipulating
+        the URL.
+        </p>
+        <p>
+        The query string contains key-value pairs. The Ruby CGI library makes
+        them available in the <code>CGI</code> object it provides. We just need
+        to index it with the desired key, and we'll get the corresponding value.
+        </p>
+        <h3>Wrapping it up</h3>
+        <p>
+        The remaining parts of the code should be pretty self-explanatory. We
+        get today's date, check if it's a Saturday or a Sunday, and depending on
+        that, we instruct the CGI library to output either the answer, or a
+        "come back later" message. 
+        </p>
+        <p>
+        The Ruby library by default returns an HTML response, so we really
+        should have wrapped our outputs in some <code>html</code>,
+        <code>body</code>, etc. tags. Alternatively, we could have specified
+        that the response is just plain text with
+        </p>
+        <pre><code>cgi.out 'text/plain' do</code></pre>
+        <p>
+        In general, your CGI library will probably have ways of specifying all
+        sorts of HTTP response headers, like status code, content type, etc.
+        </p>
+        <h2>Making it work</h2>
+        <p>
+        We have a CGI script, now let's point our web server to it.
+        </p>
+        <h3>Installing FastCGI</h3>
+        <p>
+        If you're using Nginx, install <code>fcgiwrap</code>:
+        </p>
+        <pre><code>apt install fcgiwrap</code></pre>
+        <p>
+        This installs the necessary packages for Nginx to use FastCGI &mdash; a
+        layer between your web server and CGI script that allows for faster
+        handling of scripts than if the web server had to handle it all by
+        itself.
+        </p>
+        <p>
+        Other web servers will probably have a similarly simple way of enabling
+        FastCGI, or you can look into other methods for launching CGI scripts.
+        </p>
+        <h3>Nginx configuration</h3>
+        <p>
+        In the configuration file for your website, add something like the
+        following:
+        </p>
+<pre><code>location /calculator.html {
+  include fastcgi_params;
+  fastcgi_param SCRIPT_FILENAME /usr/local/bin/lazy-calculator.rb;
+  fastcgi_param QUERY_STRING $query_string;
+  fastcgi_pass unix:/run/fcgiwrap.socket;	
+}</code></pre>
+        <p>
+        <code>fastcgi_param</code> directives specify various parameters for
+        FastCGI. <code>SCRIPT_FILENAME</code> should point to your executable.
+        For <code>QUERY_STRING</code>, we just copy Nginx's
+        <code>$query_string</code> variable. You might want to pass other
+        information to your CGI script as well, see for example
+        <a href="https://wiki.debian.org/nginx/FastCGI">the Debian wiki</a> for
+        a more detailed example, including pointing to an entire directory of
+        CGI scripts, rather than adding each one by hand to your web server
+        config.
+        </p>
+        <h2>Contribution</h2>
+        <ul>
+            <li>Martin Chrzanowski -- <a href="https://m-chrzan.xyz">website</a>, <a href="https://m-chrzan.xyz/donate.html">donate</a></li>
+        </ul>
+    </main>
+	
+]]></description>
+</item>
+
+
+<item>
+<title>XMPP Server (Prosody)</title>
+<guid>https://landchad.net/xmpp.html</guid>
+<link>https://landchad.net/xmpp.html</link>
+<pubDate>Wed, 21 Jul 2021 22:58:21 -0400</pubDate>
+<description><![CDATA[
+    <header><h1>XMPP Server (Prosody)</h1></header>
+
+    <main>
+        <img class=titleimg src="pix/xmpp.svg" alt="XMPP Logo and Icon">
+        <p>XMPP is a fantastically simple protocol that's usually used as a messenger.
+        It's highly extensible,
+        better than IRC,
+        lighter and more decentralized and Matrix
+        and Telegram and normie social media can't hold a candle to it.
+        </p>
+        <p>
+        XMPP is so decentralized and extensible that there are many <em>different</em> XMPP servers.
+        Here, let's set up an <a href="https://prosody.im/">Prosody</a> XMPP server.
+        </p>
+        <h2>Installation</h2>
+        <p>
+        Prosody is in the Debian repositories, so we can easily install it on our server with the following command:
+        </p>
+        <pre><code>apt install prosody</code></pre>
+<h2>Configuration</h2>
+<p>
+The Prosody configuration file is in <code>/etc/prosody/prosody.cfg.lua</code>.
+To set it all up, we will be changing several things.
+</p>
+<h3>Setting Admins</h3>
+<p>
+Let's go ahead and set who our admin(s) will be.
+Find the line that says <code>admins = { }</code> and to this we can specify one or more server admins.
+</p>
+<pre><code># To add one admin:
+admins = { "chad@example.org" }
+# We can add more than one by separating them by commas. (This file is written in Lua.)
+admins = { "chad@example.org", "chadmin@example.org" }</code></pre>
+<p>
+Note that we have not created these accounts yet, we will do this <a href=#user>below</a>.
+</p>
+<h3>Set the Server URL</h3>
+<p>
+Find the line <code>VirtualHost "localhost"</code> and replace <code>localhost</code> with your domain.
+In our case, we will have <code>VirtualHost "example.org"</code>
+</p>
+<h3>Multi-User Chats</h3>
+<p>
+Most people will probably want the ability to have chats with more than two users.
+This is easily enough to enable.
+In the config file, add the following:
+</p>
+<pre><code>Component "<strong>chat.example.org</strong>" "muc"
+    modules_enabled = { "muc_mam" }
+    restrict_room_creation = "admin"</code></pre>
+<p>
+On the first line, you must have a separate subdomain for your multi-user chats.
+I use the <code>chat.</code> subdomain, but some use <code>muc.</code>.
+Anything if possible.
+</p>
+<p>
+The second line is important because it prevents non-admins from creating and squatting rooms on your server.
+The only situation where you might not want that is if you indend to open a general public chat system for people you don't know.
+</p>
+<aside>
+<p>
+Read more about the <code>muc</code> plugin on the Prosody documentation page <a href="https://prosody.im/doc/modules/mod_muc">here</a>.
+</p>
+</aside>
+<h3>End-to-end Encryption</h3>
+<p>
+Importantly, we'll want end-to-end encryption enabled for user privacy.
+</p>
+<p>
+Find the array beginning with <code>modules_enabled</code>.
+This includes a list of modules to be used.
+Add
+<code>"omemo_all_access";</code> to that list.
+Additionally, be sure to change the module <code>pep</code> to <code>pep_simple</code> or this will cause a conflict.</p>
+<p>
+This module is not installed by default,
+but you can easily download it by running the following command on the command prompt
+to download and install the module to the correct directory.
+</p>
+<pre class=wide><code>curl -sL https://hg.prosody.im/prosody-modules/raw-file/785389a2d2b3/mod_omemo_all_access/mod_omemo_all_access.lua &gt; /usr/lib/prosody/modules/mod_omemo_all_access.lua</code></pre>
+<h3>Other things to check</h3>
+<p>Check the config file for other settings you might want to change.
+For example, if you want to run a general public XMPP server, you can allow anyone to create an account by changing <code>allow_registration</code> to <code>true</code>.
+</p>
+<h2>Certificates</h2>
+<p>
+Obviously, we want to have client-to-server and server-to-server encryption.
+Nowadays, use can use Certbot to generate certificates and use a convenient command below <code>prosodyctl</code> to import them.
+</p>
+<p>
+<strong>If you have multi-user chat enabled, be sure to get a certificate for that subdomain as well.</strong>
+Include the <code>--nginx</code> option assuming you have an Nginx server running.
+</p>
+<pre><code>certbot -d <strong>chat.example.org</strong> --nginx</code></pre>
+<p>
+Once you have the certificates for encryption, run the following to import them into Prosody.
+</p>
+<pre><code>prosodyctl --root cert import /etc/letsencrypt/live/</code></pre>
+<p>
+Note that you might get an error that a certificate has not been found if your <code>muc</code> subdomain and your main domain share a certificate.
+It should still work, this is just notifying you that no specific
+</p>
+<p>
+For user privacy, we will definitely want to install and enable encryption with OMEMO.
+</p>
+<h2 id=user>Creating users/admins manually</h2>
+<p>
+Let's manually create the admin user we prepared for above.
+Note that you can indeed do this in your XMPP client if you have not disabled registration, but this is how it is done on the command line:
+</p>
+<pre><code>prosodyctl adduser <strong>chad@example.org</strong></code></pre>
+<p>This will prompt you to create a password as well.</p>
+<h2>Make changes active</h2>
+<p>
+With any system service, use <code>systemctl reload</code> or <code>systemctl restart</code> to make the new settings active:
+</p>
+<pre><code>systemctl restart prosody</code></pre>
+<h2>Using your Server!</h2>
+<p>
+Once your server is set up, you just need an XMPP client to use your new and secure chat system.
+</p>
+<ul>
+    <li>GNU/Linux: <a href="https://dino.im/">Dino</a> or <a href="https://gajim.org/">Gajim</a></li>
+    <li>Windows: <a href="https://gajim.org/">Gajim</a> also runs on Windows.</li>
+    <li>Android: <a href="https://conversations.im/">Conversations.im</a></li>
+    <li>Mac/iOS: <a href="https://monal.im/">Monal IM</a> or <a href="https://siskin.im/">Siskin</a> for iOS alone</li>
+    <li>command-line (GNU/Linux, MacOS, Windows): <a href="https://profanity-im.github.io/">Profanity</a></li>
+    <li><a href="https://xmpp.org/software/clients.html">See a more complete list kept by XMPP</a></li>
+</ul>
+<p>
+Install whichever of these clients you want on your computer or phone and you can log into your new XMPP server with the account you made.
+Note that if you enabled public registration, anyone can create an account on your server through one of these clients.
+</p>
+<h3>Account addresses</h3>
+<p>
+XMPP account addressed look just like email addresses: <code><strong>username@example.org</strong></code>.
+You can message any account on any XMPP server on the internet with that format.
+</p>
+<h3>Note on MUCs (multi-user chats)</h3>
+<p>
+Remember that MUCs are kept on a separate subdomain that we created and should've gotten a certificate for above, for example, <code><strong>muc.example.org</strong></code>.
+Chatrooms are created and referred to in the following format: <code><strong>#chatroomname@muc.example.org</strong></code>.
+</p>
+    </main>
+
+]]></description>
+</item>
+
+
+<item>
 <title>Setting up RSS Bridge</title>
 <guid>https://landchad.net/rss-bridge.html</guid>
 <link>https://landchad.net/rss-bridge.html</link>
@@ -1268,8 +1773,7 @@ mkdir git</code></pre>
         </p>
         <h2>Contribution</h2>
         <ul>
-            <li>Martin Chrzanowski -- <a
-                href="https://m-chrzan.xyz">website</a>, <a href="https://m-chrzan.xyz/crypto.html">donate</a></li>
+            <li>Martin Chrzanowski -- <a href="https://m-chrzan.xyz">website</a>, <a href="https://m-chrzan.xyz/donate.html">donate</a></li>
         </ul>
     </main>
 
