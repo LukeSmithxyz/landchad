@@ -50,7 +50,7 @@ apt install matrix-synapse-py3</code></pre>
                 proxy_set_header X-Forwarded-For $remote_addr;
                 client_max_body_size <strong>50M</strong> ;
         }
-        location /.well-known/matrix/client {
+        location /.well-known/matrix/server {
                 return 200 '{"m.homeserver": {"base_url": "https://matrix.<strong>example.org</strong>"}}';
                 default_type application/json;
                 add_header Access-Control-Allow-Origin *;
