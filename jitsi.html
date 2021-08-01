@@ -1,0 +1,152 @@
+<!-- <!DOCTYPE html> -->
+<html lang="en">
+  <head>
+    <title>Self-hosting Jitsi &ndash; LandChad.net</title>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="alternate" type="application/rss+xml" title="Land Chad RSS" href="/rss.xml" />
+  </head>
+  <body>
+    <header><h1>Self-hosting Jitsi</h1></header>
+    <nav></nav>
+    <main>
+      <!-- Intro -->
+      <p>
+        <i>
+          Jitsi is a set of open-source projects that allows you to easily build and deploy secure video
+          conferencing solutions.
+        </i>
+      </p>
+      <p>
+        Is really easy to install, and also a really good alternative to Zoom or other video conferencing software.
+        You can create calls just by typing the URL, and loging-in is not necessary.
+      </p>
+      <p>
+        In this tutorial I'm assuming you're running Devian 9 or newer on your server, although Jitsi is also
+        supported out-of-the-box for Ubuntu, but that need some extra steps you can see
+        <a href="https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-quickstart" target="blank">here</a
+        >.
+      </p>
+
+      <h2>How to get</h2>
+
+      <p>First of all, you'll need to make sure you have <code>apt-transport-https</code> installed, so run</p>
+
+      <pre><code>apt update<br>apt install apt-transport-https</code></pre>
+
+      <p>Jitsi has its own package repository, so let's add it.</p>
+
+      <pre><code>curl https://download.jitsi.org/jitsi-key.gpg.key | sh -c 'gpg --dearmor &#62; /usr/share/keyrings/jitsi-keyring.gpg'<br><br>echo 'deb [signed-by=/usr/share/keyrings/jitsi-keyring.gpg] https://download.jitsi.org stable/' | tee /etc/apt/sources.list.d/jitsi-stable.list &#62; /dev/null</code></pre>
+
+      <p>
+        Ok. So now we can install Jitsi, but before we do that, let's the firewall <code>ufw</code>, in case you
+        have it enabled, and the SSL certificate.
+      </p>
+
+      <h2></h2>
+
+      <h2>Setup and configure your firewall</h2>
+
+      <p>The following ports need to be open in your firewall, to allow traffic to the Jitsi Meet server:</p>
+      <ul>
+        <li>443 TCP - for general access to Jitsi Meet.</li>
+        <li>10000 UDP - for general network video/audio communications.</li>
+        <li>3478 UDP - for quering the stun server (coturn, optional, needs config.js change to enable it).</li>
+        <li>
+          5349 TCP - for fallback network video/audio communications over TCP (when UDP is blocked for example),
+          served by coturn.
+        </li>
+      </ul>
+      <pre><code>ufw allow 443/tcp<br>ufw allow 10000/udp<br>ufw allow 3478/udp<br>ufw allow 5349/tcp<br>ufw enable</code></pre>
+
+      <h2>SSL certificate</h2>
+
+      <p>
+        I'll be using <a href="./certbot.html" target="blank">certbot</a> and
+        <a href="./nginx.html" target="blank">Nginx</a> to generate the certificate.
+      </p>
+      <p>
+        Add the subdomain to your Nginx configuration file, wich for me is
+        <code>/etc/nginx/sites-available/mywebsite</code>. Open it and add the following at the end:
+      </p>
+
+      <pre><code>server {
+  server_name <strong>meet.example.com</strong> ;
+  location / {
+    try_files $uri $uri/ =404 ;
+  }
+}</code></pre>
+
+      <p>
+        Substitute <code>meet.example.com</code> accordingly, where <code>meet</code> can be any subdomain you
+        want.
+      </p>
+
+      <p>Run <code>certbot</code> and reload nginx.</p>
+
+      <h2>Installation</h2>
+
+      <p>To begin the installation process, just run</p>
+      <pre><code>apt install jitsi-meet</code></pre>
+
+      <p>
+        It will ask you for your <code><strong>hostname</strong></code
+        >; there you'll need to input the subdomain you have just added to Nginx, like
+        <code>meet.example.com</code>.
+      </p>
+
+      <p>For the SSL certificate, choose <code>I want to use my own certificate</code>.</p>
+
+      <p>
+        When it ask you for the certification key and cert files, input
+        <code>/etc/letsencrypt/live/<strong>meet.example.com</strong>/privkey.pem</code> and
+        <code>/etc/letsencrypt/live/<strong>meet.example.com</strong>/cert.pem</code> respectively.
+      </p>
+
+      <h3>Confirm that your installation is working</h3>
+
+      <p>Just open a web browser and go to <code>meet.example.com</code>.</p>
+
+      <h3>Enjoy Jitsi!</h3>
+
+      <hr />
+
+      <h2>More info</h2>
+
+      <p>
+        This article is based on
+        <a href="https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-quickstart" target="blank"
+          >the original documentation</a
+        >. There you can find more details and configurations.
+      </p>
+
+      <hr />
+      <p>
+        <em
+          >Written by <a href="https://josefabio.com" target="blank">Jose Fabio.</a><br />Donate Monero
+          <code class="crypto"
+            >484RLdsXQCDGSthNatGApRPTyqcCbM3PkM97axXezEuPZppimXmwWegiF3Et4BHBgjWR7sVXuEUoAeVNpBiVznhoDLqLV7j</code
+          >
+          <a href="https://josefabio.com/figures/monero.jpg" class="crypto" target="blank">[QR]</a></em
+        >
+      </p>
+    </main>
+
+    <footer>
+      <a href="https://landchad.net">LandChad.net</a><br />Because Everyone should be an Internet LandChad.<br /><a
+        href="index.html"
+        ><li><img src="pix/chad.gif" alt="chad" /></li></a
+      ><a href="rss.xml"
+        ><li><img src="pix/rss.svg" alt="RSS" /></li></a
+      ><a href="pix/btc.png"
+        ><li><img src="pix/btc.svg" alt="BTC" /></li></a
+      ><a href="pix/xmr.png"
+        ><li><img src="pix/xmr.svg" alt="XMR" /></li></a
+      ><a href="https://github.com/lukesmithxyz/landchad"
+        ><li><img src="pix/git.svg" alt="Github" /></li
+      ></a>
+    </footer>
+  </body>
+</html>
