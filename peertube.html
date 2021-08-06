@@ -69,35 +69,38 @@ exit</code></pre>
 
         <h2>Installation</h2>
 
-	<p>This handy one-liner can be used to determine the latest PeerTube version:</p>
+    <p>Using <code>su -l</code>, we will become the PeerTube user to create the required directories and download and install PeerTube itself with the proper permissions.
+    First, we create the required directories.</p>
 
-	<pre><code>VERSION=$(curl -s https://api.github.com/repos/chocobozzz/peertube/releases/latest | grep tag_name | cut -d '"' -f 4) && echo "Latest Peertube version is $VERSION"</code></pre>
+	<pre><code>su -l peertube
+mkdir config storage versions
+chmod 750 config</code></pre>
 
-	<p>Next, a basic directory structure needs to be setup in the PeerTube user's home directory (/var/www/peertube).</p>
+    <h3>Downloading PeerTube</h3>
+    <p>Still as the PeerTube user, we can now check for the most recent PeerTube versions number, download and install it in the newly created <code>versiond</code> directory.</p>
+    <pre class=wide><code>VERSION=$(curl -s https://api.github.com/repos/chocobozzz/peertube/releases/latest | grep tag_name | cut -d '"' -f 4)
+cd /var/www/peertube/versions
+wget "https://github.com/Chocobozzz/PeerTube/releases/download/${VERSION}/peertube-${VERSION}.zip"
+unzip peertube-${VERSION}.zip
+rm peertube-${VERSION}.zip</code></pre>
 
-	<p>To ensure permissions remain the same while managing files as PeerTube, <code>sudo</code> can be used to perform actions:</p>
+    <h3>Installation via Yarn</h3>
 
-	<pre><code>sudo -u peertube mkdir config storage versions
-sudo -u peertube chmod 750 config</code></pre>
+<p>The downloaded release can then be symbolically linked to <code>/var/www/peertube/peertube-latest</code> and <strong>yarn</strong> is used to install PeerTube:</p>
 
-	<p>Finally, a PeerTube release can be downloaded from the GitHub page using the <code>VERSION</code> variable from before:</p>
-
-        <pre><code>cd /var/www/peertube/versions
-sudo -u peertube wget -q "https://github.com/Chocobozzz/PeerTube/releases/download/${VERSION}/peertube-${VERSION}.zip"
-sudo -u peertube unzip -q peertube-${VERSION}.zip && sudo -u peertube rm peertube-${VERSION}.zip</code></pre>
-
-<p>The downloaded release can then be symbolically linked to <code>/var/www/peertube/peertube-latest</code> and <strong>yarn</strong> is used to install PeerTube:</p>	
-
-<pre><code>
-sudo -u peertube ln -s versions/peertube-${VERSION} ./peertube-latest
-cd ./peertube-latest && sudo -H -u peertube yarn install --production --pure-lockfile</code></pre>
+<pre><code>cd /var/www/peertube
+ln -s versions/peertube-${VERSION} ./peertube-latest
+cd ./peertube-latest
+yarn install --production --pure-lockfile</code></pre>
 
 	<h2>Configuration</h2>
 
-	<p>PeerTube's default config file can be copied over to <code>/var/www/peertube/config.production.yaml</code> so it can actually be used:</p>
+	<p>PeerTube's default config file can be copied over to <code>/var/www/peertube/config/production.yaml</code> so it can actually be used:</p>
+
+    <p>Note that we are still running these as the PeerTube user (having run <code>su -l peertube</code>).</p>
 
 	<pre><code>cd /var/www/peertube
-	sudo -u peertube cp peertube-latest/production.yaml config/production.yaml</code></pre>
+cp peertube-latest/config/production.yaml.example config/production.yaml</code></pre>
 
 	<p>Now the <code>production.yaml</code> file must be edited in the following ways:</p>
 
@@ -143,9 +146,18 @@ cd ./peertube-latest && sudo -H -u peertube yarn install --production --pure-loc
   ca_file: null # Used for self signed certificates
   from_address: <strong>'admin@example.org'</strong></code></pre>
 
-	<h2>NGINX</h2>
+    <p>At this point, we have done all we need to do as the PeerTube user. Run <code>exit</code> or press <code>Ctrl-d</code> to log out and return to the root prompt where we will configure Nginx and other system settings.</p>
 
-	<p>PeerTube includes an NGINX configuration that can be copied over to <code>/etc/nginx/sites-available:</code>
+    <h2>Certbot</h2>
+
+    <p>First, we will want a Certbot SSL certificate to encrypt connections to our PeerTube instance.
+    Just run the following:</p>
+
+    <pre><code>certbot --nginx -d <strong>peertube.example.org</strong> certonly</code></pre>
+
+	<h2>Nginx</h2>
+
+	<p>PeerTube includes an Nginx configuration that can be copied over to <code>/etc/nginx/sites-available:</code>
 
 	<pre><code>cp /var/www/peertube/peertube-latest/support/nginx/peertube /etc/nginx/sites-available/peertube</code></pre>
 
@@ -156,43 +168,35 @@ cd ./peertube-latest && sudo -H -u peertube yarn install --production --pure-loc
 	<pre><code>sed -i 's/${WEBSERVER_HOST}/<strong>example.org</strong>/g' /etc/nginx/sites-available/peertube
 sed -i 's/${PEERTUBE_HOST}/127.0.0.1:9000/g' /etc/nginx/sites-available/peertube</code></pre>
 
-	<p>Once you're happy with the NGINX config file, link it to <code>sites-enabled</code> to activate it:</p>
+	<p>Once you're happy with the Nginx config file, link it to <code>sites-enabled</code> to activate it:</p>
 
 	<pre><code>ln -s /etc/nginx/sites-available/peertube /etc/nginx/sites-enabled/peertube</code></pre>
 
-	<h3>Encryption with Certbot</h3>
-
-	<p>It's <strong>highly recommended</strong> to generate certificates for use with your PeerTube site, and this can be easily done with Let's Encrypt's <code>certbot</code> command:</p>
-
-	<pre><code>systemctl stop nginx
-certbot certonly --standalone -d <strong>example.org</strong>
-sudo systemctl restart nginx</code></pre>
-
-	<p>The certificates are generated <strong>standalone</strong> since the PeerTube NGINX config file already includes configuration for certbot.</p>
-
 	<h2>Running PeerTube</h2>
 
-	<p>A config file for a systemd daemon is included in PeerTube and can be setup like so:</p>
+	<p>A config file for a systemd daemon is included in PeerTube and can be setup and started like so:</p>
 
 	<pre><code>cp /var/www/peertube/peertube-latest/support/systemd/peertube.service /etc/systemd/system/
-systemctl daemon-reload</code></pre>
+systemctl daemon-reload
+systemctl start peertube</pre></code>
 
-	<p>Now, finally, run the PeerTube daemon to start PeerTube:</p>
-
-	<pre><code>systemctl start peertube</pre></code>
+    <p>
+    PeerTube will take a momemnt to start, but after it does, you can check its status with <code>systemctl status peertube</code> and at this point, your PeerTube site should be live!
+    </p>
 
 	<h2>Using PeerTube</h2>
 
 	<p>To set a password for your admin user, run:</p>
 
-	<pre><code>cd /var/www/peertube/peertube-latest &amp;&amp; NODE_CONFIG_DIR=/var/www/peertube/config NODE_ENV=production npm run reset-password -- -u root</code></pre>
+	<pre><code>cd /var/www/peertube/peertube-latest
+NODE_CONFIG_DIR=/var/www/peertube/config NODE_ENV=production npm run reset-password -- -u root</code></pre>
 
 	<p>Login to your PeerTube instance using the admin email specified in your <code>production.yaml</code> file and the admin password you just set.</p>
 
 	<img src="pix/peertube-login.jpg" height=400px>
 
 	<p>Once logged in, it's recommended to create a separate user without admin privileges for uploading videos to PeerTube.
-	This can be done easily from the users tab in the administration section:</p>
+	This can be done easily from the users tab in the administration section.</p>
 
 	<p>Enjoy your PeerTube instance!</p>
 
