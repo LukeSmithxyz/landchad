@@ -76,7 +76,7 @@
 
         <p>
         Now let's get our IPv6 address, which is a little more hidden for some reason.
-        IPv6 are important because we are running our of IPv4 addresses so it is highly important to allow connections via IPv6 as it will be standard in the future.
+        IPv6 is important because we are running out of IPv4 addresses, so it is highly important to allow connections via IPv6 as it will be standard in the future.
         Anyway, now back on Vultr, click on the server name.
         </p>
 
@@ -87,7 +87,7 @@
         <a href=pix/dns-vultr.png><img src="pix/dns-vultr.png" alt="Looking for the IPv6"></a>
 
         <p>
-        Now just click on <strong>IPv6</strong> submenu to reveal your IPv6 address.
+        Now just click on the <strong>IPv6</strong> submenu to reveal your IPv6 address.
         </p>
 
         <a href=pix/dns-ipv6.png><img src="pix/dns-ipv6.png" alt="The IPv6 address"></a>
@@ -95,14 +95,15 @@
         <p>
         That ugly looking sequence of numbers and letters with colons in between (<code>2001:19f0:5:ccc:5400:03ff:fe58:324a</code>) is my <strong>IPv6</strong> address.
         Yours will look something like it.
-        Now let's put it into Epik, this time, be sure to select to put in AAAA records as below:
+        Now let's put it into Epik.
+        This time, be sure to select to put in AAAA records as below:
         </p>
 
         <a href=pix/dns-ipv6-done.png><img src="pix/dns-ipv6-done.png" alt="IPv6 complete"></a>
 
         <p>
         Now just click "Save Changes."
-        It might take a minute for the DNS settings to propgate across the internet.
+        It might take a minute for the DNS settings to propagate across the internet.
         </p>
 
         <h2>Test it out!</h2>
@@ -115,13 +116,13 @@
         <img src="pix/dns-ping.png" alt="Pinging landchad.net">
 
         <p>
-        As you can see, our ping to <code>landchad.net</code> is now being directed to <code>104.238.126.105</code>.
+        As you can see, our ping to <code>landchad.net</code> is now being directed to <code>104.238.128.105</code>.
         That means we have successfully set up our DNS records!
         You can also run the command <code>host</code> if you have it, which will list both IPv4 and IPv6 addresses for a domain name.
         </p>
 
         <span class=next><a href="nginx.html">Next: Setting up the Webserver</a></span>
     </main>
-	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
 </body>
 </html>

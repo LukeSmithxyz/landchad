@@ -5,6 +5,7 @@ body {
 	color: beige ;
 	background: #111 ;
 	margin-bottom: 200px ;
+    	font-family: sans-serif ;
 }
 
 h1 {
@@ -184,7 +185,7 @@ aside.callout  {
     padding-left: 10px ;
     padding-right: 10px ;
 }
-.cryptoinfo code {
+.cryptoinfo code,.crypto {
 	font-size: small ;
 	overflow-wrap: break-word ;
 }

@@ -17,8 +17,6 @@
         <p><a href="https://nextcloud.com" target="_blank"><img src="pix/nextcloud.svg" alt="logo">Nextcloud</a> is a free and open source solution for cloud storage. However it can also do other things, such as manage your email, notes, calender, tasks, and can even connect to the Fediverse (think Mastodon and Pleroma). Pretty much every service that Google has to offer has a much better alternative as a Nextcloud app and this is a must-have for anyone wanting to get away from Google services but still wants a traditional cloud experience (in the likes of Google Services, anyways).</p>
 
         <h2 id="instructions">Instructions</h2>
-        <p>First, we need to obtain a shell prompt by ssh-ing (remote machines or local machines) or just logging in (local machines). A traditional ssh might look like this if the domain you wished to ssh into is <code>landchad.net</code>:</p>
-        <pre><code>ssh root@landchad.net</code></pre>
         <p>We should upgrade the system and then install packages that we might need. Run the following command:</p>
         <pre><code>apt-get full-upgrade -y && sudo apt-get install mariadb-server php-mysql php php-gd php-mbstring php-dom php-curl php-zip php-simplexml php-xml php-fpm -y</code></pre>
         <p>Next, we need to set up our SQL database by running a Secure Installation and creating the tables that will store data that Nextcloud will need. Run the following command:</p>
@@ -40,26 +38,27 @@ EXIT;</code></pre>
         <p>Now we need to configure PHP. Let's start my making sure that the PHP user is set to <code>www-data</code> and if that is not the case, add the <code>www-data</code> user if needed and set the correct variable in <code>nginx.conf</code>. Make sure this line is at the beginning of <code>/etc/nginx/nginx.conf</code>.</p>
         <pre><code>user www-data;</code></pre>
         <p>Check for the <code>www-data</code> user by running <code>id -u www-data</code>. If a number is output from that command, then the www-data user exists. If not. add the user simply by running <code>useradd www-data</code></p>
-        <p>Next, we need to ensure that we have SSL certificates generated for your website. If you have not already done this, refer to <a href="certbot.html">this guide</a>. Although having SSL for your site is not required, it is highly recommended that you have it or you will risk attackers being able to steal passwords and data.</p>
+        <p>Next, we need to ensure that we have SSL certificates generated for your website. If you have not already done this, refer to <a href="certbot.html">this guide</a>.</p>
         <p>In <code>/etc/nginx/sites-available/</code> we need to make a new configuration for Nextcloud (example: <code>/etc/nginx/sites-available/nextcloud</code>). Create it and open it, modify, and add the following lines:</p>
-        <pre><code>server {
-    listen 80;
-    listen [::]:80;
-    server_name <strong>yourwebsite.com</strong>;
-
-    location /nextcloud {
-        return 301 https://$server_name$request_uri;
-    }
+        <pre class=wide><code>upstream php-handler {
+    server unix:/var/run/php/php7.4-fpm.sock;
+    server 127.0.0.1:9000;
 }
 
 server {
+    listen 80;
+    listen [::]:80;
+    server_name <strong>example.org</strong>;
 
-    <strong># If you have SSL ready for your website (DO NOT use Nextcloud without HTTPS, you will risk data leaks including passwords and files), use these lines:</strong>
+    return 301 https://$server_name$request_uri;
+}
+
+server {
     listen 443      ssl http2;
     listen [::]:443 ssl http2;
-    server_name <strong>yourwebsite.com</strong>;
-    ssl_certificate     /etc/ssl/nginx/<strong>yourwebsite.com</strong>.crt;
-    ssl_certificate_key /etc/ssl/nginx/<strong>yourwebsite.com</strong>.key;
+    server_name <strong>example.org</strong>;
+    ssl_certificate     /etc/letsencrypt/live/<strong>example.org</strong>/cert.pem ;
+    ssl_certificate_key /etc/letsencrypt/live/<strong>example.org</strong>/privkey.pem ;
 
     root /var/www;
 
@@ -89,8 +88,6 @@ server {
         gzip_min_length 256;
         gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
         gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
-
-        pagespeed off;
 
         add_header Referrer-Policy                      "no-referrer"   always;
         add_header X-Content-Type-Options               "nosniff"       always;
@@ -140,7 +137,7 @@ server {
 
         location ~ \.woff2?$ {
             try_files $uri /nextcloud/index.php$request_uri;
-            expires 7d; 
+            expires 7d;
             access_log off;
         }
 
@@ -155,7 +152,7 @@ server {
 }</code></pre>
         <p>Enable the site by running this command:</p>
         <pre><code>ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/</code></pre>
-        <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
+        <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
         <pre><code>wget https://download.nextcloud.com/server/releases/nextcloud-21.0.2.tar.bz2</code></pre>
         <p>Now we need to extract the Nextcloud tarball. Run the following command:</p>
         <pre><code>tar -xjf nextcloud*.tar.bz2 -C /var/www</code></pre>
@@ -171,16 +168,16 @@ systemctl enable mariadb
 systemctl start mariadb</code></pre>
         <p>Reload the nginx service:</p>
         <pre><code>systemctl reload nginx</code></pre>
-        <p>Now we need to head to Nextcloud's web interface. Go to your web browser and go to your website, but go to the subdirectory "nextcloud" instead. For example, if your domain is landchad.net and you have set up HTTPS then go to <code>https://landchad.net/nextcloud</code>. This will launch the configuration wizard.</p>
+        <p>Now we need to head to Nextcloud's web interface. Go to your web browser and go to your website, but go to the subdirectory "nextcloud" instead. Go to <code>https://<strong>example.org</strong>/nextcloud</code>. This will launch the configuration wizard.</p>
 
         <ul>
-            <li>Choose an admin username and secure password.
-            <li>Leave Data folder at the default value unless it is incorrect.
-            <li>For Database user, enter the user you set for the SQL database.
-            <li>For Database password, enter the password you chose for the new user in MariaDB.
-            <li>For Database name, enter: nextcloud
-            <li>Leave "localhost" as "localhost".
-            <li>Click Finish
+            <li>Choose an admin username and secure password.</li>
+            <li>Leave Data folder at the default value unless it is incorrect.</li>
+            <li>For Database user, enter the user you set for the SQL database.</li>
+            <li>For Database password, enter the password you chose for the new user in MariaDB.</li>
+            <li>For Database name, enter: <code>nextcloud</code></li>
+            <li>Leave "localhost" as "localhost".</li>
+            <li>Click Finish.</li>
         </ul>
 
         <p>Congratulations, you have set up your own Nextcloud instance.</p>
@@ -189,13 +186,13 @@ systemctl start mariadb</code></pre>
         <p>Now you may be wondering: What do I do now? Here are some suggestions:</p>
 
         <ul>
-            <li>Rice your Nextcloud instance by changing your themeing and installing new themes and plugins in Settings in the Nextcloud Web Interface.
-            <li>Install the Nextcloud Client on your personal computer and sync your files to your instance.
-            <li>Install the Nextcloud App on your mobile device and sync your files to your instance.
-            <li>Set up your email account on the Nextcloud Mail app on the web interface to view and sync your email there (just like Gmail).
-            <li>Schedule events with Nextcloud Calender.
-            <li>Write notes in Markdown inside the Nextcloud Notes web and mobile app.
-            <li>Set the Nextcloud Dashboard as your web browser's homepage (it is pretty nice).
+            <li>Rice your Nextcloud instance by changing your themeing and installing new themes and plugins in Settings in the Nextcloud Web Interface.</li>
+            <li>Install the Nextcloud Client on your personal computer and sync your files to your instance.</li>
+            <li>Install the Nextcloud App on your mobile device and sync your files to your instance.</li>
+            <li>Set up your email account on the Nextcloud Mail app on the web interface to view and sync your email there (just like Gmail).</li>
+            <li>Schedule events with Nextcloud Calender.</li>
+            <li>Write notes in Markdown inside the Nextcloud Notes web and mobile app.</li>
+            <li>Set the Nextcloud Dashboard as your web browser's homepage (it is pretty nice).</li>
         </ul>
 
         <p>Enjoy your cloud services in freedom.</p>
@@ -204,9 +201,7 @@ systemctl start mariadb</code></pre>
 
         <p><em>Written by <a href="https://github.com/MattMadness">Matthew "Madness" Evan</a></em></p>
 
-        <!--<span class=next><a href="<++>">Next:<++></a></span>--!>
-
     </main>
-	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
 </body>
 </html>

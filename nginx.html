@@ -16,7 +16,7 @@
         As I said in previous articles, the instructions I will give will be for <strong>Debian 10</strong>.
         In this article, other distributions might work a little differently.</p>
 
-        <h2>Logging in the the server</h2>
+        <h2>Logging in to the server</h2>
 
         <p>
         We first want to log into our VPS to get a command prompt where we can set up the web server.
@@ -33,7 +33,7 @@
         Now pull up a terminal and type:
         </p>
 
-        <pre><code>ssh root@<strong>yourdomain.com</strong></code></pre>
+        <pre><code>ssh root@<strong>example.org</strong></code></pre>
 
         <p>
         This command will attempt to log into your server.
@@ -44,7 +44,7 @@
             <p>
             If you get an error here, you might not have done your <a href="dns.html">DNS settings</a> right.
             Double check those.
-            Note you can also replace the <code>yourdomain.com</code> with your IP address, but you'll want to fix your DNS settings soon.
+            Note you can also replace the <code>example.org</code> with your IP address, but you'll want to fix your DNS settings soon.
             </p>
         </aside>
 
@@ -186,11 +186,11 @@ Now we can just <code>reload</code> or <code>restart</code> to make <code>nginx<
 
 <pre><code>systemctl reload nginx</code></pre>
 
-<h2>The Firewall</h2>
+<h2 id=firewall>The Firewall</h2>
 
 <p>
 Vultr and some other VPS automatically install and enable <code>ufw</code>, a firewall program.
-This will block bacsically everything by default, so we have to change that.
+This will block basically everything by default, so we have to change that.
 If you don't have <code>ufw</code> installed, you can skip this section.
 </p>
 
@@ -233,6 +233,6 @@ The next brief step is securing encrypted connections to your website.
 <span class=next><a href="certbot.html">Next: Enabling Encrypted Connections</a></span>
 
     </main>
-	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
 </body>
 </html>
