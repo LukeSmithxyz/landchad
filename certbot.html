@@ -14,12 +14,12 @@
     <main>
         <p>
         Once you have a website, it is extremely important to enable encrypted connections over HTTPS/SSL.
-        You might have no idea what that means, but it's easy to do how we've already <a href="nginx.html">set our server up</a>.
+        You might have no idea what that means, but it's easy to do now that we've <a href="nginx.html">set our web server up</a>.
         </p>
 
         <p>
         Certbot is a program that automatically creates and deploys the certificates that allow encrypted connections.
-        It used to be a pain (and often expensive) to do this, but now it's all free and automatic.
+        It used to be painful (and often expensive) to do this, but now it's all free and automatic.
         </p>
 
         <h2>Why is encryption important?</h2>
@@ -62,7 +62,7 @@ ufw allow 443</code></pre>
 
         <p>
         The command will ask you for your email.
-        This is so when the certificates need to be renewed in three months, you will get a email about it.
+        This is so when the certificates need to be renewed in three months, you will get an email about it.
         You can set the certificates to renew automatically, but it's a good idea to check it the first time to ensure it renewed properly.
         You can avoid giving your email by running the command with the <code>--register-unsafely-without-email</code> option as well.
         </p>
