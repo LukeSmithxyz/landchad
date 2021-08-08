@@ -1,58 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>Using Git to manage a website - LandChad.net</title>
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Git managing a website</title>
+    <link rel="shortcut icon" href="favicon.iso" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<h1 id="git-managing-a-website">Git managing a website</h1>
-<p>Using Git to manage your website is honestly the way you should do it, especially if you’re running a small blog or something, but really it can be used to manage any large site.<br />
-This tutorial assumes you’re running nginx on Debian 10 as that’s what I use, but I think you should be able to get away with Ubuntu or something like that as well.<br />
-<br />
-So let’s get started.<br />
-</p>
-<h2 id="the-server-part-of-the-setup">The server part of the setup</h2>
-<p>SSH into your remote VPS, by now you should have an SSH key set up on your server so you don’t need to use passwords, if you don’t be sure to check out <a href="https://landchad.net/sshkeys">this awesome tutorial</a> over on <a href="https://landchad.net">LandChad.net</a><br />
-Login as root into your vps using <code>ssh root@<strong>example.org</strong></code><br />
-Make sure you have Git installed on your VPS. If it’s not there yet, install it using <code>apt install git</code>.<br />
-This assumes that you already have a website up and running located in your <code>/var/www</code> folder. If you haven’t consult the other tutorials.<br />
-<br />
-Once Git is installed, make sure the <code>/var/repo</code> directory exists. If not, create it using <code>mkdir /var/repo</code>. Then cd into it <code>cd /var/repo</code>.<br />
-When you cd into the folder, create a folder for your website. Note that this is not the directory your site files live in.<br />
-Make the site directory, for example <em><strong>example.org</strong></em>. I also like to append the <code>.git</code> at the end of the folder, so the command would look like this: <code>mkdir <strong>example.org</strong>.git</code>. However, this directory can be named however you like, I just like to keep things clean and simple.<br />
-Once the directory is there, cd into it <code>cd <strong>example.org</strong>.git</code>.<br />
-Now it’s time to initialize the repo. <code>git init --bare</code> as we are initializing a bare repo, as our actual files do not live here.<br />
-Now cd into the <em>hooks</em> folder and make a new file called <em>post-receive</em>. <code>cd hooks</code> and <code>nano post-receive</code> (or vim if you’re a big brain, but I don’t know how to exit that so…)<br />
-Now write this into the file:</p>
-<pre><code>#!/bin/sh
-git --work-tree=/var/www/your-website-folder --git-dir=/var/repo/your-website-folder.git checkout -f</code></pre>
-<p>Now make it executable using <code>chmod +x post-receive</code>.<br />
-<br />
-Now this part of the setup is done and you can exit out of SSH.<br />
-<br />
-</p>
-<h2 id="the-local-part-of-the-setup">The local part of the setup</h2>
-<p>Now, cd into the folder where you want to manipulate the website files. This can be any folder you choose.<br />
-Now, initialize a repo inside the folder using <code>git init</code>.<br />
-If you have any scripts or any other stuff inside this folder you don’t want to push to the server, just add them into the <em>.gitignore</em> file, one line each.<br />
-Now, let’s add a remote repo it can push to. For this we use <code>git remote add live ssh://root@<strong>example.org</strong>/var/repo/your-website-folder.git</code>. You can name the branch however you want, but I name it <code>live</code> to avoid any confusion. Also, obviously, replace the SSH server with your own.<br />
-If you already have some files inside your site folder, you can pull them using <code>git pull live master</code>. Note that <em>live</em> is the remote location and <em>master</em> is the branch on it.<br />
-<br />
-This part of the setup is done, now let me show you how to actually use it if you don’t have much experience with Git.<br />
-</p>
-<h2 id="how-to-use-it">How to use it</h2>
-<p>When you make any changes, let’s say to the <em>index.html</em> file, changing the favicon, etc you can add them to commit using <code>git add .</code>. If you don’t want to add all files you changed in some cases, you can just use <code>git add index.html</code> for specific files.<br />
-Then it helps to see which files were actually added/changed/deleted using <code>git status</code>. It will show you everything you need to know.<br />
-Now it’s time to commit the changes. Use <code>git commit -m "message</code>. Note that the message doesn’t really matter unless there’s like a team working on it or something, so just write something there as you can’t unfortunately leave it blank.<br />
-When you’re ready to deploy the changes to the website, do <code>git push live master</code> to push it directly onto the live website.<br />
-<br />
-You can automate all this using a simple shell script, which I definitely recommend you do.<br />
-If you’ve done everything right, changes you have made should appear instantly on your website. If it’s not there, you probably made a spelling mistake somewhere in the <em>post-receive</em> script. Not like that’s ever happended to me or anything.<br />
-<br />
-I hope this tutorial was at least as helpful to you as using Git is for me :)<br />
-<br />
-<em>Tutorial written by <a href="https://valkun.xyz">valentino1337</a>.</em><br />
-<em>Monero: <code>valkun.xyz</code> (OpenAlias)</em></p>
+
+<body>
+    <h1>Git managing a website</h1>
+    <p>Using Git to manage your website is honestly the way you should do it, especially if you’re running a small blog or something, but really it can be used to manage any large site.<br />
+    This tutorial assumes you’re running nginx on Debian 10 as that’s what I use, but I think you should be able to get away with Ubuntu or something like that as well.<br />
+    <br />
+    So let’s get started.<br />
+    </p>
+    <h2>The server part of the setup</h2>
+    <p>SSH into your remote VPS, by now you should have an SSH key set up on your server so you don’t need to use passwords, if you don’t be sure to check out <a href="https://landchad.net/sshkeys">this awesome tutorial</a> over on <a href="https://landchad.net">LandChad.net</a><br />
+    Login as root into your vps using <code>ssh root@<strong>example.org</srong></code><br />
+    Make sure you have Git installed on your VPS. If it’s not there yet, install it using <code>apt install git</code>.<br />
+    This assumes that you already have a website up and running located in your <code>/var/www</code> folder. If you haven’t consult the tutorials on <a href="https://landchad.net">LandChad.net</a><br />
+    Once Git is installed, make sure the <code>/var/repo</code> directory exists. If not, create it using <code>mkdir /var/repo</code>. Then cd into it <code>cd /var/repo</code>.<br />
+    When you cd into the folder, create a folder for your website. Note that this is not the directory your site files live in.<br />
+    Make the site directory, for example <em><strong>example.org</srong></em>. I also like to append the <code>.git</code> at the end of the folder, so the command would look like this: <code>mkdir <strong>example.org</srong>.git</code>. However, this directory can be named however you like, I just like to keep things clean and simple.<br />
+    Once the directory is there, cd into it <code>cd <strong>example.org</srong>.git</code>.<br />
+    Now it’s time to initialize the repo. <code>git init --bare</code> as we are initializing a bare repo, as our actual files do not live here.<br />
+    Now cd into the <em>hooks</em> folder and make a new file called <em>post-receive</em>. <code>cd hooks</code> and <code>nano post-receive</code> (or vim if you’re a big brain, but I don’t know how to exit that so…)<br />
+    Now write this into the file:</p>
+    <pre><code>#!/bin/sh
+    git --work-tree=/var/www/your-website-folder --git-dir=/var/repo/your-website-folder.git checkout -f</code></pre>
+    <p>Now make it executable using <code>chmod +x post-receive</code>.<br />
+    <br />
+    Now this part of the setup is done and you can exit out of SSH.<br />
+    <br />
+    </p>
+    <h2 >The local part of the setup</h2>
+    <p>Now, cd into the folder where you want to manipulate the website files. This can be any folder you choose.<br />
+    Now, initialize a repo inside the folder using <code>git init</code>.<br />
+    If you have any scripts or any other stuff inside this folder you don’t want to push to the server, just add them into the <em>.gitignore</em> file, one line each.<br />
+    Now, let’s add a remote repo it can push to. For this we use <code>git remote add live ssh://root@<strong>example.org</srong>/var/repo/your-website-folder.git</code>. You can name the branch however you want, but I name it <code>live</code> to avoid any confusion. Also, obviously, replace the SSH server with your own.<br />
+    If you already have some files inside your site folder, you can pull them using <code>git pull live master</code>. Note that <em>live</em> is the remote location and <em>master</em> is the branch on it.<br />
+    <br />
+    This part of the setup is done, now let me show you how to actually use it if you don’t have much experience with Git.<br />
+    </p>
+    <h2 >How to use it</h2>
+    <p>When you make any changes, let’s say to the <em>index.html</em> file, changing the favicon, etc you can add them to commit using <code>git add .</code>. If you don’t want to add all files you changed in some cases, you can just use <code>git add index.html</code> for specific files.<br />
+    Then it helps to see which files were actually added/changed/deleted using <code>git status</code>. It will show you everything you need to know.<br />
+    Now it’s time to commit the changes. Use <code>git commit -m "message</code>. Note that the message doesn’t really matter unless there’s like a team working on it or something, so just write something there as you can’t unfortunately leave it blank.<br />
+    When you’re ready to deploy the changes to the website, do <code>git push live master</code> to push it directly onto the live website.<br />
+    <br />
+    You can automate all this using a simple shell script, which I definitely recommend you do.<br />
+    If you’ve done everything right, changes you have made should appear instantly on your website. If it’s not there, you probably made a spelling mistake somewhere in the <em>post-receive</em> script. Not like that’s ever happended to me or anything.<br />
+    <br />
+    I hope this tutorial was at least as helpful to you as using Git is for me :)<br />
+    <br />
+    <em>Tutorial written by <a href="https://valkun.xyz">valentino1337</a>.</em><br />
+    <em>Monero: <code>valkun.xyz</code> (OpenAlias)</em></p>
+</body>
