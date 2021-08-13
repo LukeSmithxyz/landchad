@@ -147,7 +147,7 @@ will be the main page of our website.
 </p>
 <p>
 Lastly, the <code>location</code> block is really just telling the server how to look up files, otherwise throw a 404 error.
-Location settings are very powerful, but this is all we need them for now.
+The <code>if</code> directive is telling <code>nginx</code> to run a regex on the <code>$request_uri</code> portion of incoming requests, and remove the <code>.html</code> extension.
 </p>
 </aside>
 
