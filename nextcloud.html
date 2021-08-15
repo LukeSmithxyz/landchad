@@ -41,7 +41,7 @@ EXIT;</code></pre>
         <p>Next, we need to ensure that we have SSL certificates generated for your website. If you have not already done this, refer to <a href="certbot.html">this guide</a>.</p>
         <p>In <code>/etc/nginx/sites-available/</code> we need to make a new configuration for Nextcloud (example: <code>/etc/nginx/sites-available/nextcloud</code>). Create it and open it, modify, and add the following lines:</p>
         <pre class=wide><code>upstream php-handler {
-    server unix:/var/run/php/php7.4-fpm.sock;
+    server unix:/var/run/php/php<strong>7.4</strong>-fpm.sock;
     server 127.0.0.1:9000;
 }
 
@@ -162,8 +162,8 @@ server {
 chmod -R 755 /var/www/nextcloud</code>
         </pre>
         <p>Start and enable the php-fpm and the mariadb services (the name of the php-fpm service may have a version number ahead of it, use bash's tab autocomplete to help you out with that):</p>
-        <pre><code>systemctl enable php-fpm
-systemctl start php-fpm
+        <pre><code>systemctl enable php<strong>7.4</strong>-fpm
+systemctl start php<strong>7.4</strong>-fpm
 systemctl enable mariadb
 systemctl start mariadb</code></pre>
         <p>Reload the nginx service:</p>
