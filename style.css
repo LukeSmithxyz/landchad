@@ -67,7 +67,7 @@ pre {
 
 .wide { max-width: inherit ; }
 
-p img, li img, h1 img, h2 img, h3 img, h4 img {
+p img, li img, h1 img, h2 img, h3 img, h4 img, dt img {
 	vertical-align: middle ;
 	max-width: 1em;
 	max-height: 1em;
@@ -169,7 +169,27 @@ aside.callout  {
 	main { max-width: 850px ; }
 }
 
-.ll { font-size: large ; line-height: 1.3em ; max-width: 600px; margin: auto ; }
+.ll {
+	font-size: large ;
+	line-height: 1.3em ;
+	max-width: 600px;
+	margin: auto ;
+}
+
+.ll dd {
+	display: inline ;
+}
+
+.ll dt {
+	display: inline-block ;
+	width: 6em ;
+}
+
+.ll dd:after {
+	display:block;
+	content: '' ;
+}
+
 
 /* These settings are for the cryptocurrency donation QR codes and info on the
  * main page. */
@@ -198,19 +218,30 @@ aside.callout  {
     100% {color: lightblue}
 }
 
+.prev {
+	font-size: large ;
+	text-align: center ;
+	margin: auto ;
+	display: block ;
+	font-weight: bold ;
+}
+
+.prev:before {
+	content: "👈" ;
+}
+
 .next a {
 	color: inherit ;
 }
 
 .next {
-	color: red ;
 	  -webkit-animation:next 1s infinite alternate ;
 	font-size: xx-large ;
 	text-align: center ;
 	margin: auto ;
 	display: block ;
 	font-weight: bold ;
-	padding: 1em ;
+	padding: 0 1em 1em 1em ;
 }
 
 .next:before {
