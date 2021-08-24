@@ -26,16 +26,16 @@
 
 			<p>
 				i2pd is in most repos, in debian/ubuntu you can install it simply
-				with <pre><code># apt install i2pd</code></pre>
+				with <pre><code>apt install i2pd</code></pre>
 			</p>
-			
+
 			<h3>Enabling I2P</h3>
 			<p>
 				We are going to create a user for i2pd, because i2pd finds the configuration
 				files in its home directory. And it's easier (and more tidy) to have it in a separate user:
 			</p>
-			<pre><code>adduser
-i2p su i2p
+			<pre><code>useradd -m i2p -s /bin/bash
+su -l i2p
 mkdir ~/.i2pd
 cd ~/.i2pd</code></pre>
 
@@ -44,18 +44,26 @@ cd ~/.i2pd</code></pre>
 				"tunnels.conf". Which is the config file for every hidden service you're
 				offering over I2P, the content should be like this:
 			</p>
-			<pre><code>[landchad]
+            <pre><code>[<strong>example</strong>]
 type = http
 host = 127.0.0.1
 port = 8080
-keys = <strong>landchad.dat</strong></code></pre>
+keys = <strong>example.dat</strong></code></pre>
+
+            <h3>Getting your I2P Hostname</h3>
+
 			<p>
-				Then, run <code>i2pd --daemon</code> to start i2pd. Then use lynx or any browser
-				to go to http://127.0.0.1:7070/?page=i2p_tunnels to get your I2P hostname. You
+				Then, run <code>/usr/sbin/i2pd --daemon</code> to start i2pd and we can retreive our I2P hostname.
+            </p>
+
+            <p>
+            This can be done in lynx or a command-line browser by going to <code>http://127.0.0.1:7070/?page=i2p_tunnels</code> to get your I2P hostname.
+            </p>
+            <p>
+            You
 				can also run these commands to find your hostname:
-				<pre><code>cd ~/.i2pd/
-printf "%s.b32.i2p\n" $(head -c 391 <strong>landchad.dat</strong> |sha256sum|xxd -r -p | base32 |sed s/=//g | tr A-Z a-z)</code></pre>
-			</p>
+            </p>
+				<pre><code>printf "%s.b32.i2p\n" $(head -c 391 /home/i2p/.i2pd/<strong>example.dat</strong> |sha256sum|xxd -r -p | base32 |sed s/=//g | tr A-Z a-z)</code></pre>
 
 			<h2>Adding the Nginx Config</h2>
 			<p>
@@ -66,7 +74,7 @@ printf "%s.b32.i2p\n" $(head -c 391 <strong>landchad.dat</strong> |sha256sum|xxd
 
 			<pre><code>server {
 listen 127.0.0.1:8080 ;
-root /var/www/<strong>landchad</strong> ;
+root /var/www/<strong>example</strong> ;
 index index.html ;
 }</code></pre>
 
