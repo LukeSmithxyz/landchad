@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang=en>
+	<head>
+		<title>Mirror your site over I2P</title>
+		<meta charset="utf-8"/>
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<link rel='stylesheet' type='text/css' href='style.css'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+	</head>
+	<body>
+		<header><h1>Mirror Your Site Over I2P</h1></header>
+		<nav></nav>
+		<main>
+			<img class=titleimg src="pix/i2p.svg" alt="I2P logo">
+			<p>
+				Now you have a website, why not offer it in a private alternative such as the Invisible Internet?
+			</p>
+
+			<h2>Setting up I2P</h2>
+			<p>
+				There are 2 main I2P implementations, I2P and i2pd, we are using i2pd in this
+				guide because it's easier to use in servers.
+			</p>
+			<h3>Installing I2P</h3>
+
+			<p>
+				i2pd is in most repos, in debian/ubuntu you can install it simply
+				with <pre><code># apt install i2pd</code></pre>
+			</p>
+			
+			<h3>Enabling I2P</h3>
+			<p>
+				We are going to create a user for i2pd, because i2pd finds the configuration
+				files in its home directory. And it's easier (and more tidy) to have it in a separate user:
+			</p>
+			<pre><code>adduser
+i2p su i2p
+mkdir ~/.i2pd
+cd ~/.i2pd</code></pre>
+
+			<p>
+				Now that you're in ~/.i2pd, you have to create a file named
+				"tunnels.conf". Which is the config file for every hidden service you're
+				offering over I2P, the content should be like this:
+			</p>
+			<pre><code>[landchad]
+type = http
+host = 127.0.0.1
+port = 8080
+keys = <strong>landchad.dat</strong></code></pre>
+			<p>
+				Then, run <code>i2pd --daemon</code> to start i2pd. Then use lynx or any browser
+				to go to http://127.0.0.1:7070/?page=i2p_tunnels to get your I2P hostname. You
+				can also run these commands to find your hostname:
+				<pre><code>cd ~/.i2pd/
+printf "%s.b32.i2p\n" $(head -c 391 <strong>landchad.dat</strong> |sha256sum|xxd -r -p | base32 |sed s/=//g | tr A-Z a-z)</code></pre>
+			</p>
+
+			<h2>Adding the Nginx Config</h2>
+			<p>
+				From here, the steps are almost identical to setting up a normal website configuration file.
+				Follow the steps as if you were making a new website on the webserver
+				<a href="nginx.html">tutorial</a> up until the server block of code. Instead, paste this:
+			</p>
+
+			<pre><code>server {
+listen 127.0.0.1:8080 ;
+root /var/www/<strong>landchad</strong> ;
+index index.html ;
+}</code></pre>
+
+			<aside>
+				<h4>Clarifications<h4>
+						<p>
+							Nginx will listen in port 8080, but i2pd will forward your port
+							8080 to the i2p site port 80. This way you don't have to deal with server names or anything like that
+						</p>
+			</aside>
+			<p>
+				From here we are almost done, all we have to do is enable the site and reload nginx which is also covered in <a href="nginx.html#enable">the webserver tutorial</a>.
+			</p>
+
+			<h3>Update regularly!</h3>
+
+			<p>Make sure to update I2P on a regular basis by running:</p>
+			<pre><code>apt update && apt install i2pd</code></pre>
+			<p><strong>Contributor</strong>  -  <a href="https://qorg11.net" target="_blank">qorg11</a></p>
+
+		</main>
+		<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+	</body>
+</html>
