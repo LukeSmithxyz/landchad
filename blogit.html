@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Creating Static Blogs with Blogit &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Creating Static Blogs with Blogit</h1></header>
+    <nav></nav>
+    <main>
+        <p>
+            Blogit is a simple git-based static blog generator.
+            It automatically builds an Atom and a RSS feed and uploads static pages to your server using rsync.
+        </p>
+
+        <h2>Installing blogit</h2>
+
+        <p>
+            Clone the blogit repository using git.
+        </p>
+
+        <pre><code>git clone https://pedantic.software/git/blogit</code></pre>
+
+        <h3>Copying Files</h3>
+
+        <p>
+            Enter the blogit directory.
+        </p>
+
+        <pre><code>cd blogit</code></pre>
+
+        <p>
+            Either copy the Makefile (blogit) to your local binary folder
+            (e.g. ~/.local/bin), or to /usr/bin/
+        </p>
+
+        <pre><code>cp blogit <strong>~/.local/bin/</strong></code></pre>
+
+        <p>
+            Copy the man page and update the mandb (run these commands as root):
+        </p>
+
+<pre><code>cp blogit.1 /usr/share/man/man1
+mandb
+</code></pre>
+
+        <p>
+            Now you are able to use blogit's manual page (<code>man blogit</code>).
+        </p>
+
+        <h2>Creating a Blog</h2>
+
+        <p>
+            Create a new directory for your blog.
+        </p>
+
+        <pre><code>mkdir <strong>blog</strong> && cd <strong>blog</strong></code></pre>
+
+        <p>
+            Initialize blogit.
+            The program will request for a remote path.
+            Type something like this:
+            <code>root@<strong>example.org</strong>:<strong>/var/www/example.org</strong></code>
+        </p>
+
+        <pre><code>blogit init</code></pre>
+
+        <p>
+            Blogit should initialize a git repository automatically.
+            If it did not, do it manually.
+        </p>
+
+        <pre><code>git init</code></pre>
+
+        <h3>Syntax</h3>
+
+        <p>Here is an example article:</p>
+
+<pre><code>Title
+![alt](path/to/an/image.png)
+    
+Some plain text.
+    
+;It is a comment (does not appear in a generated blog).
+    
+$ENVIRONMENT_VARIABLE
+    
+*italic*
+**bold**
+    
+- unordered list 1
+- unordered list 2
+- unordered list 3
+    
+1. ordered list 1
+2. ordered list 2
+3. ordered list 3
+    
+#H1
+##H2
+###H3
+    
+```
+echo "this is a code sample"
+```
+    
+[it is a link](http://example.org)
+    
+;tags: tag1 tag2 tag3</code></pre>
+
+        <h3>Structure</h3>
+
+        <p>
+            The following variables are always defined:
+        </p>
+
+        <ul>
+            <li>TITLE, the title of the article</li>
+            <li>DATE_POSTED, the first publication date</li>
+            <li>DATE_EDITED, the last edit (commit) date</li>
+            <li>TAGS, the tags parsed from "tags:" comments</li>
+        </ul>
+
+        <p>
+            The index page is built using the following templates
+            (you can find them in the "templates" folder):
+        </p>
+
+        <ul>
+            <li>header.html</li>
+            <li>index_header.html</li>
+            <li>tag_list_header.html</li>
+            <li>tag_entry.html, for each tag</li>
+            <li>tag_separator.html, between each tag</li>
+            <li>tag_list_footer.html</li>
+            <li>article_list_header.html</li>
+            <li>article_entry.html, for each article entry</li>
+            <li>article_separator.html, between each article</li>
+            <li>article_list_footer.html</li>
+            <li>index_footer.html</li>
+            <li>footer.html</li>
+        </ul>
+
+        <p>
+            Article pages:
+        </p>
+
+        <ul>
+            <li>header.html</li>
+            <li>index_header.html</li>
+            <li>(formatted article file)</li>
+            <li>footer.html</li>
+        </ul>
+
+        <p>
+            You can edit these files as you wish.
+        </p>
+
+        <h3>Building Static Pages</h3>
+
+        <p>
+            First of all, stage and commit the changes you have made.
+        </p>
+
+<pre><code>git add .
+git commit -m "<strong>Add an article.</strong>"</code></pre>
+
+        <p>
+            Now build pages.
+        </p>
+
+        <pre><code>blogit build</code></pre>
+
+        <p>
+            After that you will see a "blog" directory.
+            It contains the static pages.
+        </p>
+
+        <p>
+            If you want to delete the static pages, use <code>blogit clean</code>.
+        </p>
+
+        <h2>Deploying Static Pages on a Server</h2>
+
+        <p>
+            Make sure you have rsync installed on your server and client.
+            If you have not:
+        </p>
+
+        <pre><code>apt install rsync</code></pre>
+
+        <p>
+            Blogit will copy the static pages to your server
+            (which you can change in the "config" file).
+            Issue following in the directory with your blogit project:
+        </p>
+
+        <pre><code>blogit deploy</code></pre>
+
+        <p>
+            Now you can serve your pages using a web server
+            (e.g. <a href="nginx.html">Nginx</a>).
+        </p>
+
+        <h2>Contribution</h2>
+
+        <li>
+            Author: rflx &ndash; <a href="https://rflx.xyz">website</a> &ndash; XMR & BTC (OpenAlias): <code class=crypto>rflx.xyz</code>
+        </li>
+    </main>
+<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><li><a href="index.html"><img src="pix/chad.gif" alt="chad"></a></li><li><a href="rss.xml"><img src="pix/rss.svg" alt="RSS"></a></li><li><a href="pix/btc.png"><img src="pix/btc.svg" alt="BTC"></a></li><li><a href="pix/xmr.png"><img src="pix/xmr.svg" alt="XMR"></a></li><li><a href="https://github.com/lukesmithxyz/landchad"><img src="pix/git.svg" alt="Github"></a></footer>
+</body>
+</html>
