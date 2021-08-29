@@ -13,7 +13,7 @@
     <nav></nav>
     <main>
         <p>At this point, we should have a domain name and a server and the domain name should direct to the IP address of the server with DNS records.
-        As I said in previous articles, the instructions I will give will be for <strong>Debian 10</strong>.
+        As I said in previous articles, the instructions I will give will be for <strong>Debian</strong>.
         In this article, other distributions might work a little differently.</p>
 
         <h2>Logging in to the server</h2>
@@ -48,7 +48,7 @@
             </p>
         </aside>
 
-        <h2>Installing the Webserver: NGINX</h2>
+        <h2>Installing the Webserver: Ngninx</h2>
 
         <p>
         If the program runs without an error, <code>ssh</code> has now logged you into your server.
@@ -215,6 +215,16 @@ ufw allow 443</code></pre>
 <p>
 Port 80 is the canonical webserver port, while 443 is the port used for encrypted connections.
 We will certainly need that for the next page.
+</p>
+
+<h2>Nginx security hint</h2>
+
+<p>By default, Nginx and most other webservers automatically show their version number on error pages.
+It's a good idea to disable this from happening because if an exploit comes out for your server software, someone could exploit it. Open the main Nginx config file <code>/etc/nginx/nginx.conf</code> and find the line <code># server_tokens off;</code>. Uncomment it, and reload Nginx.
+</p>
+
+<p>
+Remember to <a href="maintenance.html#update">keep your server software up to date</a> to get the latest security fixes!
 </p>
 
 <h2>We now have running website!</h2>
