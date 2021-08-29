@@ -14,12 +14,12 @@
     <main>
         <p>
         Once you have a website, it is extremely important to enable encrypted connections over HTTPS/SSL.
-        You might have no idea what that means, but it's easy to do how we've already <a href="nginx.html">set our server up</a>.
+        You might have no idea what that means, but it's easy to do now that we've <a href="nginx.html">set our web server up</a>.
         </p>
 
         <p>
         Certbot is a program that automatically creates and deploys the certificates that allow encrypted connections.
-        It used to be a pain (and often expensive) to do this, but now it's all free and automatic.
+        It used to be painful (and often expensive) to do this, but now it's all free and automatic.
         </p>
 
         <h2>Why is encryption important?</h2>
@@ -62,7 +62,7 @@ ufw allow 443</code></pre>
 
         <p>
         The command will ask you for your email.
-        This is so when the certificates need to be renewed in three months, you will get a email about it.
+        This is so when the certificates need to be renewed in three months, you will get an email about it.
         You can set the certificates to renew automatically, but it's a good idea to check it the first time to ensure it renewed properly.
         You can avoid giving your email by running the command with the <code>--register-unsafely-without-email</code> option as well.
         </p>
@@ -129,7 +129,20 @@ ufw allow 443</code></pre>
         For more on cron and crontabs please <a href="cron.html">click here!</a>
         </p>
 
-        <span class=next><a href="html.html">Next: Use HTML to Make Simple Webpages</a></span>
+        <span class=prev><a href="nginx.html">Previous: Set up a webserver.</a></span>
+        <!-- <span class=next><a href="html.html">Next: Use HTML to Make Simple Webpages</a></span> -->
+
+        <span class=next>You've reached the end of the basic course!</span>
+
+        <p>
+        You now have a live website on the internet.
+        You can add to it what you wish.
+        </p>
+
+        <p>
+        As you add content to your site, there are many other things you can also install linked on <a href="index.html">the main page</a>,
+        and many more improvements, tweaks and bonuses.
+        </p>
     </main>
 	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
 </body>

@@ -50,7 +50,7 @@
 apt install -y nodejs
 npm install --global yarn</code></pre>
 
-        <p>In addition to these dependencies, it's recommended to create a dedicated PeerTube user to install and manage PeerTube.</p>
+        <p>Now we create a PeerTube user to run and handle PeerTube with the proper permissions:</p>
 
 	<pre><code>useradd -m -d /var/www/peertube -s /bin/bash -p peertube peertube</code></pre>
 
@@ -58,7 +58,7 @@ npm install --global yarn</code></pre>
 
 	<p>PeerTube requires a PostgreSQL database to function. To create it, first make a new Postgres user named PeerTube:</p>
 
-	<pre><code>su postgres
+	<pre><code>su -l postgres
 createuser -P peertube
 createdb -O peertube -E UTF8 -T template0 peertube_prod
 psql -c "CREATE EXTENSION pg_trgm;" peertube_prod

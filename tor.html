@@ -83,6 +83,15 @@ HiddenServicePort 80 127.0.0.1:80</code></pre>
         Now we are almost done, all we have to do is enable the site and reload nginx which, is also covered in <a href="nginx.html#enable">the webserver tutorial</a>.
         </p>
 
+        <h3>Advertise your onion service</h3>
+
+        <p>You can add the Onion-Location header to your normal website to advertise your onion service to Tor users. On your regular site's nginx config, add the following line:</p>
+        <pre><code>server {
+    ...
+    add_header Onion-Location http://<strong>your-onion-address</strong>.onion$request_uri;
+}</code></pre>
+        <p>After doing this and reloading nginx, when visiting your regular site via Tor, you should see a ".onion available" button on the address bar, which should take you to the onion service.</p>
+
         <h3>Update regularly!</h3>
 
         <p>Make sure to update Tor on a regular basis by running:</p>

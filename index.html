@@ -9,6 +9,10 @@
     <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
     </head>
 
+<style>
+img { border: none ;}
+</style>
+
 <body>
     <header><h1>Chad's Guide to Starting Your Own Website</h1></header>
     <nav></nav>
@@ -52,7 +56,6 @@
             <li><a href="sshkeys.html">Use your SSH keys to prevent hacking.</a></li>
             <li><a href="cron.html">Schedule tasks with Crontabs/Cronjobs.</a></li>
             <li><a href="cgi.html">Server side scripting with CGI</a></li>
-            <li><a href="tor.html">Mirror your site on <img src="pix/tor.svg">Tor.</a></li>
             <li><a href="auth.html">Password-protecting Webpages (HTTP Authentication)</a></li>
 	          <li><a href="email-scripting.html">Sending emails with scripts.</a></li>
             <li><a href="ufw.html">Using ufw as a firewall.</a></li>
@@ -61,27 +64,32 @@
         </ul>
 
         <h3 id=platform>"Build your own platform!"</h3>
-        <ul class=ll>
-            <li><a href="git.html">Host your own <img src="pix/git.svg"><code>git</code> repositories</a></li>
-            <li><a href="xmpp.html">Private and Encrypted Chat with <img src="pix/xmpp.svg" alt="xmpp logo">XMPP</a></li>
-            <li><a href="pleroma.html">Pleroma, a federated Twitter-like Microblogging Site</a></li>
-            <li><a href="peertube.html"><img src="pix/peertube.svg" alt="peertube logo">PeerTube, a federated YouTube-like video Site</a></li>
-            <li><a href="nextcloud.html">Setting up a <img src="pix/nextcloud.svg">Nextcloud Instance (file hosting and more)</a></li>
-            <li><a href="jitsi.html"><img src="pix/jitsi.svg" alt="Jitsi logo">Jitsi: Free and Easy Video Conferencing</a></li>
-            <li><a href="gitea.html">Setting up <img src="pix/gitea.svg">Gitea</a></li>
-            <li><a href="irc.html">Creating your own chat server with <img src="pix/irc.svg">IRC</a></li>
-            <li><a href="rss-bridge.html">RSS Bridge: Create RSS Feeds for Mainstream Social Media</a></li>
-            <li><a href="calibre.html">Setting up a Calibre library server</a></li>
-        </ul>
+
+        <p>Host your own services, social media and more.</p>
+
+        <dl class=ll>
+            <dt><a href="xmpp.html"><img src="pix/xmpp.svg" alt="xmpp logo"> XMPP</a></dt><dd>Minimalist and federated chat server</dd>
+            <dt><a href="pleroma.html">Pleroma</a></dt><dd>A federated Twitter-like microblogging site</dd>
+            <dt><a href="peertube.html"><img src="pix/peertube.svg" alt="peertube logo"> PeerTube</a></dt><dd>A federated YouTube-like video site</dd>
+            <dt><a href="nextcloud.html"><img src="pix/nextcloud.svg"> Nextcloud</a></dt><dd>Setting up a Nextcloud Instance (file hosting and more)</dd>
+            <dt><a href="jitsi.html"><img src="pix/jitsi.svg" alt="Jitsi logo"> Jitsi</a></dt><dd>Free and easy video conferencing</dd>
+            <dt><a href="git.html"><img src="pix/git.svg"> git</a></dt><dd>Version control software on your own server</dd>
+            <dt><a href="gitea.html"><img src="pix/gitea.svg"> Gitea</a></dt><dd>A fully-featured git and issue tracking site</dd>
+            <dt><a href="irc.html"><img src="pix/irc.svg"> IRC</a></dt><dd>Installing and managing a classic internet relay chat server</dd>
+            <dt><a href="rss-bridge.html">RSS Bridge</a></dt><dd>Creating RSS feeds for social media sites</dd>
+            <dt><a href="calibre.html"><img src="pix/calibre.png"> Calibre</a></dt><dd>A library server</dd>
+            <dt><a href="i2p.html"><img src="pix/itoopie.svg" alt="Itoopie">I2P</a></dt><dd>Host your site on a  private and peer-to-peer internet layer.</dd>
+            <dt><a href="tor.html"><img src="pix/tor.svg">Tor</a></dt><dd>Host your site on private onion-routing.</dd>
+        </dl>
 
         <h3 id=crypto>Accepting Cryptocurrency Tips</h3>
-        <ul class=ll>
-            <li><a href="crypto.html">The Case for Crypto for Normal People</a></li>
-            <li><a href="bitcoin.html">Accept <img src="pix/btc.svg" alt="btc logo">Bitcoin (BTC) donations</a></li>
-            <li><a href="monero.html">Accept <img src="pix/xmr.svg" alt="xmr logo">Monero (XMR) donations for superior privacy</a></li>
-            <li><a href="openalias.html">OpenAlias to make crypto easy</a></li>
-            <li><a href="bat.html"><img src="pix/bat.svg">Basic Attention Token (BAT)</a></li>
-        </ul>
+        <dl class=ll>
+            <dt><a href="crypto.html">Why crypto?</a></dt><dd>The case for crypto for normal people</dd>
+            <dt><a href="bitcoin.html"><img src="pix/btc.svg" alt="btc logo"> Bitcoin</a></dt><dd>Accept Bitcoin (BTC) donations</dd>
+            <dt><a href="monero.html"><img src="pix/xmr.svg" alt="xmr logo"> Monero</a></dt><dd>Accept Monero (XMR) donations for superior privacy</dd>
+            <dt><a href="openalias.html">OpenAlias</a></dt><dd>OpenAlias to make crypto easy</dd>
+            <dt><a href="bat.html"><img src="pix/bat.svg"> BAT</a></dt><dd>Receive donations via the Brave browser</dd>
+        </dl>
 
         <h2>In the Works...</h2>
 
@@ -95,7 +103,6 @@
         <ul>
             <li>Full HTML tutorial</li>
             <li>Full CSS tutorial</li>
-            <li>Setting up an Email server</li>
             <li>RSS feeds</li>
             <li>Matrix (federated chat)</li>
             <li>SearX (search engine)</li>
@@ -118,12 +125,14 @@
             <li><a href="https://www.ejabberd.im/">XMPP ejabberd</a></li>
             <li><a href="https://movim.eu/">Movim for XMPP</a></li>
             <li>Nitter</li>
-            <li>XMPP ejabberd</li>
-            <li>Movim for XMPP</li>
         </ul>
 
 
         <h2>Support LandChad.net</h2>
+
+        <p>Help advertize this site by adding this banner with a link on your website:</p>
+
+        <a href="https://landchad.net"><img src="pix/landchad.gif" alt="LandChad.net"></a>
 
         <p>
         No ads, trackers or trash on this site.
@@ -132,7 +141,7 @@
         </p>
 
         <ul class=ll>
-            <li>When setting up a website, use our linked affiliate links, like <a href="https://www.vultr.com/?ref=8384069-6G">to Vultr</a>.</li>
+            <li>When setting up a website, use our linked affiliate links, like to <a href="https://www.vultr.com/?ref=8384069-6G">Vultr</a> or <a href="https://my.frantech.ca/aff.php?aff=3886">Frantech/BuyVM</a> for a VPS.</li>
             <li>If you enjoy a guest article, the author's donation links may be included at the bottom of the page.</li>
             <li>Donate crypto to the long-term LandChad maintenance and expansion fund:</li>
         </ul>
