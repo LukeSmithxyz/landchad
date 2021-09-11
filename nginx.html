@@ -111,7 +111,7 @@ apt install nginx</code></pre>
 <pre><code>server {
         listen 80 ;
         listen [::]:80 ;
-        server_name <strong>landchad.net</strong> ;
+        server_name <strong>landchad.net</strong> <strong>www.landchat.net</strong> ;
         root /var/www/<strong>landchad</strong> ;
         index index.html index.htm index.nginx-debian.html ;
         location / {
@@ -128,7 +128,7 @@ The <code>listen</code> lines tell <code>nginx</code> to listen for connections 
 <p>
 The <code>server_name</code> is the website that we are looking for.
 By putting <code>landchad.net</code> here, that means whenever someone connects to this server and is looking for that address,
-they will be directed to the content in this block.
+they will be directed to the content in this block. If you also wish to have <code>www.landchad.net</strong> directed to this content, add it here as well.
 </p>
 <p>
 <code>root</code> specifies the directory we're going to put our website files in.
