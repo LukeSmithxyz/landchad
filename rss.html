@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Creating an RSS Feed &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Creating an RSS Feed</h1></header>
+    <nav></nav>
+    <main>
+		<p>
+			RSS feeds are an easy way to be notified about new content from various websites, and they are easy to implement in your website.
+		</p>
+
+		<h2>How an RSS Feed Works</h2>
+		<p>
+			Some websites with frequently changing content like blogs, podcasts, or video sharing sites, will have a link to a file containing the RSS feed and its items.
+		</p>
+
+		<p>
+		When there is new content, a new item can be added to the RSS feed, and old items can optionally be removed from the RSS feed. A user's feed reader can check an RSS feed for new items and notify the user about them or organize them.
+		</p>
+
+		<h2>Writing an RSS Feed</h2>
+		<p>
+		RSS feeds are written as XML (e<strong>x</strong>tensible <strong>m</strong>arkup <strong>l</strong>anguage) files, so they can be written and served similar to HTML webpages.
+		</p>
+
+		<p>
+		We will start by creating a file for our RSS feed. Make sure the file name ends with <code>.rss</code> or <code>.xml</code>. Then, write the following code in the file:
+		</p>
+
+		<pre><code>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;rss version="2.0"&gt;
+	&lt;channel&gt;
+	&lt;/channel&gt;
+&lt;/rss&gt;</code></pre>
+
+		<p>
+		The <code>&lt;rss&gt;</code> tag specifies that there is an RSS feed in between the <code>&lt;rss&gt;</code> and <code>&lt;/rss&gt;</code> tags. <code>version="2.0"</code> specifies that version 2.0 of RSS is used. The items in an RSS feed go in between the <code>&lt;channel&gt;</code> and <code>&lt;/channel&gt;</code> tags.
+		</p>
+
+		<h3>Title, Description, and Link</h3>
+		<p>
+		Now we will write a title and description for our RSS feed, as well as a link to the webpage that the RSS feed goes with. In this example, we will be writing an RSS feed for a blog called <strong>LandChad's Blog</strong>.
+		</p>
+
+		<p>
+		In between the <code>&lt;channel&gt;</code> and <code>&lt;/channel&gt;</code> tags, the <code>&lt;title&gt;</code> tag will be used to label the feed as <strong>LandChad's Blog</strong>. The <code>&lt;description&gt;</code> and <code>&lt;link&gt;</code> tags are used for the description of the feed and a link to the corresponding webpage.
+		</p>
+
+<table class=cnp>
+	<tr>
+		<td>
+<pre><code>&lt;channel&gt;
+	&lt;title&gt;<strong>LandChad's Blog</strong>&lt;/title&gt;
+	&lt;description&gt;<strong>LandChad's writings and ideas</strong>&lt;/description&gt;
+	&lt;link&gt;<strong>https://example.org/blog</strong>&lt;/link&gt;
+&lt;/channel&gt;</code></pre>
+		</td>
+		<td>
+<img src=pix/rss-01.png alt="'LandChad's Blog' feed in feed reader">
+		</td>
+	</tr>
+</table>
+
+		<h3>Feed Items</h3>
+		<p>
+		Now we will add items to the RSS feed. These items are listed in the user's feed reader and can represent different content on a page such as blog posts or videos. In this example, there is a blog post called <strong>RSS is Amazing!</strong>.
+		</p>
+
+		<p>
+		The <code>&lt;item&gt;</code> tag is used to add items to the RSS feed. An item is given a title using the <code>&lt;title&gt;</code> tag to label the item. The item will have a link to its webpage using the <code>&lt;link&gt;</code> tag and an item description using the <code>&lt;description&gt;</code> tag.
+		</p>
+
+		<p>
+		The date and time of an item can be specified using the <code>&lt;pubDate&gt;</code> tag. The date and time <strong>must follow a specific format</strong>. In the example below, the item was posted on <strong>Friday, October 1, 2021 at 2:27 PM in the -0400 time zone</strong>.
+		</p>
+
+<table class=cnp>
+	<tr>
+		<td>
+<pre><code>&lt;item&gt;
+	&lt;title&gt;<strong>RSS is Amazing!</strong>&lt;/title&gt;
+	&lt;link&gt;<strong>https://example.org/blog/2021-10-1-rss</strong>&lt;/link&gt;
+	&lt;description&gt;<strong>RSS is a good notification system.</strong>&lt;/description&gt;
+	&lt;pubDate&gt;<strong>Fri, 1 Oct 2021 14:27:00 -0400</strong>&lt;/pubDate&gt;
+&lt;/item&gt;</code></pre>
+		</td>
+		<td>
+<img src=pix/rss-02.png alt="'LandChad's Blog' feed with an item">
+		</td>
+	</tr>
+</table>
+
+		<p><strong>Contributor</strong> - <a href="https://closedgl.xyz" target="_blank">ClosedGL</a></p>
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
