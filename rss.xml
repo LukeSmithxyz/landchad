@@ -16,13 +16,320 @@
 <!-- LB -->
 
 <item>
+<title>Setting up Cgit</title>
+<guid>https://landchad.net/cgit.html</guid>
+<link>https://landchad.net/cgit.html</link>
+<pubDate>Tue, 14 Sep 2021 14:06:48 -0400</pubDate>
+<description><![CDATA[
+	<header>
+		<h1>Setting up Cgit</h1>
+		<img src="pix/cgit.svg" class="titleimg">
+	</header>
+	<main>
+		<p>
+			Once you have your server hosting your git repositories, you might want to allow others to browse
+			your repositories on the web. Cgit is a Free Software that allows browsing git repositories through
+			the web. </p>
+		<p>
+			Note that Cgit is a read-only frontend for Git repositories and doesn't have issues, pull requests
+			or user management. If that's what you want, consider installing Gitea instead.</p>
+		<h2>Installing cgit and fcgiwrap</h2>
+		<h3>Install fcgiwrap</h3>
+		<p>
+			NGINX doesn't have the capability to run CGI scripts by itself, it depends on an intermediate layer
+			like fcgiwrap to run CGI scripts like cgit:</p>
+		<pre><code>apt install fcgiwrap</code></pre>
+		<p>And now we can install cgit itself with:</p>
+		<pre><code>apt install cgit</code></pre>
+		<h2>Setting up NGINX</h2>
+		<p>
+			You should have an NGINX server running with a TLS certificate by now. Add the following configuration
+			to your server to pass the requests to Cgit, while serving static files directly:</p>
+		<pre><code>
+server {
+	listen 443 ssl;
+	listen [::]:443 ssl;
+    ssl_certificate /etc/ssl/nginx/<strong>git.example.org</strong>.crt;
+    ssl_certificate_key /etc/ssl/nginx/<strong>git.example.org</strong>.key;
+    server_name <strong>git.example.org</strong>;
+	root /usr/share/cgit ;
+	try_files $uri @cgit ;
+	location @cgit {
+		include fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME /usr/lib/cgit/cgit.cgi;
+		fastcgi_param PATH_INFO $request_uri;
+		fastcgi_param QUERY_STRING $query_string;
+		fastcgi_pass unix:/run/fcgiwrap.socket;
+	}
+}
+		</code></pre>
+		<p>Then get NGINX to reload your configuration.</p>
+		<h2>Configuring cgit</h2>
+		<p>You've got cgit up and running now, but you'll probably see it without any style and without any repository.
+			To change this, we need to configure Cgit to our liking, by editing <code>/etc/cgitrc</code>.
+		</p>
+		<pre><code>
+css=/cgit.css
+logo=/cgit.svg
+virtual-root=/
+# Title and description shown on top of each page
+root-title=<strong>Chad's git server</strong>
+root-desc=<strong>A web interface to LandChad's git repositories, powered by Cgit</strong>
+# The location where git repos are stored on the server
+scan-path=/srv/git/
+		</code></pre>
+		<p>This configuration assumes you followed the <a href="/git">git hosting guide</a> and store your repositories
+			on the <code>/srv/git/</code> directory.</p>
+		<p>Cgit's configuration allows changing many settings, as documented on the cgitrc(5) manpage installed with
+			Cgit.</p>
+		<h3>Changing the displayed repository owner</h3>
+		<p>Cgit's main page shows each repo's owner, which is "git" in case you followed the git hosting guide, but you
+			might want to change the name to yours. Cgit shows the owner's system name, so you need to modify the git
+			user
+			to give it your name:</p>
+		<pre><code>
+usermod -c "<strong>Your Name</strong>" git
+		</code></pre>
+		<h3>Changing the repository description</h3>
+		<p>Navigate to your bare repository on the server and edit the <code>description</code> file inside it</p>
+		<h3>Displaying the repository idle time</h3>
+		<p>To do this, we need to create a post-receive hook for each repository that updates the file cgit uses
+			to determine the idle time. Inside your repository, create a file <code>hooks/post-receive</code> and add
+			the following contents:</p>
+		<pre><code>
+#!/bin/sh
+agefile="$(git rev-parse --git-dir)"/info/web/last-modified
+mkdir -p "$(dirname "$agefile")" &&
+git for-each-ref \
+	--sort=-authordate --count=1 \
+	--format='%(authordate:iso8601)' \
+	>"$agefile"
+		</code></pre>
+		<p>And give it execution permissions with:</p>
+		<pre><code>chmod +x hooks/post-receive</code></pre>
+		<p>Next time you push to that repository, the idle time should reset and show the correct value.</p>
+		<h2>Contribution</h2>
+		<ul>
+			<li>Ariel Costas &ndash; <a href="https://costas.dev">website</a>, <a
+					href="https://costas.dev/donations/">donations</a></li>
+		</ul>
+	</main>
+	
+]]></description>
+</item>
+
+
+<item>
+<title>Self hosting</title>
+<guid>https://landchad.net/selfhosting.html</guid>
+<link>https://landchad.net/selfhosting.html</link>
+<pubDate>Sun, 29 Aug 2021 15:35:48 -0400</pubDate>
+<description><![CDATA[
+    <header><h1>Self hosting</h1></header>
+
+    <main>
+	    <h2>Introduction</h2>
+	    <p>When you have a(n old) computer lying around, and you have cheap electricity and a good internet connection, self hosting might be a good option for you.</p>
+	    <h3>Why would you choose selfhosting?</h3>
+	    <ul>
+		    <li>
+			    You have control over the hardware, and you can upgrade your server in the future. For example: if you host a file server and your hard drive goes full, you can simply add another hard drive or upgrade it.
+		    </li>
+		    <li>
+			    No bandwith limits, storage limits, etc. (some VPSes have this)
+		    </li>
+		    <li>
+			    It <strong>can</strong> be cheaper than using a VPS. This only is the case if you got the server for really cheap and your electricity is cheap.
+		    </li>
+		    <li>
+			    You can have a media server to consoom your content (for example with <code>Jellyfin</code>). You can technically do this on a VPS, but that will be more expensive than self hosting. If you have a media server, you can stream media from your server to more devices. (I recommend just downloading it on your device, but if you have multiple devices, this could be a good solution)
+		    </li>
+	    </ul>
+
+	    <h3>Downsides</h3>
+	    <p>Some possible downsides of choosing to host at home could be:</p>
+	    <ul>
+		    <li>
+			    Your ISP not approving of what you're doing. Some ISP's do not condone you hosting at home. Usually when this is the case, it could be harder if you want to forward ports, or it could be impossible to get a static IP address. Check your ISP's terms of service. Sometimes, it will say that hosting a webserver, email server, and more, is not allowed.
+		    </li>
+		    <li>
+			    This can also include blocked ports. ISPs can block certain ports to the world. Sometimes ISPs only block 445/139 (which is for the better as Samba, using these ports isn't really secure and it's outdated). But some ISPs (sadly) block crucial ports like 80 and/or 443. You need to check this before trying anything. If this is the case, a way to get around it is to get another ISP or use an alternative port. A great website to check this is: <a href="https://canyouseeme.org/">canyouseeme.org</a>. You can also check if you did the port forwaring correctly here.</li>
+		    <li>
+			    Security. Opening your network to the public could bring security risks. For example, never open a Samba server to the public, because it's a pretty old protocol, and it has some security vulnerabilities. Be sure you are forwarding the right port, and don't just forward random ports to the internet. Also, if you are getting DDoSed, your ISP will temporarily shut down your whole internet connection.
+		    </li>
+		    <li>
+			    When setting up an email server, it can be way harder to not have your email show up as spam in other's people email. If you use a VPS, this is way easier.
+		    </li>
+		    <li>
+			    Space, power consumption and noise. Of course, this differs per server.
+		    </li>
+	    </ul>
+	    <p>Your mileage may vary, go and check each of these points, and see if selfhosting is the right choice for you. Try and calculate your power consumption and see if your electricity cost is not too expensive.</p>
+	    <p>For me, the upsides outweighed the downsides, which is why I chose to host at home. But, this differs with each person and scenario. Go and research what your exact situation is, before trying anything. Otherwise you'll have to face some bad surprises.</p>
+	    <h2>Hardware</h2>
+
+	    <h3>What kind of hardware should you choose?</h3>
+	    <p>If you pay your own electricity bill, power consumption is a big factor. Most old laptop computers are ideal in the sense that they don't use a lot of power, and if the battery still works, you have a built-in UPS! The bad thing is, most old laptop computers aren't that powerful, and they lack in upgradability. (you shouldn't really be using anything older than 2006, and I recommend at least a performance equivalant of a Core 2 CPU)
+	    </p>
+	    <p>If you can find an energy efficient desktop (under 100W), that is a great option. They are pretty upgradable and they don't use a lot of power. They can also be pretty cheap, but old laptops are usually cheaper. If you can afford new hardware, and are willing to build a PC, you can find really power effecient CPU/motherboard combos, and they can be cheap, for example the Celeron J3060. I recommend a low wattage power supply or an effecient one for these kinds of builds. Pico PSUs are pretty tiny and efficient solutions in these builds.</p>
+	    <p>Of course, if you don't pay your electricity bill or cost is not a problem for you, you can use just about any old desktop (as long as it's not from the 90's, I recommend at least a Core 2 chip again, or an Athlon 64 X2).</p>
+	    <h3>Usecases</h3>
+	    <p>Of course, hardware choices depend on the usecase. The above recommendations I gave you work fine for e-mail server, webserver and fileserver types of applications, but they will struggle to transcode video if you are going to host a media server. You'll need a faster CPU, but also a faster GPU. As an example, the Athlon 200GE or 3000G are good and efficient choices for these builds. They are decent CPUs, but also have a built in GPU that will transcode video just fine.</p>
+	    <p>
+	    If you need a lot of storage, go for a case with a lot of mounts for hard drives, this way you can easily mount multiple hard drives. Pros of multiple hard drives are redundancy and speed. Cons could be that they create more heat and noise. You can't use a laptop if you want multiple drives, except if you use a hard drive caddy for the CD/DVD drive bay. Some business laptops even support RAID 1 (redundancy) and RAID 0 (speed and more storage, but you lose your files if one hard drive breaks) this way.</p>
+	    <h2>Getting started</h2>
+	    <h3>Installing Debian</h3>
+	    <p>Once you have the machine, you can install the OS. I recommend Debian, as all of the guides on this website are Debian specific. Debian just werks as a server OS.</p>
+</p>
+<p>You'll need to burn a Debian install image onto a USB flash drive or a CD. You can download the image <a href="https://www.debian.org/CD/netinst/">here</a>, and you can also find information on how to burn the image onto a USB flash drive or CD there.
+</p>
+<p>While installing Debian, do not install any desktop environment. But install an SSH server when you get the chance. Also leave webserver unchecked, even if you want to use it as a webserver. You'll have a chance to install this later.</p>
+<h3>Port forwaring</h3>
+<p>Every time you are going to set up a new server program, you need to forward a port corresponding to that program. For example, HTTP is port 80, HTTPS is 443, etc. You need to set this up on your router's NAT settings (sometimes just called port forwarding, this differs per router). These steps differ for each router. Refer to your routers manual. A simple command to see what your servers IP address is, is to run <code>ifconfig</code> on your server. This shows a lot of network info, but it will also show your local IP address needed for port forwarding.
+</p>
+<p>Basic ports:</p>
+<ul>
+	<li>
+		SSH: port 22 (open this port if you want to admin your server outside your network)
+	</li>
+	<li>
+		HTTP: port 80 (open this port if you want basic webserver functionality)
+	</li>
+	<li>
+		HTTPS: port 443 (you should open this port if you are setting up a webserver because encryption)
+	</li>
+	</ul>
+
+<h3>Static or dynamic IP address</h3>
+<p>If you want to host your server at home, make sure you have a static IP address, or you can change your dynamic IP address to a static one. Refer to your router settings, some ISPs will have options on this here. If you can't find anything on this, get in touch with your ISP.</p>
+<p>Once you've made sure you have a static IP address, you can find out what the IP address is with various websites. You can use a search engine to easily find this out. Write this down as you'll need it later.</p>
+<p>Once you're done, you can pretty much follow every guide on this website, the only difference is that you'll need to forward the ports you'll be using for the server.</p>
+<h3>Finding the ports you'll need to forward</h3>
+<p>If you need to know what port you'll need to forward, there's a command for that. Just type <code>netstat -tulpn</code> in your servers command line. If you want to see the name of the programs, you need to run it as a root user. You can do this by putting <code>sudo</code> before the command.</p>
+<pre><code>Local Address                    State       PID/Program name
+0.0.0.0:25                       LISTEN      887/master
+0.0.0.0:1883                     LISTEN      22452/mosquitto
+0.0.0.0:445                      LISTEN      798/smbd
+0.0.0.0:993                      LISTEN      381/dovecot
+127.0.0.1:3306                   LISTEN      560/mysqld
+0.0.0.0:587                      LISTEN      887/master
+0.0.0.0:139                      LISTEN      798/smbd
+127.0.1.1:12301                  LISTEN      412/opendkim
+0.0.0.0:143                      LISTEN      381/dovecot
+0.0.0.0:465                      LISTEN      887/master
+0.0.0.0:22                       LISTEN      472/sshd
+:::25                            LISTEN      887/master
+:::443                           LISTEN      1769/apache2
+:::1883                          LISTEN      22452/mosquitto
+:::445                           LISTEN      798/smbd</code></pre>
+<p><em>Example output</em></p>
+
+<p>In this example, if you need to find the port number from <code>dovecot</code>, you can look for it in the <code>Program name</code> column. Then you can see in the local address column that the reported local address is <code>0.0.0.0:993</code>. You need to look for the part after the semicolon. In this case it's 993. So you'll need to forward port 993.</p>
+
+<span class="next"><a href="dns.html">Next: Connect Your Domain and Server</a></span>
+
+<hr>
+<p><em>Written by <a href="https://github.com/hidde-j">hiddej</a></em>
+    </main>
+]]></description>
+</item>
+
+
+<item>
+<title>Mirror your site over I2P</title>
+<guid>https://landchad.net/i2p.html</guid>
+<link>https://landchad.net/i2p.html</link>
+<pubDate>Sun, 29 Aug 2021 15:32:44 -0400</pubDate>
+<description><![CDATA[
+		<header><h1>Mirror Your Site Over I2P</h1></header>
+
+		<main>
+			<img class=titleimg src="pix/i2p.svg" alt="I2P logo">
+			<p>
+				Now you have a website, why not offer it in a private alternative such as the Invisible Internet?
+			</p>
+			<h2>Setting up I2P</h2>
+			<p>
+				There are 2 main I2P implementations, I2P and i2pd, we are using i2pd in this
+				guide because it's easier to use in servers.
+			</p>
+			<h3>Installing I2P</h3>
+			<p>
+				i2pd is in most repos, in debian/ubuntu you can install it simply
+				with <pre><code>apt install i2pd</code></pre>
+			</p>
+			<h3>Enabling I2P</h3>
+			<p>
+				We are going to create a user for i2pd, because i2pd finds the configuration
+				files in its home directory. And it's easier (and more tidy) to have it in a separate user:
+			</p>
+			<pre><code>useradd -m i2p -s /bin/bash
+su -l i2p
+mkdir ~/.i2pd
+cd ~/.i2pd</code></pre>
+			<p>
+				Now that you're in ~/.i2pd, you have to create a file named
+				"tunnels.conf". Which is the config file for every hidden service you're
+				offering over I2P, the content should be like this:
+			</p>
+            <pre><code>[<strong>example</strong>]
+type = http
+host = 127.0.0.1
+port = 8080
+keys = <strong>example.dat</strong></code></pre>
+            <h3>Getting your I2P Hostname</h3>
+			<p>
+				Then, run <code>/usr/sbin/i2pd --daemon</code> to start i2pd and we can retreive our I2P hostname.
+            </p>
+            <p>
+            This can be done in lynx or a command-line browser by going to <code>http://127.0.0.1:7070/?page=i2p_tunnels</code> to get your I2P hostname.
+            </p>
+            <p>
+            You
+				can also run these commands to find your hostname:
+            </p>
+				<pre><code>printf "%s.b32.i2p
+" $(head -c 391 /home/i2p/.i2pd/<strong>example.dat</strong> |sha256sum|xxd -r -p | base32 |sed s/=//g | tr A-Z a-z)</code></pre>
+			<h2>Adding the Nginx Config</h2>
+			<p>
+				From here, the steps are almost identical to setting up a normal website configuration file.
+				Follow the steps as if you were making a new website on the webserver
+				<a href="nginx.html">tutorial</a> up until the server block of code. Instead, paste this:
+			</p>
+			<pre><code>server {
+listen 127.0.0.1:8080 ;
+root /var/www/<strong>example</strong> ;
+index index.html ;
+}</code></pre>
+			<aside>
+				<h4>Clarifications<h4>
+						<p>
+							Nginx will listen in port 8080, but i2pd will forward your port
+							8080 to the i2p site port 80. This way you don't have to deal with server names or anything like that
+						</p>
+			</aside>
+			<p>
+				From here we are almost done, all we have to do is enable the site and reload nginx which is also covered in <a href="nginx.html#enable">the webserver tutorial</a>.
+			</p>
+			<h3>Update regularly!</h3>
+			<p>Make sure to update I2P on a regular basis by running:</p>
+			<pre><code>apt update && apt install i2pd</code></pre>
+			<p><strong>Contributor</strong>  -  <a href="https://qorg11.net" target="_blank">qorg11</a></p>
+		</main>
+
+
+]]></description>
+</item>
+
+
+<item>
 <title>Setting up a Calibre library server</title>
 <guid>https://landchad.net/calibre.html</guid>
 <link>https://landchad.net/calibre.html</link>
 <pubDate>Tue, 03 Aug 2021 13:49:21 -0400</pubDate>
 <description><![CDATA[
     <header><h1>Setting up a Calibre library server</h1></header>
-    
+
     <main>
         <img src="pix/calibre.png" alt="Calibre logo" class=titleimg>
         <p>
@@ -125,7 +432,7 @@ systemctl start calibre-server</code></pre>
 <pubDate>Tue, 03 Aug 2021 13:00:23 -0400</pubDate>
 <description><![CDATA[
     <header><h1>Jitsi Video Chat</h1></header>
-    
+
     <main>
         <img src="pix/jitsi.svg" alt="Jitsi" class=titleimg>
       <p>
@@ -137,7 +444,7 @@ systemctl start calibre-server</code></pre>
       </p>
       <h2>Dependencies and Installation</h2>
       <p>First, install some dependencies:</p>
-      <pre><code>apt install gpg apt-transport-https nginx python-certbot-nginx</code></pre>
+      <pre><code>apt install gpg apt-transport-https nginx python3-certbot-nginx</code></pre>
       <p>Jitsi has its own package repository, so let's add it.</p>
       <pre class=wide><code>curl https://download.jitsi.org/jitsi-key.gpg.key | gpg --dearmor &#62; /usr/share/keyrings/jitsi-keyring.gpg
 echo 'deb [signed-by=/usr/share/keyrings/jitsi-keyring.gpg] https://download.jitsi.org stable/' > /etc/apt/sources.list.d/jitsi-stable.list
@@ -210,8 +517,8 @@ ufw enable</code></pre>
         <li>Edited and revised by <a href="https://lukesmith.xyz">Luke</a>.</li>
       </ul>
     </main>
-    
-  
+
+
 ]]></description>
 </item>
 
@@ -223,7 +530,7 @@ ufw enable</code></pre>
 <pubDate>Thu, 29 Jul 2021 10:44:56 -0400</pubDate>
 <description><![CDATA[
 	<header><h1>PeerTube Instance</h1></header>
-    
+
     <main>
         <img class=titleimg src="pix/peertube.svg" alt="PeerTube logo">
         <p>PeerTube is a self-hosted and (optionally) federated video sharing platform that saves bandwith on videos the more people watch.
@@ -340,7 +647,7 @@ systemctl daemon-reload</code></pre>
 	<hr>
 	<p><em>Written by <a href="https://denshi.live">Denshi.</a> Donate Monero <a href="https://denshi.live/donate.html">here</a> <a href="https://denshi.live/images/monero.png">[QR]</a></em></p>
     </main>
-	
+
 ]]></description>
 </item>
 
@@ -352,7 +659,7 @@ systemctl daemon-reload</code></pre>
 <pubDate>Sun, 25 Jul 2021 14:29:44 -0400</pubDate>
 <description><![CDATA[
     <header><h1>Server-Side Scripting with CGI</h1></header>
-    
+
     <main>
         <p>
         The basic website tutorial here describes how to set up a static
@@ -502,7 +809,7 @@ end</code></pre>
         The remaining parts of the code should be pretty self-explanatory. We
         get today's date, check if it's a Saturday or a Sunday, and depending on
         that, we instruct the CGI library to output either the answer, or a
-        "come back later" message. 
+        "come back later" message.
         </p>
         <p>
         The Ruby library by default returns an HTML response, so we really
@@ -543,7 +850,7 @@ end</code></pre>
   include fastcgi_params;
   fastcgi_param SCRIPT_FILENAME /usr/local/bin/lazy-calculator.rb;
   fastcgi_param QUERY_STRING $query_string;
-  fastcgi_pass unix:/run/fcgiwrap.socket;	
+  fastcgi_pass unix:/run/fcgiwrap.socket;
 }</code></pre>
         <p>
         <code>fastcgi_param</code> directives specify various parameters for
@@ -561,7 +868,7 @@ end</code></pre>
             <li>Martin Chrzanowski -- <a href="https://m-chrzan.xyz">website</a>, <a href="https://m-chrzan.xyz/donate.html">donate</a></li>
         </ul>
     </main>
-	
+
 ]]></description>
 </item>
 
