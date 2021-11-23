@@ -114,11 +114,49 @@ You can see other settings for this module <a href="https://prosody.im/doc/modul
 Note also that Prosody comes with the <code>carbons</code> activated module by default, which is related. This will send received messages to <em>all</em> active clients (your phone and desktop), although it will not save messages like MAM for clients not online or to be added later.
 </p>
 
+<h3>File sharing</h3>
+
+<p>With this we can bring XMPP to the level of other popular instant messaging applications like Matrix and whatsapp. It is extremely easy to setup. This part is optional, but it can make XMPP more normie-friendly if you plan on moving family members and friends over to XMPP.</p>
+
+<p>First we need to install extra prosody modules. Run the following command: </p>
+<pre><code>apt install prosody-modules</code></pre>
+
+<p>Then we can add the following line to you prosody config file to enable file uploads: </p>
+<pre><code>Component "<strong>uploads.example.org</strong>" "http_upload"</code></pre>
+
+<p>As you will notice, you need another subdomain for this. We will add an ssl certficate for this later.</p>
+
+<p>You will also need to go back to <code>modules_enabled</code> and uncomment the <code>http_files</code> module. This is used to actually serve the files to users.</p>
+
+<p>And the last part of the setup is to enable the built in proxy server. This helps with file transfers for devices behind a NAT, and unless you are using XMPP in a LAN, you probably need this. Enable the proxy by adding the following line to the config: </p>
+
+<pre><code>Component "<strong>proxy.example.org</strong>" "proxy65"</code></pre>
+
+<p>As you can see, another subdomain is needed. We will add ssl certificates for this later.</p>
+
+<p>At this point, file sharing is now setup and ready to be used. Although there are some concerns that should be addressed.</p>
+
+<p>A big concern with file sharing is large files, seeing as all files shared over XMPP will be stored on your server. This can become a problem when many (and large) files are being shared. We can put a cap on large files by adding the following line to our config:</p>
+<pre><code>http_upload_file_size_limit = 20971520</code></pre>
+
+<p>This puts a 20MB cap on all files being shared. The value is specified in bytes. You can also specify after how long files should be deleted by adding the following line:</p>
+<pre><code>http_upload_expire_after = 60 * 60 * 24 * 7</code></pre>
+
+<p>The value is specified in seconds. The above line will make prosody delete files after a week.</p>
+
+<p>If it is for some reason neccessary, you can also manually invoke expiry with the following command:</p>
+
+<pre><code>prosodyctl mod_http_upload expire</code></pre>
+
 <h3>Other things to check</h3>
 
 <p>Check the config file for other settings you might want to change.
 For example, if you want to run a general public XMPP server, you can allow anyone to create an account by changing <code>allow_registration</code> to <code>true</code>.
 </p>
+
+<p>Another thing you can do is enable the <code>csi_simple</code> module, which will add some optimizations for mobile devices.</p>
+
+<p>Another thing worth noting is the <code>archive_expires_after = "1w"</code> line. This specifies after how long message archives will be deleted.</p>
 
 <h2>Certificates</h2>
 
@@ -133,6 +171,13 @@ Include the <code>--nginx</code> option assuming you have an Nginx server runnin
 </p>
 
 <pre><code>certbot -d <strong>chat.example.org</strong> --nginx</code></pre>
+
+<p>
+<strong>If you have file sharing enabled, be sure to get a certificate for those subdomains as well.</strong>
+</p>
+<pre><code>certbot -d <strong>uploads.example.org</strong> --nginx
+certbot -d <strong>proxy.example.org</strong> --nginx
+</code></pre>
 
 <p>
 Once you have the certificates for encryption, run the following to import them into Prosody.
@@ -179,7 +224,7 @@ Once your server is set up, you just need an XMPP client to use your new and sec
 <ul>
     <li>GNU/Linux: <a href="https://dino.im/">Dino</a> or <a href="https://gajim.org/">Gajim</a></li>
     <li>Windows: <a href="https://gajim.org/">Gajim</a> also runs on Windows.</li>
-    <li>Android: <a href="https://conversations.im/">Conversations.im</a></li>
+    <li>Android: <a href="https://conversations.im/">Conversations.im</a> or <a href="https://snikket.org/">snikket</a></li>
     <li>Mac/iOS: <a href="https://monal.im/">Monal IM</a> or <a href="https://siskin.im/">Siskin</a> for iOS alone</li>
     <li>command-line (GNU/Linux, MacOS, Windows): <a href="https://profanity-im.github.io/">Profanity</a></li>
     <li><a href="https://xmpp.org/software/clients.html">See a more complete list kept by XMPP</a></li>
