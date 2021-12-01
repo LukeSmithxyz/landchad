@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Setting up a Rainloop Webmail Client &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <img class=titleimg src="pix/rainloop.svg" alt="logo" style="filter: invert(1);">
+    <header><h1>Setting up a Rainloop Webmail Client</h1></header>
+    <nav></nav>
+    <main>
+	    <h2 id="whatis">What is Rainloop?</h2>
+	    <p><a href="https://www.rainloop.net/"><img src="pix/rainloop.svg" style="filter: invert(1);">Rainloop</a> is a webmail client, a program that allows you to access your email online like gmail. It is useful to be able to access you email from a web browser because it allows you to easily access your email from any device with a web browser without any additional setup. If you set up <a href="nextcloud.html" target="_blank"><img src="pix/nextcloud.svg" alt="logo">Nextcloud</a> then you do not need to install Rainloop because Nextcloud comes with a webmail client. However, if all you want is a webmail client and you do not need all of the extra things that Nextcloud provides, Rainloop would be the better choice out of the two since it is less bloated and simpler to install.</p>
+	    <h2 id="instructions">Instructions</h2>
+	    <p>First we will install the required packages for Rainloop with the following command:</p>
+	    <pre><code>apt-get full-upgrade -y && apt-get install php7.3 php7.3-common php7.3-curl php7.3-xml php7.3-fpm php7.3-json php7.3-dev php7.3-mysql unzip -y</code></pre>
+	    <p>Then we will download the community version of Rainloop, unzip it into an appropriate directory and fix all of the file permissions:</p>
+	    <pre><code>curl -L "https://www.rainloop.net/repository/webmail/rainloop-community-latest.zip" -o "rainloop.zip" && unzip rainloop.zip -d /var/www/<strong>mail</strong> && chown -R www-data: /var/www/<strong>mail</strong></code></pre>
+	    <p>We have installed Rainloop itself, but now we need Nginx to serve the client. We do that by adding the following text into the file <code>/etc/nginx/sites-available/<strong>mail</strong></code> (you can replace the bold text with whatever is appropriate for your server).</p>
+	    <pre class=wide><code>server {
+
+	listen 80;
+
+	server_name <strong>mail.domain.com</strong>;
+	root /var/www/<strong>mail</strong>;
+
+	index index.php;
+
+	access_log /var/log/nginx/rainloop_access.log;
+	error_log /var/log/nginx/rainloop_error.log;
+
+	location / {
+		try_files $uri $uri/ /index.php?$query_string;
+	}
+
+	location ~ \.php$ {
+		fastcgi_index index.php;
+		fastcgi_split_path_info ^(.+\.php)(.*)$;
+		fastcgi_keep_conn on;
+		fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+		include /etc/nginx/fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+	}
+	location ~ /\.ht {
+		deny all;
+	}
+
+	location ^~ /data {
+		deny all;
+	}
+}</pre></code>
+	    <p>Then enable the site by linking it to the sites-enabled directory:</p>
+	    <pre><code>ln -s /etc/nginx/sites-available/<strong>mail</strong> /etc/nginx/sites-enabled/</pre></code>
+	    <p>Reload nginx:</p>
+	    <pre><code>systemctl reload nginx</pre></code>
+	    <p>Finally get certifications if you are using a new subdomain:</p>
+	    <pre><code>certbot --nginx</pre></code>
+	    <p>After that go to <code><strong>mail.domain.com</strong>/?admin</code> and login with the default username and password: admin, 12345. Now you are in the admin panel and the first thing you do should be to change the adminsitrator password by looking in the security tab on the left.</p>
+	    <img src="pix/rainloop-1.png" alt=rainloop>
+
+	    <p> After securing the admin account you can go to domains and add your own email address.</p>
+	    <img src="pix/rainloop-2.png" alt=rainloop>
+	    <p>Finally, go to <code><strong>mail.domain.com</strong></code> and login with your email address and password.</p>
+	    <h2 id="contribution">Contribution</h2>
+	    <ul>
+		    <li><a href=https://deniz.telci.org/>Deniz Telci</a> - XMR: <code>4AcKbpTUc3QX2zHYdh9HZwJAQyexdybFhF1WhXTFhxAcV9jgzB6kroqGZDgeW3rQqXEMYJioYo61kaLBqstwecty9Bjbr4v</code></li>
+
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="donate-bitcoin.html"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="donate-monero.html"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
