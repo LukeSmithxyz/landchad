@@ -46,9 +46,9 @@
 server {
 	listen 443 ssl;
 	listen [::]:443 ssl;
-    ssl_certificate /etc/ssl/nginx/<strong>git.example.org</strong>.crt;
-    ssl_certificate_key /etc/ssl/nginx/<strong>git.example.org</strong>.key;
-    server_name <strong>git.example.org</strong>;
+	ssl_certificate /etc/ssl/nginx/<strong>git.example.org</strong>.crt;
+	ssl_certificate_key /etc/ssl/nginx/<strong>git.example.org</strong>.key;
+	server_name <strong>git.example.org</strong>;
 
 	root /usr/share/cgit ;
 	try_files $uri @cgit ;
