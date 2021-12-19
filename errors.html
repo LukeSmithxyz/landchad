@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Custom Error Pages &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Customize Error Pages</h1></header>
+    <nav></nav>
+    <main>
+        <h3>Aims</h3>
+        <p>This tutorial will show you how to display a custom webpage for any
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses">
+            error responses</a> your website's visitors might find.</p>
+        <h3>Background</h3>
+        <p>
+        HTTP Response Status Codes simply tell us if a request to our webpage was successful.
+        There are two types of error responses: 
+        </p>
+        <ol>
+            <li>client</li>
+            <li>server</li>
+        </ol>
+        <p>
+        If you've tried out <a href="/cgi.html">server side scripting</a>, you may have ran
+        into a server side response error: <code>502 Bad Gateway</code>.
+        </p>
+        Your website's visitors are more likely to encounter a client
+        response error. Anyone who has used the Internet before
+        has seen a <code>404 Not found</code> page. In fact,
+        <a href="/404.html">here's</a> one for
+        this website!
+        </p>
+        <h4>Why change the default?</h4>
+        <p>As a <em>Land Chad</em>, you should have total control over how exceptions 
+        and errors are presented to your audience. You can make the error page funny,
+        straight forward or anything else you can imagine.
+        </p>
+        <p>
+        Let's say your site has
+        no styling (which it most likely doesn't). The default error
+        message in black text on a white
+        background would look fine.
+        However, if a visitor winds up on this <code>404</code> page, 
+        then it would be helpful to provide a link back to your homepage.
+        </p>
+        <p>
+        Customizing error pages gives visitors more options while making your
+        website's aesthetic consistent.
+        </p>
+        <h2>Nginx Configuration</h2>
+        <p>
+        To begin, use your favorite workflow to create a new webpage, in this case
+        we will choose the most common error code and call it, <code><strong>404</strong>.html</code>
+        We will keep this file in the root of our web directory for simplicity's sake.
+        </p>
+        <p>
+        Now, we must go to our website's configuration file: 
+        <code>/etc/nginx/sites-enabled/<strong>landchad</strong></code>.
+        Open this file with your favorite text editor and add the following line
+        inside the server directive:
+        </p>
+        <pre><code>server {
+    ...
+    error_page <strong>404</strong> /<strong>404</strong>.html ;
+    ...
+}</code></pre>
+
+        <p>
+        You can replace <strong>404</strong>, with any valid error code.
+        </p>
+        <p>
+        Save and close the file. Then reload nginx: <code>systemctl reload nginx</code>.
+        To test if everything's working, search for an invalid page on your website
+        in the url bar. 
+        </p>
+        <p>
+        You should see your new customized 404 error page! 
+        </p>
+        <aside>
+        Other error pages will display with their corresponding errors.
+        For example, accessing a file or folder with incorrect permissions will throw
+        a <code>403 Forbidden</code> error. Not providing a <a href="/auth.html">password</a>
+        will return a <code>401 Unauthorized</code> error.
+        </aside>
+        <p><strong>Contributor</strong> &ndash; <a href="https://tomfasano.net">tomfasano.net</a></p>
+
+</code></pre>
+
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
