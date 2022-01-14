@@ -96,6 +96,24 @@ Read more about the <code>muc</code> plugin on the Prosody documentation page <a
 </p>
 </aside>
 
+<h3>Enabling chat histories</h3>
+
+<p>
+By default, Prosody will send out messages received only to the first available clients.
+That means that if you have your desktop client turned off and your cell phone receives a message, it will <em>not</em> be available to the desktop client when you start it.
+</p>
+
+<p>While this may be preferred in some cases, enable the MAM module (Message Archive Management) to have the server hold on messages and sync them to all clients.</p>
+
+<p>
+Within the <code>modules_enabled</code> block, you can uncomment the <code>mam</code> line to enable it.
+You can see other settings for this module <a href="https://prosody.im/doc/modules/mod_mam">here</a> like, for example, how long a server should hold on to message histories for synching.
+</p>
+
+<p>
+Note also that Prosody comes with the <code>carbons</code> activated module by default, which is related. This will send received messages to <em>all</em> active clients (your phone and desktop), although it will not save messages like MAM for clients not online or to be added later.
+</p>
+
 <h3>Other things to check</h3>
 
 <p>Check the config file for other settings you might want to change.
@@ -187,6 +205,6 @@ Chatrooms are created and referred to in the following format: <code><strong>#ch
 </p>
 
     </main>
-	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="donate-bitcoin.html"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="donate-monero.html"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
 </body>
 </html>

@@ -56,6 +56,9 @@ HiddenServicePort 80 127.0.0.1:80</code></pre>
 
         <p>If the next command outputs <q>active</q> in green you're golden!</p>
         <pre><code> systemctl status tor</code></pre>
+	
+        <p>Finally, if you have a firewall running, remember to open port 9050:</p>
+        <pre><code>ufw allow 9050</code></pre>
 
         <p>Now your server is on the dark web. The following command will give you your onion address:</p>
         <pre><code> cat /var/lib/tor/hidden_service/hostname</code></pre>
@@ -104,6 +107,6 @@ apt install tor</code></pre>
         <p><strong>Contributor</strong>  -  <a href="https://tomfasano.co" target="_blank">tomfasano.co</a></p>
 
     </main>
-	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="donate-bitcoin.html"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="donate-monero.html"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
 </body>
 </html>
