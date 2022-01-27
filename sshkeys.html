@@ -32,9 +32,18 @@
         </p>
         <h2>Generate an SSH key pair</h2>
         <p>
-        Generating an SSH key is simple. Just run:
+	First you need to go <strong>.ssh</strong> folder
+        </p>
+        <p>
+	Generating an SSH key is simple. Just run:
         </p>
         <pre><code>ssh-keygen</code></pre>
+        <aside>
+        <p>
+        Note that you can use <code>-b</code> option to set bytes, bigger number = more secure.
+        Note #2: if you supplied a passpharse, you will need to enter it each time you login in ssh so you can use empty passpharse but you will kill some of your security
+        </p>
+        </aside>    
         <p>
         It will prompt you for several options and you can generally chose the default options in each case.
         It will ask you to optionally include a password on your SSH key.
@@ -83,11 +92,16 @@
         </aside>
 
         <p>
-        To test if this has worked, now try logging in normally to your server with ssh:
+        To test if this has worked, now go to <strong>.ssh</strong> folder again and use <code>-i</code> option while logging in normally to your server with ssh to supply ssh with your key
         </p>
 
-        <pre><code>ssh root@yourdomain.com</code></pre>
-
+        <pre><code>ssh -i <name of the key>root@yourdomain.com</code></pre>
+        <aside>
+        <p>
+        You can <strong>alias</strong> the command in your system instead!<br><br>
+        <code>alias 'ssh root@yourdomain.com'='cd ssh -i ~/.ssh/key root@yourdomain.com'</code>
+        </p>
+        </aside>
         <p>
         It should now let you log in without a password prompt!
         </p>
