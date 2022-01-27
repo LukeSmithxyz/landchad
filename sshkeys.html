@@ -61,7 +61,13 @@
         Now that you have generated an SSH key, just run the following:
         </p>
 
-        <pre><code>ssh-copy-id root@yourdomain.com</code></pre>
+        <pre><code>ssh-copy-id -i <name of key created> root@yourdomain.com</code></pre>
+
+        <aside>
+        <p>
+        Note that if you did not change key name, the defualt name is <strong>id_rsa</strong>.
+        </p>
+        </aside>
 
         <p>
         The command will ask for your server's root password and log you in briefly.
