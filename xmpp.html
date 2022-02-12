@@ -142,13 +142,13 @@ Once you have the certificates for encryption, run the following to import them 
 
 <p>
 Note that you might get an error that a certificate has not been found if your <code>muc</code> subdomain and your main domain share a certificate.
-It should still work, this is just notifying you that no specific
+It should still work, this is just notifying you that no specific certificate for the subdomain.
 </p>
 
+<p><strong>Note:</strong> The above command will need to be rerun when certificates are renewed.
+You may want to create a <a href="cron.html">cronjob</a> to have this done automatically.</p>
 
-<p>
-For user privacy, we will definitely want to install and enable encryption with OMEMO.
-</p>
+
 
 <h2 id=user>Creating users/admins manually</h2>
 
