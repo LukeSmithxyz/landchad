@@ -20,7 +20,9 @@
 
         <p>
         We first want to log into our VPS to get a command prompt where we can set up the web server.
-        I am assuming you are using either MacOS or GNU/Linux and you know how to open a terminal.
+        You will need to open a terminal.
+        On MacOS, you can go to the Applications folder and then to Utilities and open Terminal, or press command + space and search for "Terminal".
+        Most Linux distributions will provide a terminal emulator. It should be easy to find; consult the documentation for your distribution if not.
         On Windows, you can also use either PuTTY or the Windows Subsystem for Linux.
         </p>
         <p>
@@ -47,6 +49,35 @@
             Note you can also replace the <code>example.org</code> with your IP address, but you'll want to fix your DNS settings soon.
             </p>
         </aside>
+
+        <h2>Using the shell</h2>
+
+        <p>
+        You will now be in a command-line shell (probably <code>bash</code>).
+        This is just like a graphical shell where you drag files into folders and double click on them to view them,
+        except instead of dragging and clicking you enter commands.
+        You'll need to use this shell to manage your server.
+        You likely already know how to use <code>bash</code> or a similar shell, but if you don't, here is a brief overview:
+
+        <ul>
+            <li>To edit a file, use <code>nano name_of_file_you_want_to_edit</code>.</li>
+            <li>
+                When using commands such as <code>nano</code> that work on files, you can give the file as a full path (<code>/home/chad/file.txt</code>), but this can get tiring.
+                When you are working on many different files in the same folder, such as <code>/home/chad/file1.txt</code>, <code>/home/chad/file2.txt</code>, <code>/home/chad/file3.txt</code>, etc. you can change your working directory (directory is another name for folder) to the directory where all the files are, such as <code>/home/chad</code>, and then doing <code>nano file1.txt</code> will be the same as doing <code>nano /home/chad/file1.txt</code>.
+                To see your current working directory, type <code>pwd</code> (abbreviation for "print working directory"). To change it, type <code>cd /path/to/directory</code> (<code>cd</code> stands for "change directory").
+            </li>
+            <li>
+                To see all of the files in your current working directory, type <code>ls</code>.
+                To see all of the files in a directory other than your working directory, type <code>ls directory_you_want_to_list</code>.
+            </li>
+            <li>
+                If you forget how to use a command, type <code>man command_you_want</code>.
+                This will bring up the man (manual) page for <code>command_you_want</code>.
+                It will be displayed in <code>less</code>, which is a pager program. Use the arrow keys to scroll, and press <kbd>h</kbd> to bring up help for <code>less</code>.
+            </li>
+            <li>There are many other commands and features, but you don't need to learn about all of them right now. Some of them will be introduced as this tutorial goes on when they are needed.</li>
+        </ul>
+        </p>
 
         <h2>Installing the Webserver: Nginx</h2>
 
