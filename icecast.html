@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Icecast &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Icecast radio stream</h1></header>
+    <nav></nav>
+    <main>
+<img src="pix/icecast.png" class="titleimg">
+<p>Icecast is a streaming media server. It can be used to create an internet radio station or a privately run jukebox. Internet radio is split into two parts. The first part sits on your server and this is the part that listeners connect to. The second part sits on your home computer and sends audio to the server for redistribution to the listeners. In this tutorial, Icecast will be installed on your server, and Liquidsoap on your home computer. The instructions for Liquidsoap are provided at the end. Everything up to that point is happening on your server.</p>
+
+<p>Let's first install some dependencies:</p>
+
+	<pre><code>apt install libxml2 libxslt1.1 libxslt1-dev curl libogg0 libvorbis0a libvorbis-dev openssl gcc libc6-dev <strong>tmux</strong></code></pre>
+
+<p>Icecast prefers to run outside of root priviledges. So for this tutorial we will create a new user, called <strong>radio</strong>.</p>
+
+	<pre><code>useradd -m radio</code></pre>
+
+<p>We now need to compile Icecast as the user <strong>radio</strong>:</p>
+
+	<pre><code>su - radio
+wget <a href="https://downloads.xiph.org/releases/icecast/icecast-2.4.4.tar.gz">https://downloads.xiph.org/releases/icecast/icecast-2.4.4.tar.gz</a>
+tar -xf icecast-2.4.4.tar.gz
+cd /home/radio/icecast-2.4.4.tar.gz
+./configure
+make</code></pre>
+
+<p>Exit back into root in order to execute <code>make install</code>:</p>
+
+	<pre><code>exit
+cd /home/radio/icecast-2.4.4
+make install</code></pre>
+
+<p>We now need to create some directories and files that Icecast depends on. Note that we are still root here:</p>
+
+	<pre><code>cp /usr/local/etc/icecast.xml /icecast-2.4.4.tar.gz/conf
+mkdir /usr/local/var/log/icecast
+touch /usr/local/var/log/icecast/access.log
+touch /usr/local/var/log/icecast/error.log</code></pre>
+
+<p>Give ownership of those newly created files to the user <strong>radio</strong>:</p>
+
+	<pre><code>chown -R radio /home/radio/icecast-2.4.4.tar.gz
+chown -R radio /usr/local/var/log/icecast</code></pre>
+
+<p>Now let's edit some important variables in the Icecat configuration file. These passwords will be stored in plain-text so use something unique!:</p>
+
+	<pre><code>su - radio
+nano /icecast-2.4.4/conf/icecast.xml</code></pre>
+<br>
+	<pre><code>...
+&lt;source-password&gt;<strong>Change me!</strong>
+...
+&lt;admin-password&gt;<strong>Change me!</strong>
+...</code></pre>
+
+<p>We now need to create an nginx configuration file. Make sure to exit from the user <strong>radio</strong> first:</p>
+
+	<pre><code>exit
+nano /etc/nginx/sites-available/radio</code></pre>
+
+<p>Populate your file with the following:</p>
+
+	<pre><code>server {
+	server_name <strong>radio.example.org</strong> <strong>www.radio.example.org</strong> ;
+	location / {
+		proxy_pass http://<strong>localhost</strong>:<strong>8000</strong> ;
+	}
+}</code></pre>
+
+<aside><p>The URL of the audio stream will be <code>radio.example.org</code>, but you can change this to any sub-domain/domain.<br>
+<code>8000</code> is the port that the Icecast devs chose. It can be changed in the <code>icecast.xml</code> file we edited earlier.</p></aside>
+
+<p>Enable the nginx configuration by making a link to it in the <code>sites-enabled</code> directory:</p>
+
+	<pre><code>ln -s /etc/nginx/sites-available/wiki /etc/nginx/sites-enabled</code></pre>
+
+<p>Add HTTPS authentication for the sub-domain (<strong>radio.example.org</strong>). During the certbot procedure, you will need to enter <strong>e</strong> in order to expand your certificates.</p>
+
+	<pre><code>certbot --nginx</code></pre>
+
+<p>Reload nginx for the nginx configuration file to come into effect:</p>
+
+	<pre><code>systemctl reload nginx</code></pre>
+<p>You can now run Icecast on your server. For this step we will use tmux, a terminal multiplexer. This will enable you to carry out commands whilst Icecast runs in a terminal in the background. Start by running tmux and creating a new window (terminal instance) by pressing <strong>Ctrl + B</strong> and then <strong>C</strong>:</p>
+
+	<pre><code>tmux</code></pre>
+
+<p>then <strong>Ctrl + B</strong> and then <strong>C</strong>. Then:</p>
+
+	<pre><code>su - radio
+icecast -c /icecast-2.4.4.tar.gz/conf/icecast.xml</code></pre>
+
+<p>then <strong>Ctrl + B</strong>, <strong>D</strong>, and <code>exit</code> to exit tmux and the server.</p>
+
+<p>The next steps will take place on your home computer. Start by installing Liquidsoap:</p>
+
+	<pre><code>sudo apt install liquidsoap</code></pre>
+
+<p>Liquidsoap can perform many tasks and you should read its <a href="https://www.liquidsoap.info/doc.html">documentation</a> in order to fully exploit it. For the purposes of this tutorial, let's stream a music playlist we have in vorbis format on our home computer. We need to populate a file called <code>playlist.pls</code> with the filenames of every piece of audio we want broadcasted. If we were inside the directory, the commands would be:</p>
+
+	<pre><code>touch playlist.pls
+ls > playlist.pls
+nano playlist.pls
+<strong>Delete the line with 'playlist.pls' on.</strong></code></pre>
+
+<p>Now execute the following command from within the directory, but change the password to the <code>source-password</code> you created earlier:</p>
+
+	<pre><code>liquidsoap \
+  'output.icecast(%vorbis,
+     host = "<strong>example.org</strong>", port = 8000,
+     password = "<strong>source-password</strong>", mount = "<strong>example</strong>.ogg",
+     mksafe(playlist("playlist.pls")))'</code></pre>
+
+<p>Your playlist should be streaming at <strong>radio.example.org</strong>!</p>
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="donate-bitcoin.html"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="donate-monero.html"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
