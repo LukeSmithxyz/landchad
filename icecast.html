@@ -17,19 +17,19 @@
 
 <p>Let's first install some dependencies:</p>
 
-	<pre><code>apt install libxml2 libxslt1.1 libxslt1-dev curl libogg0 libvorbis0a libvorbis-dev openssl gcc libc6-dev <strong>tmux</strong></code></pre>
+	<pre><code>apt install libxml2 libxslt1.1 libxslt1-dev curl libogg0 libvorbis0a libvorbis-dev openssl gcc libc6-dev tmux make</code></pre>
 
 <p>Icecast prefers to run outside of root priviledges. So for this tutorial we will create a new user, called <strong>radio</strong>.</p>
 
-	<pre><code>useradd -m radio</code></pre>
+	<pre><code>adduser radio</code></pre>
 
 <p>We now need to compile Icecast as the user <strong>radio</strong>:</p>
 
 	<pre><code>su - radio
 wget <a href="https://downloads.xiph.org/releases/icecast/icecast-2.4.4.tar.gz">https://downloads.xiph.org/releases/icecast/icecast-2.4.4.tar.gz</a>
 tar -xf icecast-2.4.4.tar.gz
-cd /home/radio/icecast-2.4.4.tar.gz
-./configure
+cd icecast-2.4.4
+./configure --disable-dependency-tracking
 make</code></pre>
 
 <p>Exit back into root in order to execute <code>make install</code>:</p>
@@ -40,25 +40,29 @@ make install</code></pre>
 
 <p>We now need to create some directories and files that Icecast depends on. Note that we are still root here:</p>
 
-	<pre><code>cp /usr/local/etc/icecast.xml /icecast-2.4.4.tar.gz/conf
+	<pre><code>cp /usr/local/etc/icecast.xml /home/radio/icecast-2.4.4/conf
+mkdir /usr/local/var
+mkdir /usr/local/var/log
 mkdir /usr/local/var/log/icecast
 touch /usr/local/var/log/icecast/access.log
 touch /usr/local/var/log/icecast/error.log</code></pre>
 
 <p>Give ownership of those newly created files to the user <strong>radio</strong>:</p>
 
-	<pre><code>chown -R radio /home/radio/icecast-2.4.4.tar.gz
+	<pre><code>chown -R radio /home/radio/icecast-2.4.4
 chown -R radio /usr/local/var/log/icecast</code></pre>
 
 <p>Now let's edit some important variables in the Icecat configuration file. These passwords will be stored in plain-text so use something unique!:</p>
 
 	<pre><code>su - radio
-nano /icecast-2.4.4/conf/icecast.xml</code></pre>
+nano icecast-2.4.4/conf/icecast.xml</code></pre>
 <br>
 	<pre><code>...
-&lt;source-password&gt;<strong>Change me!</strong>
-...
 &lt;admin-password&gt;<strong>Change me!</strong>
+...
+&lt;relay-password&gt;<strong>Change me!</strong>
+...
+&lt;source-password&gt;<strong>Change me!</strong>
 ...</code></pre>
 
 <p>We now need to create an nginx configuration file. Make sure to exit from the user <strong>radio</strong> first:</p>
@@ -96,7 +100,7 @@ nano /etc/nginx/sites-available/radio</code></pre>
 <p>then <strong>Ctrl + B</strong> and then <strong>C</strong>. Then:</p>
 
 	<pre><code>su - radio
-icecast -c /icecast-2.4.4.tar.gz/conf/icecast.xml</code></pre>
+icecast -c icecast-2.4.4/conf/icecast.xml</code></pre>
 
 <p>then <strong>Ctrl + B</strong>, <strong>D</strong>, and <code>exit</code> to exit tmux and the server.</p>
 
