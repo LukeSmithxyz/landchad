@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Mycorrhiza wiki &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Mycorrhiza wiki</h1></header>
+    <nav></nav>
+    <main>
+<img src="pix/mycorrhiza.svg" class="titleimg">
+<p>Mycorrhiza wiki is a free as in freedom wiki engine. It's tailored toward personal wikis and wikis for small teams or communities. For larger wikis, consider <a href="https://www.mediawiki.org/wiki/mediawiki">MediaWiki</a>. Like most of the tutorials on <a href="index.html">LandChad.net</a>, this tutorial involves <strong>Debian</strong> and <strong>nginx</strong>.</p>
+
+<p>Whilst Mycorrhiza is running, the terminal cannot be used for other commands. To resolve this, we need to install <strong>tmux</strong>, a terminal multiplexer, so that Mycorrhiza can run in a terminal in the background. <strong>git</strong> is also required for Mycorrhiza to function:</p>
+
+	<pre><code>apt install git tmux</code></pre>
+
+<p>Make a folder for the wiki:</p>
+
+	<pre><code>mkdir /var/www/wiki</code></pre>
+
+<p>Download the <a href="https://github.com/bouncepaw/mycorrhiza/releases">latest release</a> of Mycorrhiza to your newly created wiki folder. Then untar it:</p>
+
+	<pre><code>wget <a href="https://github.com/bouncepaw/mycorrhiza/releases/download/v1.8.2/mycorrhiza-v1.8.2-linux-amd64.tar.gz">https://github.com/bouncepaw/mycorrhiza/releases/download/v1.8.2/mycorrhiza-v1.8.2-linux-amd64.tar.gz</a> -O /var/www/wiki
+
+tar -xf /var/www/wiki/mycorrhiza-v1.8.2-linux-amd64.tar.gz</code></pre>
+
+<p>We now need to create an nginx configuration file:</p>
+
+	<pre><code>nano /etc/nginx/sites-available/wiki</code></pre>
+
+<p>Populate your file with the following:</p>
+
+	<pre><code>server {
+	server_name <strong>wiki.example.org</strong> <strong>www.wiki.example.org</strong> ;
+	location / {
+		proxy_pass http://127.0.0.1:<strong>1737</strong> ;
+	}
+}</code></pre>
+
+<aside><p>The URL of the wiki will be <code>wiki.example.org</code>, but you can change this to any sub-domain/domain.<br>
+<code>1737</code> is the port that the Mycorrhiza devs chose. It can be changed in the <code>config.ini</code> file we will edit later.</p></aside>
+
+<p>Enable the nginx configuration by making a link to it in the <code>sites-enabled</code> directory:</p>
+
+	<pre><code>ln -s /etc/nginx/sites-available/wiki /etc/nginx/sites-enabled</code></pre>
+
+<p>Add HTTPS authentication for the sub-domain (<strong>wiki.example.org</strong>). During the certbot procedure, you will need to enter <strong>e</strong> in order to expand your certificates.</p>
+
+	<pre><code>certbot --nginx</code></pre>
+
+<p>Reload nginx for the nginx configuration file to come into effect:</p>
+
+	<pre><code>systemctl reload nginx</code></pre>
+
+<p>We now need to run Mycorrhiza in a terminal in the background. For this step we will use tmux, a terminal multiplexer. The initial run of <code>mycorrhiza</code> will populate your chosen folder with some files, including a configuration file which can edit. Start by running tmux and creating a new window (terminal instance) by pressing <strong>Ctrl + B</strong> and then <strong>C</strong>:</p>
+
+	<pre><code>tmux</code></pre>
+
+<p>then <strong>Ctrl + B</strong> and then <strong>C</strong>.</p>
+
+<p>Now run <code>mycorrhiza</code> in that new window:</p>
+
+	<pre><code>./var/www/wiki/mycorrhiza-v1.8.2-linux-amd64/mycorrhiza /var/www/wiki</code></pre>
+
+<p>Detach from the tmux session by pressing <strong>Ctrl + B</strong> and then <strong>D</strong>. It's a good idea to edit the wiki's configuration file (<code>config.ini</code>) in order to prevent anyone from modifying the wiki. In this file you can also change the aforementioned <code>1737</code> listen address if you so wish.</p>
+
+	<pre><code>nano /var/www/wiki/<strong>config.ini</strong></code></pre>
+
+<p>then:</p>
+
+	<pre><code>...
+[Network]
+ListenAddr = 127.0.0.1:<strong>1737</strong>
+...
+[Authorization]
+UseAuth = <strong>true</strong>
+...</code></pre>
+
+<p>Your wiki will now be served at <strong>wiki.example.org</strong>. You should familiarise yourself with the other settings in <code>config.ini</code>. A guide for them is provided <a href="https://mycorrhiza.wiki/hypha/configuration">here</a>.</p>
+
+	<pre><code>exit</code></pre>
+
+<hr>
+<p>Contributor - <a href="https://filmsbytom.com">filmsbytom.com</a><br>
+XMR: <code>4853rvbYSqZFN4A55NvPrch4u7juJiTRxDsGJtk7ucAoQuMD7xFymTHNtPnL1Gft5ddBpJ7R1Ski4RKDH6Kr8JEqQVruA9U</code></p>
+    </main>
+	<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="donate-bitcoin.html"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="donate-monero.html"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
