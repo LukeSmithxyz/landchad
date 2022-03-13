@@ -42,13 +42,12 @@
 			You should have an NGINX server running with a TLS certificate by now. Add the following configuration
 			to your server to pass the requests to Cgit, while serving static files directly:</p>
 
-		<pre><code>
-server {
+		<pre><code>server {
 	listen 443 ssl;
 	listen [::]:443 ssl;
-    ssl_certificate /etc/ssl/nginx/<strong>git.example.org</strong>.crt;
-    ssl_certificate_key /etc/ssl/nginx/<strong>git.example.org</strong>.key;
-    server_name <strong>git.example.org</strong>;
+	ssl_certificate /etc/ssl/nginx/<strong>git.example.org</strong>.crt;
+	ssl_certificate_key /etc/ssl/nginx/<strong>git.example.org</strong>.key;
+	server_name <strong>git.example.org</strong>;
 
 	root /usr/share/cgit ;
 	try_files $uri @cgit ;
@@ -60,8 +59,7 @@ server {
 		fastcgi_param QUERY_STRING $query_string;
 		fastcgi_pass unix:/run/fcgiwrap.socket;
 	}
-}
-		</code></pre>
+}</code></pre>
 
 		<p>Then get NGINX to reload your configuration.</p>
 
@@ -70,8 +68,7 @@ server {
 			To change this, we need to configure Cgit to our liking, by editing <code>/etc/cgitrc</code>.
 		</p>
 
-		<pre><code>
-css=/cgit.css
+		<pre><code>css=/cgit.css
 logo=/cgit.svg
 virtual-root=/
 
@@ -80,8 +77,7 @@ root-title=<strong>Chad's git server</strong>
 root-desc=<strong>A web interface to LandChad's git repositories, powered by Cgit</strong>
 
 # The location where git repos are stored on the server
-scan-path=/srv/git/
-		</code></pre>
+scan-path=/srv/git/</code></pre>
 
 		<p>This configuration assumes you followed the <a href="/git">git hosting guide</a> and store your repositories
 			on the <code>/srv/git/</code> directory.</p>
@@ -96,9 +92,7 @@ scan-path=/srv/git/
 			user
 			to give it your name:</p>
 
-		<pre><code>
-usermod -c "<strong>Your Name</strong>" git
-		</code></pre>
+		<pre><code>usermod -c "<strong>Your Name</strong>" git</code></pre>
 
 		<h3>Changing the repository description</h3>
 
@@ -110,8 +104,7 @@ usermod -c "<strong>Your Name</strong>" git
 			to determine the idle time. Inside your repository, create a file <code>hooks/post-receive</code> and add
 			the following contents:</p>
 
-		<pre><code>
-#!/bin/sh
+		<pre><code>#!/bin/sh
 
 agefile="$(git rev-parse --git-dir)"/info/web/last-modified
 
@@ -119,8 +112,7 @@ mkdir -p "$(dirname "$agefile")" &&
 git for-each-ref \
 	--sort=-authordate --count=1 \
 	--format='%(authordate:iso8601)' \
-	>"$agefile"
-		</code></pre>
+	>"$agefile"</code></pre>
 
 		<p>And give it execution permissions with:</p>
 
