@@ -44,7 +44,7 @@ location ~* \.(?:jpg|jpeg|gif|png|ico|svg|webp)$ {
 }
     
 # CSS and Javascript
-    location ~* \.(?:css|js)$ {
+location ~* \.(?:css|js)$ {
     expires 1y;
     access_log off;
     add_header Cache-Control "max-age=31556952, public";
@@ -131,7 +131,7 @@ gzip_vary on;
         The <code>alt</code> attribute should simply describe the image being displayed.
         </p>
 
-        <pre><code>&lt;img src="img/cabin.webp" alt="A cabin nestled between pine trees"&gt;</code></pre>
+        <pre><code>&lt;img src="img/cabin.webp" <strong>alt="A cabin nestled between pine trees"</strong>&gt;</code></pre>
 
         <h2>SEO</h2>
 
@@ -139,7 +139,7 @@ gzip_vary on;
 
         <p>
         Adding meta descriptions to your webpage allow for web-crawlers and bots to easily determine what content your website contains.
-        Just like on YouTube, you can give your webpage a long list of keywords to help increase the chance someone stumbles upon your site from a search engine.
+        Just like on other online platforms, you can give your webpage a long list of keywords to help increase the chance someone stumbles upon your site from a search engine.
         You don't need to add all of the below meta tags to pass the audit, only add what's necessary.
         </p>
 
