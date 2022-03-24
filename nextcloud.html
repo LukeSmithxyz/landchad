@@ -57,7 +57,7 @@ server {
     listen 443      ssl http2;
     listen [::]:443 ssl http2;
     server_name <strong>example.org</strong>;
-    ssl_certificate     /etc/letsencrypt/live/<strong>example.org</strong>/cert.pem ;
+    ssl_certificate     /etc/letsencrypt/live/<strong>example.org</strong>/fullchain.pem ;
     ssl_certificate_key /etc/letsencrypt/live/<strong>example.org</strong>/privkey.pem ;
 
     root /var/www;
