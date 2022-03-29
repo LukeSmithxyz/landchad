@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang=en>
+	<head>
+		<title>Image compression &ndash; LandChad.net</title>
+		<meta charset="utf-8"/>
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+		<link rel='stylesheet' type='text/css' href='style.css'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+<style>
+th, td {
+	padding: 0.3em;
+}
+</style>
+	</head>
+	<body>
+		<header><h1>Image compression</h1></header>
+		<nav></nav>
+		<main>
+			<p>
+			Image files will usually have the most impact on the
+			speed of your websites (aside from Ad/tracker scripts).
+			Learn to slim down your images using the ubiquitous
+			<em>ImageMagick</em> to make your websites faster on
+			slow internet connections.
+			</p>
+			<img src="pix/imgcompress-network.png" alt="Image network speed">
+			<p>
+			For the examples, I decided to use
+			<a href="https://commons.wikimedia.org/wiki/File:Tabby_cat_with_blue_eyes-3336579.jpg">this</a>
+			public domain image.
+			</p>
+			<img src="pix/imgcompress-cat.png" style="width: 50%;" alt="Compressed image of a cat">
+			<p> There are many ways to decrease image size using
+			ImageMagick, the simplest is to use the
+			<code>-quality</code> option, which will compress the
+			image without changing the resolution. This option
+			takes the value you want to compress by (between 1 and
+			100, the lower the value, the lower the file size). For
+			example:</p>
+			<pre><code>convert in.jpg -quality 50 out.jpg</code></pre>
+			<p>
+			Compressing the example image above results in the
+			following file size changes:
+			</p>
+			<center>
+				<table style="border: solid;">
+					<tr><th>Quality</th><th>Size</th></tr>
+					<tr><td>Original</td><td>2.1M</td></tr>
+					<tr><td>90</td><td>1.7M</td></tr>
+					<tr><td>80</td><td>844K</td></tr>
+					<tr><td>70</td><td>588K</td></tr>
+					<tr><td>60</td><td>448K</td></tr>
+					<tr><td>50</td><td>368K</td></tr>
+					<tr><td>40</td><td>308K</td></tr>
+					<tr><td>30</td><td>248K</td></tr>
+					<tr><td>20</td><td>184K</td></tr>
+					<tr><td>10</td><td>116K</td></tr>
+				</table>
+			</center>
+			<p>
+			Due to the images high resolution, it is usable in this
+			website even when highly compressed (30% quality, still
+			looks decent in my opinion).
+			</p>
+			<h2>Contribution</h2>
+			<ul>
+				<li><a href="https://na20a.neocities.org/">Musse</a></li>
+				<li>Monero: <code class="crypto">83is3y69Xv4fkFsTpZhw5c3bfxtimupfgTdpERHM1WtMNAwSqFjTCJm3VabyBKXKnL873dWPmqj4bRcgkm9oCktgQrzmhHd</code></li>
+			</ul>
+		</main>
+		<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="pix/btc.png"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="pix/xmr.png"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+	</body>
+</html>
