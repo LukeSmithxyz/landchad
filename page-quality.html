@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Page Quality &ndash; example.org</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Page Quality</h1></header>
+    <nav></nav>
+    <main>
+        <p>
+        After you've deployed your website, you may want to consider improving its performance, accessibility, and search-engine optimization (SEO).
+        Doing so can help make your website more user-friendly and increase its page rank in search results.
+        Luckily, Google provides a <a href="https://web.dev/measure" target="_blank" rel="noopener noreferrer">measurement tool</a> to help you improve these aspects.
+        Start by entering your website's URL and click the <em>Run Audit</em> button (it will take 5-10 seconds to generate the report).
+        </p>
+
+        <p>
+        Once the report has finished, you'll be greeted by a score for four different categories: <em>Performance</em>, <em>Accessibility</em>, <em>Best Practices</em>, and <em>SEO</em>.
+        A lot of the tests listed are self-explanatory, and Google provides you with articles to help you pass them.
+        Below are some easy ways to improve your scores, some specific to the nginx configuration used in the <a href="nginx.html">landchad website tutorial.</a>
+        </p>
+
+        <h2>Performance</h2>
+
+        <h3>Serving static assets with an efficient cache policy</h3>
+
+        <p>
+        Serving your files with an efficient cache policy will allow the user's browser to cache files such as pictures and CSS so that the browser doesn't need to fetch these files each time the page is visited.
+        It's very easy to set this up in nginx.
+        Just paste the following within the server block of your website's configuration file:
+        </p>
+
+        <pre><code># Media: images, icons, video, audio, HTC
+location ~* \.(?:jpg|jpeg|gif|png|ico|svg|webp)$ {
+    expires 1M;
+    access_log off;
+    # max-age must be in seconds
+    add_header Cache-Control "max-age=2629746, public";
+}
+    
+# CSS and Javascript
+location ~* \.(?:css|js)$ {
+    expires 1y;
+    access_log off;
+    add_header Cache-Control "max-age=31556952, public";
+}</code></pre>
+        
+        <p>
+        You can add more types of file extensions (mp3, mp4, ogg) as you see fit.
+        </p>
+
+        <p>
+        If you're changing your CSS files a lot, caching could keep repeat users from getting the most up-to-date stylesheet.
+        To combat this, you can version your stylesheets like so:
+        </p>
+
+        <pre><code>&lt;link rel="stylesheet" type="text/css" href="style.css<strong>?v=1.0.0</strong>"&gt;</code></pre>
+
+        <p>
+        Just increase the version number whenever you update your stylesheet, and the browser will re-update its cache.
+        </p>
+
+        <h3>Enable text compression</h3>
+
+        <p>
+        Another easy addition to your websites configuration file.
+        Enabling text compression is easy and will save bandwidth for users.
+        Simply paste the following within the server block of your website's configuration file:
+        </p>
+
+<pre><code>gzip on;
+gzip_min_length 1100;
+gzip_buffers 4 32k;
+gzip_types text/plain application/x-javascript text/xml text/css;
+gzip_vary on;
+</code></pre>
+
+        <p>
+        After reloading nginx, you can test if compression is working by opening your browsers developer tools and going to the network tab.
+        Refresh your website with the network tab, click on the item with your URL and look at the response headers.
+        You should see <code>Content-Encoding: gzip</code> as one of the headers displayed.
+        </p>
+
+        <h3>Properly sizing images</h3>
+
+        <p>
+        If you've put images on your webpage, you've most definitely gotten this warning.
+        To pass this audit, you'll need to scale your images down using a tool like gimp or imagemagick to a size appropriate for your website.
+        It doesn't make much sense to serve a high-res image for images that are rendered much smaller on a webpage.
+        </p>
+
+        <p>
+        Once you've scaled your image down, you can use a tool like <code>cwebp</code> to convert your images into the .webp format, a format specifically created for serving bandwidth concious images.
+        </p>
+
+        <p>
+        First, you'll have to install the webp package:
+        </p>
+        
+        <pre><code>apt install webp</code></pre>
+
+        <p>
+        Now you can easily convert your images to webp (keep in mind that it's much more effective to first size your images appropriately before this).
+        Using the below command, you can specify the quality of the photo with the <code>q</code> option.
+        I typically shoot for a quality in the range of 60-80, depending on the image and how large it will be displayed on the webpage.
+        </p>
+
+        <pre><code>cwebp -q 80 your-photo.png -o your-photo.webp</code></pre>
+
+        <p>
+        You can now check the difference in size of the images using <code>ls</code>.
+        </p>
+
+        <pre><code>ls -lh your-photo*</code></pre>
+
+        <p>
+        After utilizing webp images, the audit typically goes away, but if you didn't scale your image properly before hand, it may still linger.
+        </p>
+
+        <h2>Accessibility</h2>
+
+        <h3>Image elements do not have [alt] attributes</h3>
+
+        <p>
+        It may seem silly to add <code>alt</code> attributes to images, but it helps screen readers convey images to users and can help page rank as a result.
+        The <code>alt</code> attribute should simply describe the image being displayed.
+        </p>
+
+        <pre><code>&lt;img src="img/cabin.webp" <strong>alt="A cabin nestled between pine trees"</strong>&gt;</code></pre>
+
+        <h2>SEO</h2>
+
+        <h3>Document does not have a meta description</h3>
+
+        <p>
+        Adding meta descriptions to your webpage allow for web-crawlers and bots to easily determine what content your website contains.
+        Just like on other online platforms, you can give your webpage a long list of keywords to help increase the chance someone stumbles upon your site from a search engine.
+        You don't need to add all of the below meta tags to pass the audit, only add what's necessary.
+        </p>
+
+        <pre><code>
+// Instructions for web scrapers
+&lt;meta name="robots" content="index, follow"&gt;
+
+&lt;meta name="description" content="<strong>your website description</strong>>"&gt;
+&lt;meta name="keywords" content="<strong>your, keywords, here</strong>"&gt;
+&lt;meta name="author" content="<strong>your name</strong>>"&gt;
+
+// Facebook specific standard, but many websites use this so it has become almost standard to include
+&lt;meta property="og:site_name" content="<strong>Site Name</strong>"&gt;
+&lt;meta name="twitter:domain" property="twitter:domain" content="<strong>example.org</strong>"&gt;
+&lt;meta name="og:title" property="og:title" content="<strong>Site Name</strong>"&gt;
+&lt;meta property="og:description" content="<strong>your website description</strong>"&gt;
+&lt;meta name="twitter:description" property="twitter:description" content="<strong>your website description</strong>"&gt;
+&lt;meta name="og:image" content="<strong>https://link-to-an-image-that-represents-your-site</strong>"&gt;
+
+// below is for twitter sharing previews, you can test this at:
+// cards-dev.twitter.com
+&lt;meta property="twitter:card" content="<strong>https://link-to-an-image-that-represents-your-site</strong>"&gt;
+&lt;meta name="twitter:image:src" property="twitter:image:src" content="<strong>https://link-to-an-image-that-represents-your-site</strong>"&gt;
+&lt;meta name="twitter:image" property="twitter:image" content="<strong>https://link-to-an-image-that-represents-your-site</strong>"&gt;
+&lt;meta name="og:image:alt" property="og:image:alt" content="<strong>alt text for your image</strong>>"&gt;
+
+&lt;meta property="og:url" content="<strong>example.org</strong>"&gt;
+&lt;meta property="og:type" content="website"&gt;
+
+// If you have accounts on twitter or facebook that are relevant to your site
+&lt;meta property="fb:admins" content="<strong>facebook group</strong>" &gt;
+&lt;meta name="twitter:site" property="twitter:site" content="<strong>@yourTwitterHandle</strong>"&gt;
+&lt;meta name="twitter:creator" property="twitter:creator" content="<strong>@yourTwitterHandle</strong>>"&gt;
+        </code></pre>
+        <hr>
+
+        <p>
+        <em>Written by <a href="https://mccor.xyz">Jacob.</a> Donate Monero <a href="https://mccor.xyz">here.</a></em>
+        </p>
+    </main>
+	<footer><a href="https://example.org">example.org</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="donate-bitcoin.html"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="donate-monero.html"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
