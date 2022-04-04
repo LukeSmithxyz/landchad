@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="64" viewBox="0 0 480 480" width="64">
+ <g>
+  <title>Prosody Logo</title>
+  <rect fill="#6197df" height="220" id="svg_1" rx="60" ry="60" width="220" x="10" y="10"/>
+  <rect fill="#f29b00" height="220" id="svg_2" rx="60" ry="60" width="220" x="10" y="240"/>
+  <rect fill="#f29b00" height="220" id="svg_3" rx="60" ry="60" width="220" x="240" y="10"/>
+  <rect fill="#6197df" height="220" id="svg_4" rx="60" ry="60" width="220" x="240" y="240"/>
+ </g>
+</svg>
