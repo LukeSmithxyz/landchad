@@ -18,7 +18,8 @@
     Matrix also allows fully end-to-end encrypted group chats.
     </p>
 
-    <p><strong>Synapse</strong> is the name of the default Matrix server. It is written in Python. While it is requires somewhat more system resources than <a href="xmpp.html">an XMPP server</a>, it makes up for that in being very accessible to non-technical users.</p>
+    <p><strong>Synapse</strong> is the name of the most used and developed Matrix homeserver software. It is written in Python. While it is requires somewhat more system resources than <a href="xmpp.html">an XMPP server</a>, it makes up for that in being very accessible to non-technical users.</p>
+    <p>Synapse is storage heavy, so a fast and spacious drive is most advised as having more storage cache improves homeserver speed.
 
     <h2>Installation</h2>
 
@@ -31,35 +32,88 @@ echo "deb [signed-by=/usr/share/keyrings/matrix-org-archive-keyring.gpg] https:/
 
 <pre><code>apt update
 apt install matrix-synapse-py3</code></pre>
+    
+<p>When prompted about the <code>server_name</code>, give it your domain name (a subdomain is good too). This option can't be changed later! <strong>A subdomain for matrix is only needed if you want to run matrix on a subdomain.</strong> This will be the domain appended to your Matrix address, e.g. <code>@chad:landchad.net</code>.</p>
 
-<p>When prompted, give your main domain name (not a subdomain). This will be the domain appended to your Matrix address, e.g. <code>@chad:landchad.net</code>.</p>
+    <p>Also install PostgreSQL:</p>
+    
+    <pre><code>apt install -y postgresql</code></pre>
+
+
+    <h2>Database setup and configuration</h2>
+    
+    <p>By default synapse uses a sqlite database for simplicity, however utilising a PostgreSQL database becomes a necessity when running a homeserver using federation, as the sqlite database is not performant enough. Upgrading a sqlite database to postgres is possible, but not advised.</p> 
+    
+    <p>Assuming your PostgreSQL database user is <code>postgres</code> ,authenticate as the database user with:
+    
+    <pre><code>su - postgres</code></pre>
+    
+    <p>Then, create a postgres user:</p>
+    
+    <pre><code>createuser --pwprompt synapse_user</pre></code>
+    
+    <p>You will be prompted to enter a password for the database user, note it down as it will be needed later.
+    <strong>NOTE!</strong> <code>synapse_user</code> is the internal PostgreSQL user, it is not a system user.</p>
+    
+    <p>Then, create the PostgreSQL database:</p>
+    
+    <pre><code>createdb --encoding=UTF8 --locale=C --template=template0 --owner=synapse_user synapse</code></pre>
+    
+    <p>The PostgreSQL database is ready for use with Synapse. We must configure synapse to use this database now.
+    Open <code>/etc/matrix-synapse/homeserver.yaml</code> with your favorite text editor and navigate to the <code>database</code> section and edit the following lines:</p>
+    
+    <pre><code>database:
+  name: psycopg2
+  args:
+    user: synapse_user
+    password: {user_passwd}
+    database: synapse
+    host: localhost
+    port: 5432
+    cp_min: 5
+    cp_max: 10</code></pre>
+    
+    <p>Replace <code>{user_passwd}</code> with the <code>synapse_user</code> password chosen earlier.</p>
 
     <h2>Nginx configuration</h2>
-
+    
+    <p>Synapse requires a reverse proxy to allow federation. You should check that port 443 and 8448 are properly forwarded and not blocked. Do not forward port 8008!</p>
     <p>Create an Nginx configuration file for Matrix, say <code>/etc/nginx/sites-available/matrix</code> and add the content below:
     </p>
 
     <pre><code>server {
-        server_name matrix.<strong>example.org</strong> ;
-        listen 80;
-        listen [::]:80;
-        location / {
-                proxy_pass http://localhost:8008;
-        }
-        location ~* ^(\/_matrix|\/_synapse\/client) {
-                proxy_pass http://localhost:8008;
-                proxy_set_header X-Forwarded-For $remote_addr;
-                client_max_body_size <strong>50M</strong> ;
-        }
-        location /.well-known/matrix/server {
-                return 200 '{"m.homeserver": {"base_url": "https://matrix.<strong>example.org</strong>"}}';
-                default_type application/json;
-                add_header Access-Control-Allow-Origin *;
-        }
-}</code></pre>
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
 
+    # For the federation port
+    listen 8448 ssl http2 default_server;
+    listen [::]:8448 ssl http2 default_server;
+
+    server_name <strong>example.com</strong>;
+
+    location ~ ^(/_matrix|/_synapse/client) {
+        # note: do not add a path (even a single /) after the port in `proxy_pass`,
+        # otherwise nginx will canonicalise the URI and cause signature verification
+        # errors.
+        proxy_pass http://localhost:8008;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $host;
+
+        # Nginx by default only allows file uploads up to 1M in size
+        # Increase client_max_body_size to match max_upload_size defined in homeserver.yaml
+        client_max_body_size 100M;
+    }
+
+    location /.well-known/matrix/client {
+        return 200 '{"m.homeserver": {"base_url": "https://<strong>example.com</strong>"}}';
+        default_type application/json;
+        add_header Access-Control-Allow-Origin *;
+    }
+}</code></pre>
+    <p>Replace <strong>example.org</strong> with the domain name chosen for <code>server_name</code> during the synapse setup done by apt at the beginning of the installation.
     <aside>
-    <p>Note the <code>client_max_body_size</code> variable. By default, Nginx caps the size of files it can transfer. We increase that to 50M if needed by Matrix. (Note however that both Matrix and Nginx have seperate settings for this and to raise it to something much larger, you will have to increase the value in both configuration files.)
+    <p>Note the <code>client_max_body_size</code> variable. By default, Nginx caps the size of files it can transfer. We increase that to 100M if needed by Matrix. (Note however that both Matrix and Nginx have seperate settings for this and to raise it to something much larger, you will have to increase the value in both configuration files.)
     </p>
     </aside>
 
@@ -70,30 +124,63 @@ systemctl reload nginx</code></pre>
 
     <h3>Encryption</h3>
 
-    <p>Obviously, we need to encrypt our <code>matrix</code> subdomain as well. Let's do that with certbot:</p>
+    <p>Make sure to encrypt the domain/subdomain <strong>matrix</strong> is running on. Let's do that with certbot if you haven't done so already:</p>
 
-<pre><code>certbot --nginx -d matrix.<strong>example.org</strong></code></pre>
+<pre><code>certbot --nginx -d <strong>example.org</strong></code></pre>
 
-    <h2>Configuration</h2>
+    <h2>Synapse Configuration</h2>
 
     <h3>Read the config file</h3>
 
     <p>
     The configuration file for Matrix is in <code>/etc/matrix-synapse/homeserver.yaml</code>.
-    It is well documented and commented, so you can read about the settings, but let's change the essential ones here.
+    It is well documented and commented, so you can read about the settings easily.
+    </p>
+    
+    <h3>Changing the maximum upload size</h3>
+
+    <p>Maximum upload size is controlled by this line:</p>
+    
+    <pre><code>max_upload_size: 100M</code></pre>
+
+    <h3>Changing the media store path</h3>
+    
+    <p>Media that is sent and received by users is kept in a directory, the path is controlled by the following line:</p>
+
+    <pre><code>media_store_path: "/var/lib/matrix-synapse/media"</code></pre>
+    
+    <p><strong>NOTE!</strong> Deleting media in this directory can be done without issues as long as another homeserver has the respective media cached!</p>
+
+    <h3>Changing the global cache factor</h3>
+
+    <p>This option can improve homeserver performance at the cost of lending more disk space for caching.
+    A value of 2.0 is a good start for improving performance.
+    The followin lines control the global scale factor:</p>
+
+    <pre><code>caches:
+  global_factor: 2.0</code></pre>
+
+    <p>Make what changes you want and run <code>systemctl reload matrix-synapse</code> to make the system configuration active.
     </p>
 
-    <p>
-    Make what changes you want and run <code>systemctl reload matrix-synapse</code> to make the system configuration active.
-    </p>
+    <h2>Synapse Server Administration</h2>
 
-    <h3>Create an administrator account</h3>
+    <h3>Registration</h3>   
 
     <p>If you allow open registration on your server in the configuration file, you can create an account through Element or another Matrix client, but you are probably going to want an official admin account to use.
-    To make one, simply run the following command, which will then give you several choices for creating a user, among which will be the ability to make it an admin.
-    </p>
+    To make one, simply run the following command, which will then give you several choices for creating a user, among which will be the ability to make it an admin.</p>
+    <p><strong>NOTE!</strong> We recommend having one admin account that is not a member of any rooms.</p>
 
-    <pre><code>register_new_matrix_user -c homeserver.yaml http://localhost:8008</code></pre>
+    <pre><code>register_new_matrix_user -c /etc/matrix-synapse/homeserver.yaml http://localhost:8008</code></pre>
+
+    <h3>The admin API</h3>
+
+    <p>Synapse provides an http API for administration. For a better experience consider using <a href="https://github.com/JOJ0/synadm">synadm</a>, a script that makes using the admin API easier.
+    Using the admin API requires an admin account.</p>
+
+    <h3>Using the federation tester</h3>
+
+    <p>The <a href="https://federationtester.matrix.org/">federation tester</a> can help troubleshoot any federation issues that your homeserver may have.</p>
 
     <h2>Using Matrix with <img src="pix/element.svg" alt="Element Matrix logo">Element</h2>
 
@@ -110,12 +197,13 @@ systemctl reload nginx</code></pre>
                 <li><a href="https://play.google.com/store/apps/details?id=im.vector.app">Google Play</a></li>
                 <li><a href="https://apps.apple.com/app/vector/id1083446067">Apple App Store</a></li>
             </ul>
+            <p><strong>NOTE!</strong> we also recommend SchildiChat, a fork of Element, for Android users as it is a bit faster and has better theming.<p>
         </li>
         <li>Real computer:
             <ul>
                 <li>GNU/Linux: You know how to install it.</li>
-                <li><a href="https://packages.riot.im/desktop/install/win32/x64/Element%20Setup.exe">Windows</a></li>
-                <li><a href="https://packages.riot.im/desktop/install/macos/Element.dmg">Mac</a></li>
+                <li><a href="https://packages.element.io/desktop/install/win32/x64/Element%20Setup.exe">Windows</a></li>
+                <li><a href="https://packages.element.io/desktop/install/macos/Element.dmg">Mac</a></li>
             </ul>
         </li>
     </ul>
