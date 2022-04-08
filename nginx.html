@@ -117,6 +117,10 @@ apt install nginx</code></pre>
         location / {
                 try_files $uri $uri/ =404 ;
         }
+}
+server {
+        server_name <strong>www.landchad.net</strong> ;
+        return 301 $scheme://<strong>landchad.net</strong>$request_uri ;
 }</code></pre>
 
 
@@ -143,8 +147,11 @@ Note that that this in concert with the line above mean that <code>/var/www/land
 will be the main page of our website.
 </p>
 <p>
-Lastly, the <code>location</code> block is really just telling the server how to look up files, otherwise throw a 404 error.
+The <code>location</code> block is really just telling the server how to look up files, otherwise throw a 404 error.
 Location settings are very powerful, but this is all we need them for now.
+</p>
+<p>
+Lastly, the <code>return 301</code> line redirects anyone connecting to your site to a version of the URL without 'www.'. <code>$scheme</code> preserves the URL's http or https status during the redirect. Likewise, <code>$request_uri</code> preserves the bit of the URL after '.net'. (landchan.net/nginx.html for example.)
 </p>
 </aside>
 
