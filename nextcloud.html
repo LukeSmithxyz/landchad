@@ -17,8 +17,12 @@
         <p><a href="https://nextcloud.com" target="_blank"><img src="pix/nextcloud.svg" alt="logo">Nextcloud</a> is a free and open source solution for cloud storage. However it can also do other things, such as manage your email, notes, calender, tasks, and can even connect to the Fediverse (think Mastodon and Pleroma). Pretty much every service that Google has to offer has a much better alternative as a Nextcloud app and this is a must-have for anyone wanting to get away from Google services but still wants a traditional cloud experience (in the likes of Google Services, anyways).</p>
 
         <h2 id="instructions">Instructions</h2>
-        <p>We should upgrade the system and then install packages that we might need. Run the following command:</p>
-        <pre><code>apt-get full-upgrade -y && sudo apt-get install mariadb-server php-mysql php php-gd php-mbstring php-dom php-curl php-zip php-simplexml php-xml php-fpm -y</code></pre>
+        <p>We should upgrade the system and then install the MariaDB server. Run the following command:</p>
+        <pre><code>apt-get full-upgrade -y && sudo apt-get install mariadb-server -y</code></pre>
+	<p>In order for Nextcloud to operate properly, we need PHP version 7.4 or higher. Since Debian 10 does not include PHP 7.4, we need to add the community ran SURY repository which includes several versions of PHP for use on Debian 10.</p>
+	<pre><code>apt -y install lsb-release apt-transport-https ca-certificates && sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list && apt update</code></pre>
+	<p>Next, we need PHP 7.4 and several server side dependencies for Nextcloud. Run the following command:</p>
+	<pre><code>apt-get install php7.4 php7.4-{fpm,bcmath,bz2,intl,gd,mbstring,mysql,zip,xml,curl}</code></pre>
         <p>Next, we need to set up our SQL database by running a Secure Installation and creating the tables that will store data that Nextcloud will need. Run the following command:</p>
         <pre><code>mysql_secure_installation</code></pre>
         <p>When it asks for root a password, say yes and input a new and secure password. The root password here is just for the SQL database, not for the GNU/Linux system.</p>
@@ -152,11 +156,10 @@ server {
 }</code></pre>
         <p>Enable the site by running this command:</p>
         <pre><code>ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/</code></pre>
-        <p>Next, we need to download the latest release tarball of Nextcloud. Go to <a>https://nextcloud.com/install/#instructions-server</a> and copy the URL of the .tar.bz2 tarball from the More Downloads dropdown menu then go to your server's shell prompt and download the tarball with wget. Here is an example:</p>
-        <pre><code>wget https://download.nextcloud.com/server/releases/nextcloud-21.0.2.tar.bz2</code></pre>
+        <p>Next, we need to download the latest release tarball of Nextcloud. To download the latest version of Nextcloud, run the following command:</p>
+        <pre><code>wget https://download.nextcloud.com/server/releases/latest.tar.bz2</code></pre>
         <p>Now we need to extract the Nextcloud tarball. Run the following command:</p>
-        <pre><code>tar -xjf nextcloud*.tar.bz2 -C /var/www</code></pre>
-        <p>If you have multiple Nextcloud tarballs in the current working directory you might want to manually specify which one you wish to extract.</p>
+        <pre><code>tar -xjf latest.tar.bz2 -C /var/www</code></pre>
         <p>Let's correct the ownership and permissions of those files. Run the following commands:</p>
         <pre><code>chown -R www-data:www-data /var/www/nextcloud
 chmod -R 755 /var/www/nextcloud</code>
@@ -194,6 +197,14 @@ systemctl start mariadb</code></pre>
             <li>Write notes in Markdown inside the Nextcloud Notes web and mobile app.</li>
             <li>Set the Nextcloud Dashboard as your web browser's homepage (it is pretty nice).</li>
         </ul>
+
+	<p>In the event that anything goes wrong with the web interface of Nextcloud, Nextcloud has a commandline utility bundled with it called <code>occ</code>. You can use it with the following command:</p>
+
+	<pre><code>sudo -u www-data php /var/www/nextcloud/occ</code></pre>
+
+	<p>You can make this an alias by putting it in your <code>~/.bashrc</code> file for ease of use with the following alias:</p>
+
+	<pre><code>alias occ="sudo -u www-data php /var/www/nextcloud/occ"</code></pre>
 
         <p>Enjoy your cloud services in freedom.</p>
 
