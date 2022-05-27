@@ -23,6 +23,16 @@
 	<pre><code>apt -y install lsb-release apt-transport-https ca-certificates && sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list && apt update</code></pre>
 	<p>Next, we need PHP 7.4 and several server side dependencies for Nextcloud. Run the following command:</p>
 	<pre><code>apt-get install php7.4 php7.4-{fpm,bcmath,bz2,intl,gd,mbstring,mysql,zip,xml,curl}</code></pre>
+	<p><em>Optionally</em>, you can improve the performance of your Nextcloud server by adjusting the child processes that are execute PHP scripts. That way, more PHP scripts can be executed at once. Make the following adjustments to <code>/etc/php/7.4/fpm/pool.d/www.conf</code>:</p>
+	<pre><code>pm = dynamic
+pm.max_children = 120
+pm.start_servers = 12
+pm.min_spare_servers = 6
+pm.max_spare_servers = 18</code></pre>
+	<p>We're going to need to use the MariaDB commandline utility, which uses a Unix Socket to connect. Add the following line to <code>/etc/mysql/conf.d/mysql.cnf</code> under the <code>[mysql]</code> section:</p>
+	<pre><code>socket=/var/lib/mysql/mysql.sock</code></pre>
+	<p>We might as well start the MariaDB server too:</p>
+	<pre><code>systemctl enable mariadb --now</code></pre>
         <p>Next, we need to set up our SQL database by running a Secure Installation and creating the tables that will store data that Nextcloud will need. Run the following command:</p>
         <pre><code>mysql_secure_installation</code></pre>
         <p>When it asks for root a password, say yes and input a new and secure password. The root password here is just for the SQL database, not for the GNU/Linux system.</p>
@@ -164,13 +174,9 @@ server {
         <pre><code>chown -R www-data:www-data /var/www/nextcloud
 chmod -R 755 /var/www/nextcloud</code>
         </pre>
-        <p>Start and enable the php-fpm and the mariadb services (the name of the php-fpm service may have a version number ahead of it, use bash's tab autocomplete to help you out with that):</p>
-        <pre><code>systemctl enable php<strong>7.4</strong>-fpm
-systemctl start php<strong>7.4</strong>-fpm
-systemctl enable mariadb
-systemctl start mariadb</code></pre>
-        <p>Reload the nginx service:</p>
-        <pre><code>systemctl reload nginx</code></pre>
+        <p>Start and enable the php-fpm and the nginx service:</p>
+        <pre><code>systemctl enable php<strong>7.4</strong>-fpm --now
+systemctl enable nginx --now</code></pre>
         <p>Now we need to head to Nextcloud's web interface. Go to your web browser and go to your website, but go to the subdirectory "nextcloud" instead. Go to <code>https://<strong>example.org</strong>/nextcloud</code>. This will launch the configuration wizard.</p>
 
         <ul>
@@ -189,7 +195,7 @@ systemctl start mariadb</code></pre>
         <p>Now you may be wondering: What do I do now? Here are some suggestions:</p>
 
         <ul>
-            <li>Rice your Nextcloud instance by changing your themeing and installing new themes and plugins in Settings in the Nextcloud Web Interface.</li>
+            <li>Rice your Nextcloud instance by changing your theming and installing new themes and plugins in Settings in the Nextcloud Web Interface.</li>
             <li>Install the Nextcloud Client on your personal computer and sync your files to your instance.</li>
             <li>Install the Nextcloud App on your mobile device and sync your files to your instance.</li>
             <li>Set up your email account on the Nextcloud Mail app on the web interface to view and sync your email there (just like Gmail).</li>
