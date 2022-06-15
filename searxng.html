@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <title>Setting up a public SearXNG instance &ndash; LandChad.net</title>
+        <meta charset="utf-8"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <link rel='stylesheet' type='text/css' href='style.css'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='alternate' type='application/rss+xml' title='Land Chad RSS' href='/rss.xml'>
+    </head>
+<body>
+    <header><h1>Setting up a public SearXNG instance</h1></header>
+    <nav></nav>
+    <main>
+        <img src="pix/searxng.svg" alt="SearXNG logo" class=titleimg>
+        <p>
+            SearXNG is a free internet metasearch engine which aggregates results from more than 70 search services.
+            This guide sets up a working instance that can be accessed using a domain over HTTPS.
+            Features include:
+        </p>
+        <ul>
+            <li>Self hosted</li>
+            <li>No user tracking</li>
+            <li>No user profiling</li>
+            <li>About 70 supported search engines</li>
+            <li>Easy integration with any search engine</li>
+            <li>Cookies are not used by default</li>
+            <li>Secure, encrypted connections (HTTPS/SSL)</li>
+        </ul>
+
+        <h2>Installation</h2>
+
+        <p>Install the required packages.</p>
+
+        <pre><code>apt install git nginx -y</code></pre>
+
+        <p>Open http and https ports.</p>
+
+        <pre><code>iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
+iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+netfilter-persistent save
+ufw allow 80
+ufw allow 443</code></pre>
+
+        <p>Clone the SearXNG Repository.</p>
+
+        <pre><code>git clone https://github.com/searxng/searxng searxng
+cd searxng</code></pre>
+
+        <p>Installing SearXNG, Filtron and Morty.</p>
+
+        <pre><code>./utils/searx.sh install all
+./utils/filtron.sh install all
+./utils/morty.sh install all</code></pre>
+
+        <p>Check that both filtron and morty are running.</p>
+
+        <pre><code>systemctl status filtron
+systemctl status morty</code></pre>
+        
+        <h2>Configure Nginx</h2>
+
+        <p>Delete the default site.</p>
+
+        <pre><code>rm /etc/nginx/sites-enabled/default</code></pre>
+
+        <p>Create a new file <code>/etc/nginx/sites-available/searxng.conf</code> and add the following:</p>
+
+        <pre><code>
+server {
+
+    # Listens on http
+    listen 80;
+    listen [::]:80;
+
+    # Your server name
+    server_name searx.example.org;
+     
+    # If you want to log user activity, comment these
+    access_log /dev/null;
+    error_log  /dev/null;
+                
+    # Searx reverse proxy
+    location / {
+            proxy_pass         http://127.0.0.1:4004/;
+                
+            proxy_set_header   Host             $host;
+            proxy_set_header   Connection       $http_connection;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Scheme         $scheme;
+            proxy_set_header   X-Script-Name    /searx;
+    }
+        
+    location /searx/static {
+            alias /usr/local/searx/searx-src/searx/static;
+    }
+        
+    # Morty reverse proxy
+    location /morty {
+            proxy_pass         http://127.0.0.1:3000/;
+               
+            proxy_set_header   Host             $host;
+            proxy_set_header   Connection       $http_connection;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Scheme         $scheme;
+    }
+}
+        </code></pre>
+
+        <p>Now create a symbolic link to enable this site.</p>
+
+        <pre><code>ln -s /etc/nginx/sites-available/searxng.conf /etc/nginx/sites-enabled/searxng.conf</code></pre>
+
+        <p>Restart Nginx and SearXNG.</p>
+
+        <pre><code>systemctl restart nginx
+service uwsgi restart searx</code></pre>
+
+        <h2>Configure HTTPS with Certbot</h2>
+
+        <p>Install certbot.</p>
+
+        <pre><code>apt install python3-certbot-nginx</code></pre>
+
+        <p>Install a Let's Encrypt SSL certificate to Nginx and optionally let it configure HTTPS for you. 
+            <a href="certbot.html">Detailed instructions and additional information</a>.</p>
+
+        <pre><code>certbot --nginx</code></pre>
+
+        <p>SearXNG should now be available from your domain.</p>
+
+        <h2>Configuration</h2>
+
+        <p>You can change settings by editing <code>/etc/searxng/settings.yml</code>.</p>
+
+        <h2>Contribution</h2>
+        <li>Author: goshawk22 &ndash; <a href="https://goshawk22.uk">website</a></li>
+    </main>
+<footer><a href="https://landchad.net">LandChad.net</a></br>Because Everyone should be an Internet LandChad.</br><a href="index.html"><li><img src="pix/chad.gif" alt="chad"></li></a><a href="rss.xml"><li><img src="pix/rss.svg" alt="RSS"></li></a><a href="donate-bitcoin.html"><li><img src="pix/btc.svg" alt="BTC"></li></a><a href="donate-monero.html"><li><img src="pix/xmr.svg" alt="XMR"></li></a><a href="https://github.com/lukesmithxyz/landchad"><li><img src="pix/git.svg" alt="Github"></li></a></footer>
+</body>
+</html>
