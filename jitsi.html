@@ -113,6 +113,61 @@ ufw enable</code></pre>
 
       <p>When you create a video chatroom, its address will appear as <code><strong>meet.example.org/yourvideochatname</strong></code> and can be shared as such.</p>
 
+      <h2>Security</h2>
+
+      <p>
+      By default, anyone who has access to <strong>meet.example.org</strong> will be able to create a chatroom. You probably don't want that, so you'll need to set up some authentication. The simplest option is to handle authentication through the local <a href="./prosody.html">Prosody</a> user database.
+      </p>
+
+      <h3>Prosody configuration</h3>
+      <p>
+      First, we need to enable password authentication in <a href="./prosody.html">Prosody</a>. Edit <code>/etc/prosody/conf.avail/<strong>meet.example.org</strong>.cfg.lua</code>, and locate this block:
+        <pre><code>VirtualHost "<strong>meet.example.org</strong>"
+    authentication = "anonymous"</code></pre>
+      And change the authentication mode from <code>"anonymous"</code> to <code>"internal_hashed"</code>.
+      </p>
+      <p>
+      Then, to enable guests to login and join your chatrooms, add the following block <strong>after</strong> the one you just edited:
+      <pre><code>VirtualHost "guest.<strong>meet.example.org</strong>"
+    authentication = "anonymous"
+    c2s_require_encryption = false</code></pre>
+      </p>
+
+      <h3>Jitsi Meet configuration</h3>
+      <p>
+      Next, in <code>/etc/jitsi/meet/<strong>meet.example.org</strong>-config.js</code>, uncomment the following line:
+      <pre><code>var config = {
+    hosts: {
+        // anonymousdomain: 'guest.jitsi-meet.example.com',
+    },
+}
+</code></pre>
+      And change <code>'guest.jitsi-meet.example.com'</code> to <code>'guest.<strong>meet.example.org</strong>'</code>.
+      </p>
+
+      <h3>Jicofo configuration</h3>
+      <p>
+      Finally, we configure Jicofo to only allow the creation of conferences when the request is coming from an authenticated user. To do so, add the following <code>authentication</code> section to <code>/etc/jitsi/jicofo/jicofo.conf</code>:
+      <pre><code>jicofo {
+  authentication: {
+    enabled: true
+    type: XMPP
+    login-url: <strong>meet.example.org</strong>
+ }</code></pre>
+      </p>
+
+      <h3>Create users in Prosody and restart the services</h3>
+      <p>
+      You now need to register some users in <a href="./prosody.html">Prosody</a>, you can do so manually using <code>prosodyctl</code>:
+      <pre><code>prosodyctl register &ltusername&gt <strong>meet.example.org</strong> &ltpassword&gt</code></pre>
+      </p>
+      <p>
+      Finally, restart <code>prosody</code>, <code>jicofo</code>, and <code>jitsi-videobridge2</code>:
+      <pre><code>systemctl restart prosody
+systemctl restart jicofo
+systemctl restart jitsi-videobridge2</code></pre>
+      </p>
+
       <h2>More info</h2>
 
       <p>

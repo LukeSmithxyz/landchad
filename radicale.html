@@ -26,14 +26,14 @@ hosts = 0.0.0.0:5232, [::]:5232
 [auth]
 type = htpasswd
 htpasswd_filename = /etc/radicale/users
-htpasswd_encryption = md5
+htpasswd_encryption = bcrypt
 
 [storage]
 filesystem_folder = /var/lib/radicale/collections</code></pre>
 
 	<p>As you can see under [auth] we use htpasswd to manage the users. Execute the following command to add a new user to Radicale.</p>
 	<pre><code>htpasswd -c /etc/radicale/users <strong>username</strong></code></pre>
-	<p>As Radicale stands now it is fully functional and after starting it by executing its binary, can be accessed under example.org:5232. But there are two additional things we can do to make using and managing Radicale way easier.</p> 
+	<p>As Radicale stands now it is fully functional and after starting it by executing its binary, can be accessed under example.org:5232. But there are two additional things we can do to make using and managing Radicale way easier.</p>
 	<h3>Setting up a Nginx reverse proxy</h3>
 	<p>Because the URL of your Radicale server is an URL you will have to remember and enter it on any device you want to use your calendar on it is advised to set up a reverse proxy.</p>
 	<pre><code>server {
