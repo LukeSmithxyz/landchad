@@ -95,6 +95,10 @@ server {
                 try_files $uri $uri/ =404 ;
         }
 }
+server {
+        server_name www.landchad.net ;
+        return 301 $scheme://landchad.net$request_uri ;
+}
 ```
 
 #### Explanation of those settings
@@ -118,9 +122,15 @@ concert with the line above mean that `/var/www/landchad/index.html`, a
 file on our computer that we\'ll create will be the main page of our
 website.
 
-Lastly, the `location` block is really just telling the server how to
+The `location` block is really just telling the server how to
 look up files, otherwise throw a 404 error. Location settings are very
 powerful, but this is all we need them for now.
+
+Lastly, the `return 301` line redirects anyone connecting to
+ your site to a version of the URL without 'www.'.
+ `$scheme` preserves the URL's http or https status during the
+ redirect. Likewise, `$request_uri` preserves the bit of the
+ URL after '.net'. (landchan.net/nginx.html for example.)
 
 ### Create the directory and index for the site
 
