@@ -1,7 +1,7 @@
 ---
 title: "Rainloop"
 tags: ['service']
-icon: 'rainloop.svg'
+icon: 'rainloop.png'
 short_desc: 'A graphical website for accessing a mail server.'
 ---
 
