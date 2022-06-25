@@ -30,4 +30,4 @@ jobs:
           cd landchad-src
           git stash
           git pull --force origin master
-          hugo -s . -t /var/www/lugo -d ../landchad
+          hugo -s . -t /var/www/lugo -d ~/landchad --cacheDir ~/hugocache
