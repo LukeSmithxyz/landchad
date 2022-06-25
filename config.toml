@@ -1,0 +1,9 @@
+baseURL = 'https://landchad.net'
+languageCode = 'en-us'
+title = 'LandChad.net'
+theme = 'lugo'
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
