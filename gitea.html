@@ -27,7 +27,7 @@
 
         <p>Then add the actual repository to apt:</p>
 
-        <pre><code>echo "deb [arch=amd64] https://packaging.gitlab.io/gitea gitea main" > /etc/apt/sources.list.d/morph027-gitea.list</code></pre>
+        <pre><code>echo "deb [arch=$(dpkg --print-architecture)] https://packaging.gitlab.io/gitea gitea main" > /etc/apt/sources.list.d/morph027-gitea.list</code></pre>
 
         <p>Now we can install Gitea:<p>
 
