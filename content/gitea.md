@@ -6,18 +6,20 @@ tags: ['service']
 short_desc: "A fully-featured Github-like git website for serious software projects and communities."
 ---
 
-
-Gitea allows you to self-host your git repositories similar to [bare repositories](/git), but comes with additional features that you
-might know from GitHub, such as issues, pull requests or multiple users.
-Its advantage over GitLab---another Free Software GitHub clone---is that
-it is much more lightweight and easier to setup.
+Gitea allows you to self-host your git repositories similar to [bare
+repositories](/git), but comes with additional features that you might know
+from GitHub, such as issues, pull requests or multiple users. Its advantage
+over GitLab---another Free Software GitHub clone---is that it is much more
+lightweight and easier to setup.
 
 Head over to [gitea.com](https://gitea.com) to see what it looks like in
 practice.
 
-Although Gitea is lighter than Gitlab, if you have a VPS with only 512MB
-of RAM, you will probably have to upgrade. Gitea is more
-memory-intensive than having just a bare git repository.
+Although Gitea is lighter than Gitlab, if you have a VPS with only 512MB of
+RAM, you will probably have to upgrade. Gitea is more memory-intensive than
+having just a bare git repository. If you just want a minimalist browseable git
+server without  issue tracking and pull requests, install [cgit](/cgit)
+instead.
 
 ## Installing Gitea
 
