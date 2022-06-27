@@ -27,7 +27,6 @@ jobs:
         passphrase: ${{ secrets.chad_pass }}
         port: 22
         script: |
-          cd landchad-src
+          cd landchad
           git stash
           git pull --force origin master
-          hugo -s . -t /var/www/lugo -d ~/landchad --cacheDir ~/hugocache
