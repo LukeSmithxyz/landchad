@@ -28,7 +28,7 @@ having to input your password each time you touch the server.
 Generating an SSH key is simple. Just run:
 
 ```sh
-ssh-keygen
+ssh-keygen -t ed25519 -b 4096
 ```
 
 It will prompt you for several options and you can generally chose the
