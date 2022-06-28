@@ -6,10 +6,9 @@ tags: ['service']
 short_desc: 'A minimalist XMPP chat server.'
 ---
 
-XMPP is a fantastically simple protocol that\'s usually used as a
-messenger. It\'s highly extensible, better than IRC, lighter and more
-decentralized than Matrix and Telegram and normie social media can\'t
-hold a candle to it.
+XMPP is a fantastically simple protocol that\'s usually used as a messenger.
+It\'s highly extensible, better than IRC, lighter and more decentralized than
+Matrix, and normie social media like Telegram can\'t hold a candle to it.
 
 XMPP is so decentralized and extensible that there are many *different*
 XMPP servers. Here, let\'s set up an [Prosody](https://prosody.im/) XMPP

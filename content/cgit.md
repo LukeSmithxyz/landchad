@@ -11,7 +11,7 @@ Software that allows browsing git repositories through the web.
 
 Note that Cgit is a read-only frontend for Git repositories and doesn\'t
 have issues, pull requests or user management. If that\'s what you want,
-consider installing Gitea instead.
+consider installing [Gitea](/gitea) instead.
 
 ## Installing cgit and fcgiwrap
 

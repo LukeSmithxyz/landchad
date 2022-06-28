@@ -47,8 +47,7 @@ your audience might be, but if you host a server in Singapore for an
 American audience, they won\'t have to be waiting a perceptibly longer
 time to load the site.
 
-[![Pick your servers\'s
-locatio](pix/server-location.png)](pix/server-location.png)
+{{< img alt="Pick your servers's location" src="/pix/server-location.png" link="/pix/server-location.png" >}}
 
 **Some locations might have different abilities and plans than others.
 For example, in Vultr, their New York location has optional DDOS
