@@ -31,8 +31,8 @@ apt install git nginx -y
 Open http and https ports.
 
 ```sh
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+iptables -I INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
+iptables -I INPUT -m state --state NEW -p tcp --dport 443 -j ACCEPT
 netfilter-persistent save
 ufw allow 80
 ufw allow 443
