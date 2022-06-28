@@ -55,6 +55,23 @@ I suggest copying your entire `~/.ssh/` directory (user-specific) to a
 USB drive and storing it securely. You may also copy it to the same
 place on another computer to use the key there.
 
+## Automatically use your key to log in
+
+Now that you've set up your ssh key, you need to tell ssh to actually use it. 
+
+Edit `~/.ssh/config` and create a block like this:
+
+```
+Host yourdomain.com
+    User your-server-username
+    IdentityFile ~/.ssh/nameofyourkey
+```
+
+This will tell ssh the default username and ssh key to send when 
+connecting to your server.
+
+For more information, you can see `man 5 SSH_CONFIG`
+
 ## Making your server trust your key.
 
 Now that you have generated an SSH key, just run the following:
