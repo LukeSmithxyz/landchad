@@ -19,10 +19,15 @@ cloud experience (in the likes of Google Services, anyways).
 
 ## Instructions
 
-We should upgrade the system and then install the MariaDB server. Run the following command:
+Before beginning this tutorial, it is required that you have 
+[set up NGINX](/basic/nginx/) and [obtained SSL certificates](/basic/certbot/).
+
+We should upgrade the system and then install the MariaDB server. Run the following commands:
 
 ```sh
-apt-get full-upgrade -y && apt-get install mariadb-server -y
+apt update
+apt full-upgrade -y
+apt install mariadb-server -y
 ```
 
 In order for Nextcloud to operate properly, we need PHP version 7.4 or higher. Since Debian 10 does not include PHP 7.4, we need to add the community ran SURY repository which includes several versions of PHP for use on Debian 10.
@@ -34,7 +39,7 @@ apt -y install lsb-release apt-transport-https ca-certificates && wget -O /etc/a
 Next, we need PHP 7.4 and several server side dependencies for Nextcloud. Run the following command:
 
 ```sh
-apt-get install php7.4 php7.4-{fpm,bcmath,bz2,intl,gd,mbstring,mysql,zip,xml,curl}
+apt install php7.4 php7.4-{fpm,bcmath,bz2,intl,gd,mbstring,mysql,zip,xml,curl}
 ```
 
 *Optionally*, you can improve the performance of your Nextcloud server by adjusting the child processes that are used to execute PHP scripts. That way, more PHP scripts can be executed at once. Make the following adjustments to `/etc/php/7.4/fpm/pool.d/www.conf`:
@@ -257,11 +262,11 @@ chown -R www-data:www-data /var/www/nextcloud
 chmod -R 755 /var/www/nextcloud
 ```
 
-Start and enable the php-fpm and the nginx service:
+Start and enable php-fpm and reload nginx:
 
 ```sh
 systemctl enable php7.4-fpm --now
-systemctl enable nginx --now
+systemctl reload nginx
 ```
 
 Now we need to head to Nextcloud\'s web interface. Go to your web
