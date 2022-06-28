@@ -20,6 +20,8 @@ that can be accessed using a domain over HTTPS. Features include:
 
 ## Installation
 
+"For the installation procedure, use a sudoer login to run the scripts. If you install from root, take into account that the scripts are creating a searx, a filtron and a morty user. In the installation procedure these new created users do need read access to the clone of searx, which is not the case if you clone into a folder below /root." - SearXNG Docs
+
 Install the required packages.
 
 ```sh
