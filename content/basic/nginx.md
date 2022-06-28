@@ -20,7 +20,7 @@ Now on Vultr\'s site, you can click on your VPS and you will see that
 there is an area that shows you the password for your server at the
 bottom here.
 
-![Find your password](pix/nginx-password.png)
+{{< img alt="Find your password" src="/pix/nginx-password.png" link="/pix/nginx-password.png" >}}
 
 Now pull up a terminal and type:
 
@@ -206,7 +206,7 @@ date](maintenance.html#update) to get the latest security fixes!
 At this point you can now type in your website in your browser and this
 webpage will appear!
 
-![The webpage as it appears.](pix/nginx-website.png)
+{{< img alt="The webpage as it appears." src="/pix/nginx-website.png" link="/pix/nginx-website.png" >}}
 
 Note the \"Not secure\" notification. The next brief step is securing
 encrypted connections to your website.
