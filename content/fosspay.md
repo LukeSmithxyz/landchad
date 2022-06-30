@@ -3,6 +3,7 @@ title: "Fosspay"
 tags: ['service']
 icon: 'devault.jpg'
 short_desc: "A self-hosted payment and donation gateway interfaced with Stripe."
+date: 2022-06-30
 ---
 
 [Fosspay](https://sr.ht/~sircmpwn/fosspay/) is a free-software web frontend for receiving donations and
