@@ -3,8 +3,8 @@ title: "Fosspay"
 tags: ['service']
 icon: 'devault.jpg'
 short_desc: "A self-hosted payment and donation gateway interfaced with Stripe."
-draft: true
 ---
+
 [Fosspay](https://sr.ht/~sircmpwn/fosspay/) is a free-software web frontend for receiving donations and
 subscriptions, similar to Patreon or Liberapay, but which can be hosted
 on your own server. It can also interface with Patreon or Github
@@ -12,35 +12,21 @@ Sponsors to aggregate all your donations.
 
 ## Stripe Setup
 
-Fosspay uses [Stripe](https://stripe.com) as a payment processor, which
-is a less annoying and more serious and extensible equivalent of PayPal.
-You must set up an account with them to be able to receive card payments
-through Fosspay.
+Fosspay uses [Stripe](https://stripe.com) as a payment processor. You first must go to [their website](https://stripe.com) and create an account.
 
-Note that with Stripe, these payments can be arranged to go directly to
-a bank account within a day or so.
+Once you set everything up, you can go to [https://dashboard.stripe.com/account/apikeys](https://dashboard.stripe.com/account/apikeys) and get your "Publishable Key" and "Secret Key" which will be all you need to set up Fosspay.
 
-Be sure to check out or configure all the Stripe settings you want
-before hand. For example, Stripe will automatically include your phone
-number on invoices by default, so you might want to change that if you
-are not using a dummy number.
+<aside>
 
-### Note
+### Note on Free Software
 
-LandChad.net strives for free software, privacy and internet
-independence. Using Stripe is better than using companies with a bad
-reputation like PayPal, but it is still a large company with can
-compromise the privacy of you and others and ban people.
+Stripe is perhaps the best way to transact in the legacy financial system
+online, but you are still not using free and privacy respecting software.
+Fosspay is an open source payment gateway, but it still connects to Stripe.
+The only way to transact value over the internet on all free software is
+[crypto-currency](/monero/).
 
-Stripe does do a good job making payments very easy for you: you do not
-have to do legally difficult things like storing credit card numbers
-(they are sent directly to Stripe via Javascript code). They are also good at
-catching fraudulent transactions and other issues that might arise.
-
-But if you want a truly and fully free and open source monetary system
-and will not compromise for less, please use Bitcoin or Monero
-exclusively. Compared to any other fiat service, Stripe is about the
-best, and Fosspay is a great way to self-host a payment gateway.
+</aside>
 
 ## Dependencies
 
@@ -70,11 +56,6 @@ cd /var/www/fosspay
 pip install -r requirements.txt
 ```
 
-The `install` command, at the time of this writing, *might* produce many
-errors related to the `psycopg2` package. If it does, you can ignore
-them, let the command complete and run `apt install python3-psycopg2` to
-get the package globally.
-
 Be sure you are still in `/var/www/fosspay`, then we will build the
 package and create the configuration file.
 
@@ -85,7 +66,7 @@ cp config.ini.example config.ini
 
 ## Create a Database
 
-Fosspay uses a postgresql database to store donation information, so
+Fosspay uses a PostgreSQL database to store donation information, so
 let\'s create a database and user for it.
 
 First, become the `postgres` user and run the `psql` command:
@@ -114,20 +95,21 @@ whatever reason, change them in the command above, but also in the
 Now open up `/var/www/fosspay/config.ini` and we will set things up.
 Here are a list of things to edit.
 
--   `domain` should be set to `donate.example.org`, with your domain.
--   `protocol` can be set to `https`.
--   Get or create an email account to use as a mailer and add the
-    account/server information to the email settings.
--   Add your public and secret Stripe keys to the information.
--   Change the `connection-string` to
-    `postgresql://fosspay:fosspay@localhost/fosspay` as set up above.
+- `domain` should be set to `donate.example.org`, with your domain.
+- `protocol` can be set to `https`.
+- Get or create an email account to use as a mailer and add the account/server
+  information to the email settings.
+- Add your public and secret Stripe keys to the information.
+- Change the `connection-string` to
+  `postgresql://fosspay:fosspay@localhost/fosspay` as set up above.
 
-**An important note:** mail ports *must* be opened on the server you\'re
-using, or else Fosspay will silently fail to send mails when someone
-tries to donate or reset their password. You do not have to run a mail
-server on the same server as Fosspay, but either way, mail submission
-ports must be opened. This usually requires contacting your VPS provider
-and requesting it from them.
+**An important note:** mail ports *must* be opened on the server you\'re using,
+or else Fosspay will silently fail to send mails when someone tries to donate
+or reset their password. You do not have to run a mail server on the same
+server as Fosspay, but either way, mail submission ports must be opened. This
+usually requires contacting your VPS provider and requesting it from them.
+Aside from this, any error in the email setup will cause Fosspay to crash
+silently.
 
 ### Optional Integration with Patreon, Github, Liberapay
 
