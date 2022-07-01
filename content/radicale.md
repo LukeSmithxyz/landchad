@@ -46,7 +46,7 @@ As you can see under \[auth\] we use htpasswd to manage the users.
 Execute the following command to add a new user to Radicale.
 
 ```sh
-htpasswd -c /etc/radicale/users username
+htpasswd -B -c /etc/radicale/users username
 ```
 
 As Radicale stands now it is fully functional and after starting it by
