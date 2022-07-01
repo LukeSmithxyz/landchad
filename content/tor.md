@@ -116,4 +116,4 @@ Make sure to update Tor on a regular basis by running:
 You do [not]{.underline} need to run certbot for an ssl certificate.
 HTTP over tor is plenty secure!
 
-**Contributor** - [tomfasano.co](https://tomfasano.co){target="_blank"}
+**Contributor** - [tomfasano.net](https://tomfasano.net)

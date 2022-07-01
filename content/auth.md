@@ -133,4 +133,4 @@ Now check your configuration with `nginx -t`
 
 Reload nginx and you\'re good to go!
 
-**Contributor** - [tomfasano.co](https://tomfasano.co){target="_blank"}
+**Contributor** - [tomfasano.net](https://tomfasano.net)
