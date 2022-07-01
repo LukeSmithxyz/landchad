@@ -1,5 +1,7 @@
 ---
 title: Networking Basics
+date: 2022-07-01
+tags: ['concepts']
 ---
 
 ## A quick detour to binary
