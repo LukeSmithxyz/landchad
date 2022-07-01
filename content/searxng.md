@@ -20,6 +20,8 @@ that can be accessed using a domain over HTTPS. Features include:
 
 ## Installation
 
+"For the installation procedure, use a sudoer login to run the scripts. If you install from root, take into account that the scripts are creating a searx, a filtron and a morty user. In the installation procedure these new created users do need read access to the clone of searx, which is not the case if you clone into a folder below /root." - SearXNG Docs
+
 Install the required packages.
 
 ```sh
@@ -29,8 +31,8 @@ apt install git nginx -y
 Open http and https ports.
 
 ```sh
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+iptables -I INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
+iptables -I INPUT -m state --state NEW -p tcp --dport 443 -j ACCEPT
 netfilter-persistent save
 ufw allow 80
 ufw allow 443
