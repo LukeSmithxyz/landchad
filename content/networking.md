@@ -58,11 +58,15 @@ another. Each digit gains \"significance\", starting at zero going from
 right to left. This is easiest understood through an example from
 decimal:
 
-    943 = 9*102 + 4*101 + 3*100 = 900 + 40 + 3 = 943
+```
+943 = 9*102 + 4*101 + 3*100 = 900 + 40 + 3 = 943
+```
 
 The same holds true for binary:
 
-    11001101 = 27 + 26 + 23 + 22 + 20 = 128 + 64 + 8 + 4 + 1 = 205
+```
+11001101 = 27 + 26 + 23 + 22 + 20 = 128 + 64 + 8 + 4 + 1 = 205
+```
 
 ### The binary behind IP addresses
 
@@ -79,7 +83,9 @@ are 1).
 
 Open up a terminal and run
 
-    ip a
+```sh
+ip a
+```
 
 You should see many names, such as `wlan*` or `wlp*` for wireless
 interfaces or something like `eth*` or `enp*` for ethernet interfaces.
@@ -88,7 +94,7 @@ those are later.
 
 Here\'s my WiFi interface:
 
-![](pix/networking-wlan0.png)
+{{< img alt="wifi interface" src="/pix/networking-wlan0.png" link="/pix/networking-wlan0.png" >}}
 
 We can see an IP address, `192.168.1.221`, and another one which we\'ll
 ignore for now. Did I just leak my IP address? No, it is only my local
@@ -123,13 +129,17 @@ bytes) are fixed and my local network\'s IP range, also called
 
 Here are two popular reserved subnets and their IP ranges:
 
-    192.168.0.0/16: 192.168.0.0 – 192.168.255.255
-    10.0.0.0/8:     10.0.0.0    – 10.255.255.255
+```
+192.168.0.0/16: 192.168.0.0 – 192.168.255.255
+10.0.0.0/8:     10.0.0.0    – 10.255.255.255
+```
 
 Here\'s another popular one, but note that the subnet mask isn\'t
 divisible by 8, so it is a bit less easy to deal with:
 
-    172.16.0.0/12: 172.16.0.0 – 172.31.255.255
+```
+172.16.0.0/12: 172.16.0.0 – 172.31.255.255
+```
 
 The way this works is the first byte is fully fixed, and then the first
 4 bits of the second byte are fixed too, the rest is usable by us. So in
@@ -165,7 +175,7 @@ the actual physical cable!
 
 Here\'s a bigger picture of the full output of `ip a` on my machine:
 
-![](pix/networking-interfaces.png)
+{{< img alt="output of ip a" src="/pix/networking-interfaces.png" link="/pix/networking-interfaces.png" >}}
 
 We can see a few interfaces here:
 
@@ -192,15 +202,17 @@ traffic to put into which interfaces are called routes!
 
 To view the routes set up on your machine, run this command:
 
-    ip r
+```sh
+ip r
+```
 
 Here\'s the command\'s output on my server:
 
-![](pix/networking-server-routes.png)
+{{< img alt="output of ip r" src="/pix/networking-server-routes.png" link="/pix/networking-server-routes.png" >}}
 
 And here\'s an excerpt of the interfaces on my server:
 
-![](pix/networking-server-interfaces.png)
+{{< img alt="network interface" src="/pix/networking-server-interfaces.png" link="/pix/networking-server-interfaces.png" >}}
 
 The first route containing `default via` is special: All packets that
 don\'t match other routes are automatically sent to this interface
@@ -250,7 +262,7 @@ minutes!
 So I take an ethernet cable and directly connect both laptops with that.
 On both machines `ip a` now shows something like this:
 
-![](pix/networking-ethernet-unconfigured.png)
+{{< img alt="new output of ip a" src="/pix/networking-ethernet-unconfigured.png" link="/pix/networking-ethernet-unconfigured.png" >}}
 
 There is no DHCP-Server running on either machine, so we\'ll have to do
 the configuring ourselves! From here on we\'ll have Computer A with
@@ -271,44 +283,56 @@ So we\'ll give Computer A the IP `192.168.50.1` and Computer B the IP
 
 Computer A:
 
-    ip addr add 192.168.50.1/24 dev eth0
+```sh
+ip addr add 192.168.50.1/24 dev eth0
+```
 
 Computer B:
 
-    ip addr add 192.168.50.2/24 dev eth1
+```sh
+ip addr add 192.168.50.2/24 dev eth1
+```
 
 It should look something like this now:
 
-![](pix/networking-ethernet-ip.png)
+{{< img alt="new ip addresses" src="/pix/networking-ethernet-ip.png" link="/pix/networking-ethernet-ip.png" >}}
 
 Now we change the interface\'s state to `UP`:
 
 Computer A:
 
-    ip link set eth0 up
+```sh
+ip link set eth0 up
+```
 
 Computer B:
 
-    ip link set eth1 up
+```sh
+ip link set eth1 up
+```
 
 It should look something like this now:
 
-![](pix/networking-ethernet-ip-up.png)
+{{< img alt="ethernet output" src="/pix/networking-ethernet-ip-up.png" link="/pix/networking-ethernet-ip-up.png" >}}
 
 Are we done? You can try pinging one IP from another. It won\'t work,
 because we don\'t have routes set up yet. So lets\'s do that:
 
 Computer A:
 
-    ip route add 192.168.50.0/24 dev eth0
+```sh
+ip route add 192.168.50.0/24 dev eth0
+```
 
 Computer B:
 
-    ip route add 192.168.50.0/24 dev eth1
+```sh
+ip route add 192.168.50.0/24 dev eth1
+```
 
 You should see something like this in `ip r`:
 
-![](pix/networking-ethernet-route.png)
+{{< img alt="ip routes final" src="/pix/networking-ethernet-route.png" link="/pix/networking-ethernet-route.png" >}}
 
 They are now able to talk to each other!
 
