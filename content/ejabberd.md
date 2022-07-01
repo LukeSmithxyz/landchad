@@ -243,11 +243,11 @@ your turnserver:
     secret: "your_auth_secret"
     services:
       -
-    host: turn.example.org
+        host: turn.example.org
         type: stun
       -
-    host: turn.example.org
-    type: turn
+        host: turn.example.org
+        type: turn
 ```
 
 And with that, you\'ve successfully setup your ejabberd XMPP server!
