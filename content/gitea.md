@@ -41,7 +41,7 @@ curl -sL -o /etc/apt/trusted.gpg.d/morph027-gitea.asc https://packaging.gitlab.i
 Then add the actual repository to apt:
 
 ```sh
-echo "deb [arch=amd64] https://packaging.gitlab.io/gitea gitea main" > /etc/apt/sources.list.d/morph027-gitea.list
+echo "deb [arch=$(dpkg --print-architecture)] https://packaging.gitlab.io/gitea gitea main" > /etc/apt/sources.list.d/morph027-gitea.list
 ```
 
 Now we can install Gitea:
