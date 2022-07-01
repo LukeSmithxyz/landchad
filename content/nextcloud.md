@@ -25,12 +25,6 @@ We should upgrade the system and then install the MariaDB server. Run the follow
 apt-get full-upgrade -y && apt-get install mariadb-server -y
 ```
 
-In order for Nextcloud to operate properly, we need PHP version 7.4 or higher. Since Debian 10 does not include PHP 7.4, we need to add the community ran SURY repository which includes several versions of PHP for use on Debian 10.
-
-```sh
-apt -y install lsb-release apt-transport-https ca-certificates && wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list && apt update
-```
-
 Next, we need PHP 7.4 and several server side dependencies for Nextcloud. Run the following command:
 
 ```sh
