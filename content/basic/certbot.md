@@ -31,7 +31,7 @@ certificates that allow encrypted connections. It used to be painful
 {{< img alt="website without https/ssl" src="/pix/nginx-website.png" link="/pix/nginx-website.png" >}}
 
 Note in this picture that a browser accessing your site will say \"Not
-secure\" or something else to notify you that we are using and
+secure\" or something else to notify you that we are using an
 unencrypted HTTP connection rather than an encrypted HTTPS one.
 
 ## Installation
