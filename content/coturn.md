@@ -1,13 +1,14 @@
 ---
 title: "Coturn"
 date: 2022-03-29
+short_desc: 'A STUN and TURN server that allows users to perform WebRTC calls while being behind NATs.'
 icon: "webrtc.svg"
 img: "webrtc.svg"
 tags: ['service']
 ---
 
 [Coturn](https://github.com/coturn/coturn) is a libre **STUN** and
-**TURN** server software that allows users of chat protcols (Such as
+**TURN** server software that allows users of chat protocols (Such as
 [XMPP](/prosody) and [Matrix](/matrix)) to perform WebRTC **voice
 and video calls** despite them being behind NATs.
 
