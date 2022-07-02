@@ -19,11 +19,43 @@ cloud experience (in the likes of Google Services, anyways).
 
 ## Instructions
 
-We should upgrade the system and then install packages that we might
-need. Run the following command:
+Before beginning this tutorial, it is required that you have 
+[set up NGINX](/basic/nginx/) and [obtained SSL certificates](/basic/certbot/).
+
+We should upgrade the system and then install the MariaDB server. Run the following commands:
 
 ```sh
-apt full-upgrade -y && apt install mariadb-server php-mysql php php-gd php-mbstring php-dom php-curl php-zip php-simplexml php-xml php-fpm -y
+apt update
+apt full-upgrade -y
+apt install mariadb-server -y
+```
+
+Next, we need PHP 7.4 and several server side dependencies for Nextcloud. Run the following command:
+
+```sh
+apt install php7.4 php7.4-{fpm,bcmath,bz2,intl,gd,mbstring,mysql,zip,xml,curl}
+```
+
+*Optionally*, you can improve the performance of your Nextcloud server by adjusting the child processes that are used to execute PHP scripts. That way, more PHP scripts can be executed at once. Make the following adjustments to `/etc/php/7.4/fpm/pool.d/www.conf`:
+
+```
+pm = dynamic
+pm.max_children = 120
+pm.start_servers = 12
+pm.min_spare_servers = 6
+pm.max_spare_servers = 18
+```
+
+We're going to need to use the MariaDB commandline utility, which uses a Unix Socket to connect. Add the following line to `/etc/mysql/conf.d/mysql.cnf` under the `[mysql]` section:
+
+```
+socket=/var/lib/mysql/mysql.sock
+```
+
+Start the MariaDB server:
+
+```sh
+systemctl enable mariadb --now
 ```
 
 Next, we need to set up our SQL database by running a Secure
@@ -46,7 +78,6 @@ Disallow root login remotely? [Y/n]: Y
 Remove test database and access to it? [Y/n]: Y
 Reload privilege tables now? [Y/n]: Y
 ```
-
 
 Next, sign into the SQL database with the new and secure password you
 chose before. Run the following command:
@@ -84,7 +115,7 @@ guide](/basic/certbot).
 
 In `/etc/nginx/sites-available/` we need to make a new configuration for
 Nextcloud (example: `/etc/nginx/sites-available/nextcloud`). Create it
-and open it, modify, and add the following lines:
+and open it, add the following lines, and *modify* the configuration as needed (most importantly, the lines that include **example.org**):
 
 ```nginx
 upstream php-handler {
@@ -205,24 +236,17 @@ Enable the site by running this command:
 ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/
 ```
 
-Next, we need to download the latest release tarball of Nextcloud. Go to
-https://nextcloud.com/install/#instructions-server and copy the URL of
-the .tar.bz2 tarball from the More Downloads dropdown menu then go to
-your server\'s shell prompt and download the tarball with wget. Here is
-an example:
+Next, we need to download the latest release tarball of Nextcloud. To download the latest version of Nextcloud, run the following command:
 
 ```sh
-wget https://download.nextcloud.com/server/releases/nextcloud-21.0.2.tar.bz2
+wget https://download.nextcloud.com/server/releases/latest.tar.bz2
 ```
 
 Now we need to extract the Nextcloud tarball. Run the following command:
 
 ```sh
-tar -xjf nextcloud*.tar.bz2 -C /var/www
+tar -xjf latest.tar.bz2 -C /var/www
 ```
-
-If you have multiple Nextcloud tarballs in the current working directory
-you might want to manually specify which one you wish to extract.
 
 Let\'s correct the ownership and permissions of those files. Run the
 following commands:
@@ -232,21 +256,10 @@ chown -R www-data:www-data /var/www/nextcloud
 chmod -R 755 /var/www/nextcloud
 ```
 
-
-Start and enable the php-fpm and the mariadb services (the name of the
-php-fpm service may have a version number ahead of it, use bash\'s tab
-autocomplete to help you out with that):
+Start and enable php-fpm and reload nginx:
 
 ```sh
-systemctl enable php7.4-fpm
-systemctl start php7.4-fpm
-systemctl enable mariadb
-systemctl start mariadb
-```
-
-Reload the nginx service:
-
-```sh
+systemctl enable php7.4-fpm --now
 systemctl reload nginx
 ```
 
@@ -284,6 +297,18 @@ Now you may be wondering: What do I do now? Here are some suggestions:
    app.
 -  Set the Nextcloud Dashboard as your web browser\'s homepage (it is
    pretty nice).
+
+In the event that anything goes wrong with the web interface of Nextcloud, Nextcloud has a commandline utility bundled with it called `occ`. You can use it with the following command:
+
+```sh
+sudo -u www-data php /var/www/nextcloud/occ
+```
+
+You can make this an alias by putting it in your `~/.bashrc` file for ease of use with the following alias:
+
+```sh
+alias occ="sudo -u www-data php /var/www/nextcloud/occ"
+```
 
 Enjoy your cloud services in freedom.
 
