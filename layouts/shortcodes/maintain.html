@@ -1,4 +1,1 @@
-<ul class=ll>
-{{range.Site.RegularPages.ByTitle}}{{ if in .Params.tags "server" }}<li><a href="{{.Permalink}}">{{ with .Params.icon }}<img src="pix/{{ . }}">{{ end }}<span class=title>{{.Title}}</span>{{ with .Params.short_desc }}<span class=desc>{{ . }}</span>{{ end }}</a><span class=tags>{{.Params.Tags}}</span></li>
-{{ end }}{{ end }}
-</ul>
+<ul class=ll>{{range.Site.RegularPages.ByTitle}}{{if in .Params.tags "server"}}<li><a href="{{.Permalink}}">{{with .Params.icon}}<img src="pix/{{.}}">{{end}}<span class=title>{{.Title}}</span>{{with .Params.short_desc}}<span class=desc>{{.}}</span>{{end}}</a><span class=tags>{{.Params.Tags}}</span></li>{{end}}{{end}}</ul>
