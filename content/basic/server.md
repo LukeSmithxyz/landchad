@@ -3,7 +3,7 @@ title: "Get a Server"
 tags: ['basic']
 date: 2021-06-04
 ---
-Once you have a [domain name](domain), you\'ll need a server to
+Once you have a [domain name](/basic/domain), you\'ll need a server to
 host all your website files on. In general, a server is just a computer
 that is constanly broadcasting some services on the internet.
 
