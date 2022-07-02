@@ -96,7 +96,7 @@ systemctl enable --now doh.service
 
 ## Setting up Nginx.
 
-To set up Nginx with HTTPS, follow [these](/nginx) [guides](/certbot).
+To set up Nginx with HTTPS, follow [these](/basic/nginx) [guides](/basic/certbot).
 
 Once you\'ve gotten all of that set up, we\'ll reverse proxy our HTTPS
 to DNS proxy. Open up your Nginx config file, and add the following
