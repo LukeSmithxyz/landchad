@@ -25,21 +25,21 @@ I\'m sure I don\'t need to bore you by continueing.
 Can we define a formula for the amount of possible values a decimal
 number with `n` digits can have?
 
-It\'s pretty easy: `10n`.
+It\'s pretty easy: <code>10<sup>n</sup></code>.
 
 Now the 10 there in a numbering system where each digit can have 10
 different values can\'t be a coincidence!
 
 So we can generalize: In a numbering system where each digit can have
 `x` different values, the amount of possible values for a number with
-`n` digits is `xn`.
+`n` digits is <code>x<sup>n</sup></code>.
 
 So how many different values can we represent with 8 Bits (1 Byte)?
-`28 = 256` (0-255).
+<code>2<sup>8</sup> = 256</code> (0-255).
 
 The IPv4 addresses you know are 32 bits long. So how many computers
 could we theoretically assign unique IPs to on the internet?
-`232 = 4,294,967,296`. That\'s 4 Billion! However there are far more
+<code>2<sup>32</sup> = 4,294,967,296</code>. That\'s 4 Billion! However there are far more
 computers than that on the internet now, which is why people had to come
 up with hacks (which we\'ll talk about later) so that we can today still
 predominantly use pretty IPv4, as opposed to that ugly new IPv6 (eww).
@@ -49,7 +49,7 @@ We\'ll say \"IP address\" instead of \"IPv4 address\" from here on.
 By the way, this principle goes a long way in computing! Say, for
 example, I know your password is 7 letters long and contains only
 lowercase english letters (a-z). How many times would I have to guess at
-maximum to crack your password? `257 = 6,103,515,625` times.
+maximum to crack your password? <code>25<sup>7</sup> = 6,103,515,625</code> times.
 
 ### Converting from binary to decimal
 
@@ -58,15 +58,11 @@ another. Each digit gains \"significance\", starting at zero going from
 right to left. This is easiest understood through an example from
 decimal:
 
-```
-943 = 9*102 + 4*101 + 3*100 = 900 + 40 + 3 = 943
-```
+<pre><code>943 = 9*10<sup>2</sup> + 4*10<sup>1</sup> + 3*10<sup>0</sup> = 900 + 40 + 3 = 943</code></pre>
 
 The same holds true for binary:
 
-```
-11001101 = 27 + 26 + 23 + 22 + 20 = 128 + 64 + 8 + 4 + 1 = 205
-```
+<pre><code>11001101 = 2<sup>7</sup> + 2<sup>6</sup> + 2<sup>3</sup> + 2<sup>2</sup> + 2<sup>0</sup> = 128 + 64 + 8 + 4 + 1 = 205</code></pre>
 
 ### The binary behind IP addresses
 
@@ -143,7 +139,7 @@ divisible by 8, so it is a bit less easy to deal with:
 
 The way this works is the first byte is fully fixed, and then the first
 4 bits of the second byte are fixed too, the rest is usable by us. So in
-the second byte the last `8-4 = 4` bits are free. `24 = 16`, giving us
+the second byte the last `8-4 = 4` bits are free. <code>2<sup>4</sup> = 16</code>, giving us
 the actual highest number 15. We add this to the \"starting point\", the
 current value of the second byte, and arrive at `16+15 = 31`!
 
