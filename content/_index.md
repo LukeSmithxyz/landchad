@@ -22,7 +22,7 @@ This is the basic "course." Follow these quick tutorials and you'll have a fully
 {{< basic >}}
 
 </div>
-
+<br>
 </div>
 
 

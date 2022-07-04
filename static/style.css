@@ -24,7 +24,6 @@ h2 {
 	border-bottom: dashed #ddd 1px ;
 	max-width: 500px ;
 	margin: 1em auto ;
-	clear: both ;
 }
 
 h3 {
@@ -308,6 +307,10 @@ aside.callout  {
 .right {
 	width: 45% ;
 	float: right ;
+}
+
+br {
+	clear: both;
 }
 
 #servicelist .title {
