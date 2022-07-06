@@ -17,28 +17,17 @@ alternative as a Nextcloud app and this is a must-have for anyone
 wanting to get away from Google services but still wants a traditional
 cloud experience (in the likes of Google Services, anyways).
 
-## Instructions
+## Dependencies
 
-Before beginning this tutorial, it is required that you have 
-[set up NGINX](/basic/nginx/) and [obtained SSL certificates](/basic/certbot/).
-
-We should upgrade the system and then install the MariaDB server. Run the following commands:
+First, we install the dependencies:
 
 ```sh
-apt update
-apt full-upgrade -y
-apt install mariadb-server -y
-```
-
-Next, we need PHP 7.4 and several server side dependencies for Nextcloud. Run the following command:
-
-```sh
-apt install php7.4 php7.4-{fpm,bcmath,bz2,intl,gd,mbstring,mysql,zip,xml,curl}
+apt install -y nginx python3-certbot-nginx mariadb-server php7.4 php7.4-{fpm,bcmath,bz2,intl,gd,mbstring,mysql,zip,xml,curl}
 ```
 
 *Optionally*, you can improve the performance of your Nextcloud server by adjusting the child processes that are used to execute PHP scripts. That way, more PHP scripts can be executed at once. Make the following adjustments to `/etc/php/7.4/fpm/pool.d/www.conf`:
 
-```
+```systemd
 pm = dynamic
 pm.max_children = 120
 pm.start_servers = 12
@@ -46,17 +35,13 @@ pm.min_spare_servers = 6
 pm.max_spare_servers = 18
 ```
 
-We're going to need to use the MariaDB commandline utility, which uses a Unix Socket to connect. Add the following line to `/etc/mysql/conf.d/mysql.cnf` under the `[mysql]` section:
-
-```
-socket=/var/lib/mysql/mysql.sock
-```
-
 Start the MariaDB server:
 
 ```sh
 systemctl enable mariadb --now
 ```
+
+### Setting up a SQL Database
 
 Next, we need to set up our SQL database by running a Secure
 Installation and creating the tables that will store data that Nextcloud
@@ -66,13 +51,11 @@ will need. Run the following command:
 mysql_secure_installation
 ```
 
-When it asks for root a password, say yes and input a new and secure
-password. The root password here is just for the SQL database, not for
-the GNU/Linux system.
-
-Answer the rest of the questions as follows:
+We can say "Yes" to the following questions, and can input a root password.
 
 ```sh
+Switch to unix_socket authentication [Y/n]: Y
+Change the root password? [Y/n]: Y	# Input a password.
 Remove anonymous users? [Y/n]: Y
 Disallow root login remotely? [Y/n]: Y
 Remove test database and access to it? [Y/n]: Y
@@ -96,136 +79,119 @@ FLUSH PRIVILEGES;
 EXIT;
 ```
 
-Now we need to configure PHP. Let\'s start my making sure that the PHP
-user is set to `www-data` and if that is not the case, add the
-`www-data` user if needed and set the correct variable in `nginx.conf`.
-Make sure this line is at the beginning of `/etc/nginx/nginx.conf`.
+### HTTPS
 
-```nginx
-user www-data;
+As with any subdomain, we need to obtain an SSL certificate.
+
+```sh
+certbot certonly --nginx -d nextcloud.example.org
 ```
 
-Check for the `www-data` user by running `id -u www-data`. If a number
-is output from that command, then the www-data user exists. If not. add
-the user simply by running `useradd www-data`
+### Nginx configuration
 
-Next, we need to ensure that we have SSL certificates generated for your
-website. If you have not already done this, refer to [this
-guide](/basic/certbot).
 
 In `/etc/nginx/sites-available/` we need to make a new configuration for
-Nextcloud (example: `/etc/nginx/sites-available/nextcloud`). Create it
-and open it, add the following lines, and *modify* the configuration as needed (most importantly, the lines that include **example.org**):
+Nextcloud (example: `/etc/nginx/sites-available/nextcloud`).
+
+
+Add the following content [based of Nextcloud's recommendations](https://docs.nextcloud.com/server/latest/admin_manual/installation/nginx.html) to the file, **remembering to replace `nextcloud.example.org` with your Nextcloud domain**.
 
 ```nginx
 upstream php-handler {
     server unix:/var/run/php/php7.4-fpm.sock;
     server 127.0.0.1:9000;
 }
-
+map $arg_v $asset_immutable {
+    "" "";
+    default "immutable";
+}
 server {
     listen 80;
     listen [::]:80;
-    server_name example.org;
-
+    server_name nextcloud.example.org ;
     return 301 https://$server_name$request_uri;
 }
-
 server {
     listen 443      ssl http2;
     listen [::]:443 ssl http2;
-    server_name example.org;
-    ssl_certificate     /etc/letsencrypt/live/example.org/fullchain.pem ;
-    ssl_certificate_key /etc/letsencrypt/live/example.org/privkey.pem ;
-
-    root /var/www;
-
+    server_name nextcloud.example.org ;
+    root /var/www/nextcloud;
+    ssl_certificate     /etc/letsencrypt/live/nextcloud.example.org/fullchain.pem ;
+    ssl_certificate_key /etc/letsencrypt/live/nextcloud.example.org/privkey.pem ;
+    client_max_body_size 512M;
+    client_body_timeout 300s;
+    fastcgi_buffers 64 4K;
+    gzip on;
+    gzip_vary on;
+    gzip_comp_level 4;
+    gzip_min_length 256;
+    gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
+    gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/wasm application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
+    pagespeed off;
+    client_body_buffer_size 512k;
+    add_header Referrer-Policy                      "no-referrer"   always;
+    add_header X-Content-Type-Options               "nosniff"       always;
+    add_header X-Download-Options                   "noopen"        always;
+    add_header X-Frame-Options                      "SAMEORIGIN"    always;
+    add_header X-Permitted-Cross-Domain-Policies    "none"          always;
+    add_header X-Robots-Tag                         "none"          always;
+    add_header X-XSS-Protection                     "1; mode=block" always;
+    fastcgi_hide_header X-Powered-By;
+    index index.php index.html /index.php$request_uri;
+    location = / {
+        if ( $http_user_agent ~ ^DavClnt ) {
+            return 302 /remote.php/webdav/$is_args$args;
+        }
+    }
     location = /robots.txt {
         allow all;
         log_not_found off;
         access_log off;
     }
-
     location ^~ /.well-known {
-        location = /.well-known/carddav { return 301 /nextcloud/remote.php/dav/; }
-        location = /.well-known/caldav  { return 301 /nextcloud/remote.php/dav/; }
-
+        location = /.well-known/carddav { return 301 /remote.php/dav/; }
+        location = /.well-known/caldav  { return 301 /remote.php/dav/; }
         location /.well-known/acme-challenge    { try_files $uri $uri/ =404; }
         location /.well-known/pki-validation    { try_files $uri $uri/ =404; }
-
-        return 301 /nextcloud/index.php$request_uri;
+        return 301 /index.php$request_uri;
     }
-
-    location ^~ /nextcloud {
-        client_max_body_size 512M;
-        fastcgi_buffers 64 4K;
-
-        gzip on;
-        gzip_vary on;
-        gzip_comp_level 4;
-        gzip_min_length 256;
-        gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
-        gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
-
-        add_header Referrer-Policy                      "no-referrer"   always;
-        add_header X-Content-Type-Options               "nosniff"       always;
-        add_header X-Download-Options                   "noopen"        always;
-        add_header X-Frame-Options                      "SAMEORIGIN"    always;
-        add_header X-Permitted-Cross-Domain-Policies    "none"          always;
-        add_header X-Robots-Tag                         "none"          always;
-        add_header X-XSS-Protection                     "1; mode=block" always;
-
-        fastcgi_hide_header X-Powered-By;
-
-        index index.php index.html /nextcloud/index.php$request_uri;
-
-        location = /nextcloud {
-            if ( $http_user_agent ~ ^DavClnt ) {
-                return 302 /nextcloud/remote.php/webdav/$is_args$args;
-            }
+    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)(?:$|/)  { return 404; }
+    location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console)                { return 404; }
+    location ~ \.php(?:$|/) {
+        # Required for legacy support
+        rewrite ^/(?!index|remote|public|cron|core\/ajax\/update|status|ocs\/v[12]|updater\/.+|oc[ms]-provider\/.+|.+\/richdocumentscode\/proxy) /index.php$request_uri;
+        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+        set $path_info $fastcgi_path_info;
+        try_files $fastcgi_script_name =404;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $path_info;
+        fastcgi_param HTTPS on;
+        fastcgi_param modHeadersAvailable true;
+        fastcgi_param front_controller_active true;
+        fastcgi_pass php-handler;
+        fastcgi_intercept_errors on;
+        fastcgi_request_buffering off;
+        fastcgi_max_temp_file_size 0;
+    }
+    location ~ \.(?:css|js|svg|gif|png|jpg|ico|wasm|tflite|map)$ {
+        try_files $uri /index.php$request_uri;
+        add_header Cache-Control "public, max-age=15778463, $asset_immutable";
+        access_log off;     # Optional: Don't log access to assets
+        location ~ \.wasm$ {
+            default_type application/wasm;
         }
-
-        location ~ ^/nextcloud/(?:build|tests|config|lib|3rdparty|templates|data)(?:$|/)    { return 404; }
-        location ~ ^/nextcloud/(?:\.|autotest|occ|issue|indie|db_|console)                  { return 404; }
-
-        location ~ \.php(?:$|/) {
-            fastcgi_split_path_info ^(.+?\.php)(/.*)$;
-            set $path_info $fastcgi_path_info;
-
-            try_files $fastcgi_script_name =404;
-
-            include fastcgi_params;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            fastcgi_param PATH_INFO $path_info;
-            fastcgi_param HTTPS on;
-
-            fastcgi_param modHeadersAvailable true;
-            fastcgi_param front_controller_active true;
-            fastcgi_pass php-handler;
-
-            fastcgi_intercept_errors on;
-            fastcgi_request_buffering off;
-        }
-
-        location ~ \.(?:css|js|svg|gif)$ {
-            try_files $uri /nextcloud/index.php$request_uri;
-            expires 6M;
-            access_log off;
-        }
-
-        location ~ \.woff2?$ {
-            try_files $uri /nextcloud/index.php$request_uri;
-            expires 7d;
-            access_log off;
-        }
-
-        location /nextcloud/remote {
-            return 301 /nextcloud/remote.php$request_uri;
-        }
-
-        location /nextcloud {
-            try_files $uri $uri/ /nextcloud/index.php$request_uri;
-        }
+    }
+    location ~ \.woff2?$ {
+        try_files $uri /index.php$request_uri;
+        expires 7d;
+        access_log off;
+    }
+    location /remote {
+        return 301 /remote.php$request_uri;
+    }
+    location / {
+        try_files $uri $uri/ /index.php$request_uri;
     }
 }
 ```
@@ -236,22 +202,14 @@ Enable the site by running this command:
 ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/
 ```
 
-Next, we need to download the latest release tarball of Nextcloud. To download the latest version of Nextcloud, run the following command:
+## Installing Nextcloud Itself
+
+We should have all the moving pieces in place now, so we can download and
+install Nextcloud itself. First, download the latest Nextcloud version and we will extract into `/var/www/` and ensure Nginx has the authority to use it.
 
 ```sh
 wget https://download.nextcloud.com/server/releases/latest.tar.bz2
-```
-
-Now we need to extract the Nextcloud tarball. Run the following command:
-
-```sh
 tar -xjf latest.tar.bz2 -C /var/www
-```
-
-Let\'s correct the ownership and permissions of those files. Run the
-following commands:
-
-```sh
 chown -R www-data:www-data /var/www/nextcloud
 chmod -R 755 /var/www/nextcloud
 ```
@@ -263,10 +221,7 @@ systemctl enable php7.4-fpm --now
 systemctl reload nginx
 ```
 
-Now we need to head to Nextcloud\'s web interface. Go to your web
-browser and go to your website, but go to the subdirectory \"nextcloud\"
-instead. Go to `https://example.org/nextcloud`. This will launch the
-configuration wizard.
+Now we need to head to Nextcloud\'s web interface. In a web browser, go to the domain we have installed Nextcloud on:
 
 -  Choose an admin username and secure password.
 -  Leave Data folder at the default value unless it is incorrect.
@@ -312,6 +267,7 @@ alias occ="sudo -u www-data php /var/www/nextcloud/occ"
 
 Enjoy your cloud services in freedom.
 
-------------------------------------------------------------------------
+## Contributor(s)
 
-*Written by [Matthew \"Madness\" Evan](https://github.com/MattMadness)*
+- [Matthew \"Madness\" Evan](https://github.com/MattMadness)
+- Edits by Luke
