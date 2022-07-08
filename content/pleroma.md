@@ -90,7 +90,7 @@ rm /tmp/pleroma.zip
 ```
 
 We need to briefly return to the root user so we can run the following
-command (via the postgres user) to set up the database. Type `ctrl-d` or
+command (via the postgres user) to set up the database. Type <kbd>ctrl-d</kbd> or
 run `exit` to return to the root user, then run:
 
 ```sh
