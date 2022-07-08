@@ -106,8 +106,8 @@ and change them, as long as you know what you\'re doing.
 
 The next steps involve editing the newly copied `ircd.yaml` file. If you
 do not know how to edit text files from the command line, you can use
-`nano`, which is very simple, using arrow keys to navigate, `CTRL+O` to
-save, and `CTRL+X` to exit.\
+`nano`, which is very simple, using arrow keys to navigate, <kbd>CTRL+O</kbd> to
+save, and <kbd>CTRL+X</kbd> to exit.\
 Another option is `vim`, which is a much more powerful text editor, but
 has a learning curve. It is only recommended for this guide if you
 already know how to use it.\
@@ -615,7 +615,7 @@ Starting the server is done in one command:
 ./ergo run
 ```
 
-It will stay online until you close the terminal, or press CTRL+C.
+It will stay online until you close the terminal, or press <kbd>CTRL+C</kbd>.
 Don\'t worry, the next section goes over how to make it run like a
 normal server with a SystemD service.\
 If you have not already, make sure the port `6697` is not blocked on
