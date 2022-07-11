@@ -182,7 +182,7 @@ smtp:
 ```
 
 At this point, we have done all we need to do as the PeerTube user. Run
-`exit` or press `Ctrl-d` to log out and return to the root prompt where
+`exit` or press <kbd>Ctrl-d</kbd> to log out and return to the root prompt where
 we will configure Nginx and other system settings.
 
 ## Certbot

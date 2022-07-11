@@ -120,7 +120,7 @@ chmod +x agate-server
 #### Create a system service
 
 Now we need to create a systemd service to autostart and manage agate.
-The gemini user does not have permission to do this, so press `ctrl-d`
+The gemini user does not have permission to do this, so press <kbd>ctrl-d</kbd>
 to log out of the gemini user and return to root. As root, create the
 file below by opening it in your text editor (nano, vim, etc.):
 
