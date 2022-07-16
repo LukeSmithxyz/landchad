@@ -131,5 +131,4 @@ show the correct value.
 
 ## Contribution
 
--   Ariel Costas -- [website](https://costas.dev),
-    [donations](https://costas.dev/donations/)
+-   Ariel Costas -- [website](https://costas.dev)
