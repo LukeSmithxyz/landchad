@@ -48,6 +48,16 @@ server {
     root /usr/share/cgit ;
     try_files $uri @cgit ;
 
+    location ~ /.+/(info/refs|git-upload-pack) {
+        include             fastcgi_params;
+        fastcgi_param       SCRIPT_FILENAME /usr/lib/git-core/git-http-backend;
+        fastcgi_param       PATH_INFO           $uri;
+        fastcgi_param       GIT_HTTP_EXPORT_ALL 1;
+        fastcgi_param       GIT_PROJECT_ROOT    /srv/git;
+        fastcgi_param       HOME                /srv/git;
+        fastcgi_pass        unix:/run/fcgiwrap.socket;
+    }
+
     location @cgit {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME /usr/lib/cgit/cgit.cgi;
@@ -58,7 +68,9 @@ server {
 }
 ```
 
-Then get NGINX to reload your configuration.
+Then get NGINX to reload your configuration. This configuration also enables
+cloning via HTTPS, so make sure to point the `fastcgi_param GIT_PROJECT_ROOT`
+to the directory where you store your repositories.
 
 ## Configuring cgit
 
@@ -70,6 +82,7 @@ configure Cgit to our liking, by editing `/etc/cgitrc`.
 css=/cgit.css
 logo=/cgit.svg
 virtual-root=/
+clone-prefix=https://git.example.org
 
 # Title and description shown on top of each page
 root-title=Chad's git server
@@ -131,5 +144,4 @@ show the correct value.
 
 ## Contribution
 
--   Ariel Costas -- [website](https://costas.dev),
-    [donations](https://costas.dev/donations/)
+-   Ariel Costas -- [website](https://costas.dev)
