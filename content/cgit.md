@@ -48,6 +48,16 @@ server {
     root /usr/share/cgit ;
     try_files $uri @cgit ;
 
+    location ~ /.+/(info/refs|git-upload-pack) {
+        include             fastcgi_params;
+        fastcgi_param       SCRIPT_FILENAME /usr/lib/git-core/git-http-backend;
+        fastcgi_param       PATH_INFO           $uri;
+        fastcgi_param       GIT_HTTP_EXPORT_ALL 1;
+        fastcgi_param       GIT_PROJECT_ROOT    /srv/git;
+        fastcgi_param       HOME                /srv/git;
+        fastcgi_pass        unix:/run/fcgiwrap.socket;
+    }
+
     location @cgit {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME /usr/lib/cgit/cgit.cgi;
@@ -58,7 +68,9 @@ server {
 }
 ```
 
-Then get NGINX to reload your configuration.
+Then get NGINX to reload your configuration. This configuration also enables
+cloning via HTTPS, so make sure to point the `fastcgi_param GIT_PROJECT_ROOT`
+to the directory where you store your repositories.
 
 ## Configuring cgit
 
@@ -70,6 +82,7 @@ configure Cgit to our liking, by editing `/etc/cgitrc`.
 css=/cgit.css
 logo=/cgit.svg
 virtual-root=/
+clone-prefix=https://git.example.org
 
 # Title and description shown on top of each page
 root-title=Chad's git server
@@ -128,38 +141,6 @@ chmod +x hooks/post-receive
 
 Next time you push to that repository, the idle time should reset and
 show the correct value.
-
-### Allowing clone via HTTPS
-
-If you want others to be able to clone your git repository, you might
-need to enable the `git://` daemon or give public SSH access, both of
-which have their cons. You can set up your NGINX server to call a git
-subprogram that allows cloning anonymously via HTTP(S).
-
-To do this, add the following lines to your nginx server, above the
-`location @cgit` line we added before:
-
-```nginx
-location ~ /.+/(info/refs|git-upload-pack) {
-    include             fastcgi_params;
-	fastcgi_param       SCRIPT_FILENAME /usr/lib/git-core/git-http-backend;
-	fastcgi_param       PATH_INFO           $uri;
-	fastcgi_param       GIT_HTTP_EXPORT_ALL 1;
-	fastcgi_param       GIT_PROJECT_ROOT    /srv/git;
-	fastcgi_param       HOME                /srv/git;
-	fastcgi_pass        unix:/run/fcgiwrap.socket;
-}
-```
-
-Note: `GIT_PROJECT_ROOT` and `HOME` must point to the location where
-your repositories are stored.
-
-You can also add the `clone-prefix` setting to cgit so the clone URL
-is shown for each repository:
-
-```txt
-clone-prefix=https://git.example.org
-```
 
 ## Contribution
 
