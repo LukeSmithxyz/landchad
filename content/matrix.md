@@ -114,12 +114,12 @@ an admin.
 register_new_matrix_user -c homeserver.yaml http://localhost:8008
 ```
 
-## Using Matrix with ![Element Matrix logo](pix/element.svg)Element
+## Using Matrix with ![Element Matrix logo](/pix/element.svg)Element
 
 There are many different [clients](https://matrix.org/clients/) that can
 be used on desktops or phones to chat on your Matrix server, but the
 most popular and most widely vetted is ![Element
-logo](pix/element.svg)Element.
+logo](/pix/element.svg)Element.
 
 Get Element to access your Matrix server:
 
