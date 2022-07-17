@@ -91,6 +91,7 @@ certbot --nginx -d matrix.example.org
 
 ## Configuration
 
+
 ### Read the config file
 
 The configuration file for Matrix is in
@@ -111,7 +112,23 @@ choices for creating a user, among which will be the ability to make it
 an admin.
 
 ```sh
+cd /etc/matrix-synapse
+
 register_new_matrix_user -c homeserver.yaml http://localhost:8008
+```
+
+### Error Shared secret registration is not enabled
+
+Sometimes the default configuration is not fully setup, so you need
+to add the following the keys to your `homeserver.yaml`:
+
+- `macaroon_secret_key`
+- `registration_shared_secret`
+
+Make sure to restart Matrix Synapse
+
+```sh
+systemctl restart matrix-synapse
 ```
 
 ## Using Matrix with ![Element Matrix logo](/pix/element.svg)Element
