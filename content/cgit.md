@@ -61,8 +61,9 @@ server {
     location @cgit {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME /usr/lib/cgit/cgit.cgi;
-        fastcgi_param PATH_INFO $request_uri;
-        fastcgi_param QUERY_STRING $query_string;
+        fastcgi_param PATH_INFO $uri;
+        fastcgi_param QUERY_STRING $args;
+        fastcgi_param HTTP_HOST $server_name;
         fastcgi_pass unix:/run/fcgiwrap.socket;
     }
 }
