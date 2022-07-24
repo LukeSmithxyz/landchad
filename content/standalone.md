@@ -24,7 +24,7 @@ certbot certonly --standalone -d pleroma.example.org
 systemctl start nginx
 ```
 
-What we do here is temporarily turn of Nginx, then run a `certonly`
+What we do here is temporarily turn off Nginx, then run a `certonly`
 subcommand that generates a certificate for the domain without changing
 or caring about the Nginx configuration. Then we reactivate Nginx, thus
 turning back on our webserver.
