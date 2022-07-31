@@ -45,19 +45,10 @@ git clone https://github.com/searxng/searxng searxng
 cd searxng
 ```
 
-Installing SearXNG, Filtron and Morty.
+Installing SearXNG.
 
 ```sh
-./utils/searx.sh install all
-./utils/filtron.sh install all
-./utils/morty.sh install all
-```
-
-Check that both filtron and morty are running.
-
-```sh
-systemctl status filtron
-systemctl status morty
+sudo -H ./utils/searxng.sh install all
 ```
 
 ## Configure Nginx
@@ -79,31 +70,22 @@ server {
     access_log /dev/null;
     error_log  /dev/null;
 
-    # Searx reverse proxy
     location / {
-            proxy_pass         http://127.0.0.1:4004/;
+        uwsgi_pass unix:///usr/local/searxng/run/socket;
 
-            proxy_set_header   Host             $host;
-            proxy_set_header   Connection       $http_connection;
-            proxy_set_header   X-Real-IP        $remote_addr;
-            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-            proxy_set_header   X-Scheme         $scheme;
-            proxy_set_header   X-Script-Name    /searx;
-    }
+        include uwsgi_params;
 
-    location /searx/static {
-            alias /usr/local/searx/searx-src/searx/static;
-    }
+        uwsgi_param    HTTP_HOST             $host;
+        uwsgi_param    HTTP_CONNECTION       $http_connection;
 
-    # Morty reverse proxy
-    location /morty {
-            proxy_pass         http://127.0.0.1:3000/;
+        # see flaskfix.py
+        uwsgi_param    HTTP_X_SCHEME         $scheme;
+        uwsgi_param    HTTP_X_SCRIPT_NAME    /searxng;
 
-            proxy_set_header   Host             $host;
-            proxy_set_header   Connection       $http_connection;
-            proxy_set_header   X-Real-IP        $remote_addr;
-            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-            proxy_set_header   X-Scheme         $scheme;
+        # see limiter.py
+        uwsgi_param    HTTP_X_REAL_IP        $remote_addr;
+        uwsgi_param    HTTP_X_FORWARDED_FOR  $proxy_add_x_forwarded_for;
+
     }
 }
 ```
@@ -119,7 +101,7 @@ Restart Nginx and SearXNG.
 
 ```sh
 systemctl restart nginx
-service uwsgi restart searx
+service uwsgi restart searxng
 ```
 
 ## Configure HTTPS with Certbot
