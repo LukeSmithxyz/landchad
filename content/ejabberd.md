@@ -70,13 +70,18 @@ Using certbot, this process can be easily automated with these commands:
 
 ```sh
 $DOMAIN=subdomain.example.org
-certbot --nginx -d $DOMAIN certonly; mkdir /etc/ejabberd/certs/$DOMAIN
+certbot --nginx -d $DOMAIN certonly; mkdir -p /etc/ejabberd/certs/$DOMAIN
 cp /etc/letsencrypt/live/$DOMAIN/fullchain.pem /etc/ejabberd/certs/$DOMAIN
 cp /etc/letsencrypt/live/$DOMAIN/privkey.pem /etc/ejabberd/certs/$DOMAIN
 ```
 
 This should be ran with your XMPP hostname **(example.org)** and
 repeated for all your desired subdomains.
+
+Make sure all the certificates are readable by the `ejabberd` user:
+```sh
+chown -R ejabberd:ejabberd /etc/ejabberd/certs
+```
 
 To enable the use of all these certificates in ejabberd, the following
 configuration is necessary:
