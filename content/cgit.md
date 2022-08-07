@@ -41,9 +41,9 @@ Cgit, while serving static files directly:
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    ssl_certificate /etc/ssl/nginx/git.example.org.crt;
-    ssl_certificate_key /etc/ssl/nginx/git.example.org.key;
-    server_name git.example.org;
+    ssl_certificate /etc/ssl/nginx/{{<hl>}}git.example.org{{</hl>}}.crt;
+    ssl_certificate_key /etc/ssl/nginx/{{<hl>}}git.example.org{{</hl>}}.key;
+    server_name {{<hl>}}git.example.org{{</hl>}};
 
     root /usr/share/cgit ;
     try_files $uri @cgit ;
@@ -83,11 +83,11 @@ configure Cgit to our liking, by editing `/etc/cgitrc`.
 css=/cgit.css
 logo=/cgit.svg
 virtual-root=/
-clone-prefix=https://git.example.org
+clone-prefix=https://{{<hl>}}git.example.org{{</hl>}}
 
 # Title and description shown on top of each page
-root-title=Chad's git server
-root-desc=A web interface to LandChad's git repositories, powered by Cgit
+root-title={{<hl>}}Chad's git server{{</hl>}}
+root-desc={{<hl>}}A web interface to LandChad's git repositories, powered by Cgit{{</hl>}}
 
 # The location where git repos are stored on the server
 scan-path=/srv/git/
@@ -107,7 +107,7 @@ yours. Cgit shows the owner\'s system name, so you need to modify the
 git user to give it your name:
 
 ```sh
-usermod -c "Your Name" git
+usermod -c "{{<hl>}}Your Name{{</hl>}}" git
 ```
 
 ### Changing the repository description

@@ -61,7 +61,7 @@ I\'ll be using [certbot](/basic/certbot) and
 Jitsi subdomain to allow encrypted connections.
 
 ```sh
-certbot --nginx certonly -d meet.example.org
+certbot --nginx certonly -d {{<hl>}}meet.example.org{{</hl>}}
 ```
 
 We will not create an Nginx config file for Jitsi because the Jitsi
@@ -76,19 +76,19 @@ apt install jitsi-meet
 ```
 
 It will ask you for your `hostname`; there you\'ll need to input the
-subdomain you have just added to Nginx, like `meet.example.org`.
+subdomain you have just added to Nginx, like `{{<hl>}}meet.example.org{{</hl>}}`.
 
 For the SSL certificate, choose `I want to use my own certificate`.
 
 When it ask you for the certification key and cert files, input
-`/etc/letsencrypt/live/meet.example.org/privkey.pem` and
-`/etc/letsencrypt/live/meet.example.org/fullchain.pem` respectively.
+`/etc/letsencrypt/live/{{<hl>}}meet.example.org{{</hl>}}/privkey.pem` and
+`/etc/letsencrypt/live/{{<hl>}}meet.example.org{{</hl>}}/fullchain.pem` respectively.
 
 ## Using Jitsi
 
 {{< img alt="Jitsi once installed" src="/pix/jitsi-01.webp" >}}
 
-Jitsi can be used in a browser by then just going to `meet.example.org`.
+Jitsi can be used in a browser by then just going to `{{<hl>}}meet.example.org{{</hl>}}`.
 
 Note that there are also Jitsi clients for all major platforms:
 
@@ -118,11 +118,11 @@ database.
 
 First, we need to enable password authentication in
 [Prosody](/prosody). Edit
-`/etc/prosody/conf.avail/meet.example.org.cfg.lua`, and locate this
+`/etc/prosody/conf.avail/{{<hl>}}meet.example.org{{</hl>}}.cfg.lua`, and locate this
 block:
 
 ```lua
-VirtualHost "meet.example.org"
+VirtualHost "{{<hl>}}meet.example.org{{</hl>}}"
     authentication = "anonymous"
 ```
 
@@ -133,14 +133,14 @@ Then, to enable guests to login and join your chatrooms, add the
 following block **after** the one you just edited:
 
 ```lua
-VirtualHost "guest.meet.example.org"
+VirtualHost "guest.{{<hl>}}meet.example.org{{</hl>}}"
     authentication = "anonymous"
     c2s_require_encryption = false
 ```
 
 ### Jitsi Meet configuration
 
-Next, in `/etc/jitsi/meet/meet.example.org-config.js`, uncomment the
+Next, in `/etc/jitsi/meet/{{<hl>}}meet.example.org{{</hl>}}-config.js`, uncomment the
 following line:
 
 ```js
@@ -152,7 +152,7 @@ var config = {
 ```
 
 And change `'guest.jitsi-meet.example.com'` to
-`'guest.meet.example.org'`.
+`'{{<hl>}}guest.meet.example.org{{</hl>}}'` (your Jitsi domain preceded by `meet.`).
 
 ### Jicofo configuration
 
@@ -165,7 +165,7 @@ jicofo {
   authentication: {
     enabled: true
     type: XMPP
-    login-url: meet.example.org
+    login-url: {{<hl>}}meet.example.org{{</hl>}}
  }
 ```
 

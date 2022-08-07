@@ -96,7 +96,7 @@ whatever reason, change them in the command above, but also in the
 Now open up `/var/www/fosspay/config.ini` and we will set things up.
 Here are a list of things to edit.
 
-- `domain` should be set to `donate.example.org`, with your domain.
+- `domain` should be set to `{{<hl>}}donate.example.org{{</hl>}}`, with your domain.
 - `protocol` can be set to `https`.
 - Get or create an email account to use as a mailer and add the account/server
   information to the email settings.
@@ -135,7 +135,7 @@ Nginx configuration file modeled as below:
 server {
         listen 80 ;
         listen [::]:80 ;
-        server_name donate.example.org ;
+        server_name {{<hl>}}donate.example.org{{</hl>}} ;
         location / {
                 proxy_pass http://localhost:5000 ;
         }

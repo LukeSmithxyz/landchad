@@ -47,7 +47,7 @@ Create an Nginx configuration file for Matrix, say
 
 ```nginx
 server {
-        server_name matrix.example.org ;
+        server_name {{<hl>}}matrix.example.org{{</hl>}} ;
         listen 80;
         listen [::]:80;
         location / {
@@ -59,7 +59,7 @@ server {
                 client_max_body_size 50M ;
         }
         location /.well-known/matrix/server {
-                return 200 '{"m.homeserver": {"base_url": "https://matrix.example.org"}}';
+                return 200 '{"m.homeserver": {"base_url": "https://{{<hl>}}matrix.example.org{{</hl>}}"}}';
                 default_type application/json;
                 add_header Access-Control-Allow-Origin *;
         }
@@ -86,7 +86,7 @@ Obviously, we need to encrypt our `matrix` subdomain as well. Let\'s do
 that with certbot:
 
 ```sh
-certbot --nginx -d matrix.example.org
+certbot --nginx -d {{<hl>}}matrix.example.org{{</hl>}}
 ```
 
 ## Configuration

@@ -324,3 +324,9 @@ br {
 #servicelist li:hover .title, .desc, .tags {
 	display: none ;
 }
+
+mark {
+	background: unset ;
+	color: orange ;
+	font-weight: bold ;
+}

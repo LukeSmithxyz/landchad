@@ -64,9 +64,9 @@ subdomain to Gitea running on port 3000:
 server {
 	listen 443 ssl;
 	listen [::]:443 ssl;
-	ssl_certificate /etc/ssl/nginx/git.example.org.crt;
-	ssl_certificate_key /etc/ssl/nginx/git.example.org.key;
-	server_name git.example.org;
+	ssl_certificate /etc/ssl/nginx/{{<hl>}}git.example.org{{</hl>}}.crt;
+	ssl_certificate_key /etc/ssl/nginx/{{<hl>}}git.example.org{{</hl>}}.key;
+	server_name {{<hl>}}git.example.org{{</hl>}};
 	location / {
 		proxy_pass http://localhost:3000/; # The / is important!
 		proxy_redirect off;
@@ -129,7 +129,7 @@ DEFAULT_PUSH_CREATE_PRIVATE = true
 If you now add a remote to a repository like this
 
 ```sh
-git remote add origin 'ssh://gitea@git.example.org/username/coolproject.git'
+git remote add origin 'ssh://gitea@{{<hl>}}git.example.org{{</hl>}}/username/coolproject.git'
 ```
 
 and push, Gitea will automatically create a private `coolproject`

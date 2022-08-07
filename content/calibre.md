@@ -27,7 +27,7 @@ Either upload your existing library using `rsync`. For example to
 
 ```sh
 cd ~/Documents
-rsync -avuP your-library-dir root@example.org:/opt/calibre/
+rsync -avuP your-library-dir root@{{<hl>}}example.org{{</hl>}}:/opt/calibre/
 ```
 
 Or create a library and add a book to it:
@@ -86,7 +86,7 @@ following:
 server {
     listen 80;
     client_max_body_size 64M; # to upload large books
-    server_name calibre.example.org ;
+    server_name {{<hl>}}calibre.example.org{{</hl>}} ;
 
     location / {
         proxy_pass http://127.0.0.1:8080;

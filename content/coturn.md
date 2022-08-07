@@ -36,8 +36,8 @@ turnserver.
 Here is an example of some sane defaults:
 
 ```md
-server-name=turn.example.org
-realm=turn.example.org
+server-name={{<hl>}}turn.example.org{{</hl>}}
+realm={{<hl>}}turn.example.org{{</hl>}}
 listening-ip=your_public_ip
 
 listening-port=3478
@@ -75,7 +75,7 @@ configuration in `turnserver.conf`:
 
 ```txt
 use-auth-secret
-static-auth-secret=your_auth_secret
+static-auth-secret={{<hl>}}your_auth_secret{{</hl>}}
 ```
 
 ## TURNS (TLS Encryption)
@@ -89,8 +89,8 @@ To utilize TURNS, certificates need to be declared for
 **turn.example.org** in `turnserver.conf`:
 
 ```txt
-cert=/etc/letsencrypt/live/turn.example.org/fullchain.pem
-pkey=/etc/letsencrypt/live/turn.example.org/privkey.pem
+cert=/etc/letsencrypt/live/{{<hl>}}turn.example.org{{</hl>}}/fullchain.pem
+pkey=/etc/letsencrypt/live/{{<hl>}}turn.example.org{{</hl>}}/privkey.pem
 ```
 
 ## Starting Coturn

@@ -53,7 +53,7 @@ The **XMPP hostname** is specified in the `hosts` section of
 
 ```yml
 hosts:
-  - example.org
+  - {{<hl>}}example.org{{</hl>}}
 ```
 
 ### Certificates
@@ -69,7 +69,7 @@ for both the fullchain cert and private key.
 Using certbot, this process can be easily automated with these commands:
 
 ```sh
-$DOMAIN=subdomain.example.org
+$DOMAIN={{<hl>}}subdomain.example.org{{</hl>}}
 certbot --nginx -d $DOMAIN certonly; mkdir -p /etc/ejabberd/certs/$DOMAIN
 cp /etc/letsencrypt/live/$DOMAIN/fullchain.pem /etc/ejabberd/certs/$DOMAIN
 cp /etc/letsencrypt/live/$DOMAIN/privkey.pem /etc/ejabberd/certs/$DOMAIN
@@ -213,7 +213,7 @@ Then, using `ejabberdctl` as the ejabberd user, register the admin user
 which is set in `ejabberd.yml`:
 
 ```sh
-su -c "ejabberdctl register admin example.org password" ejabberd
+su -c "ejabberdctl register {{<hl>}}admin example.org password{{</hl>}}" ejabberd
 ```
 
 This will create the user **admin@example.org.**
@@ -245,13 +245,13 @@ your turnserver:
 
 ```yml
   mod_stun_disco:
-    secret: "your_auth_secret"
+    secret: "{{<hl>}}your_auth_secret{{</hl>}}"
     services:
       -
-        host: turn.example.org
+        host: {{<hl>}}turn.example.org{{</hl>}}
         type: stun
       -
-        host: turn.example.org
+        host: {{<hl>}}turn.example.org{{</hl>}}
         type: turn
 ```
 

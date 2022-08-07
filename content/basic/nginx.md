@@ -25,7 +25,7 @@ bottom here.
 Now pull up a terminal and type:
 
 ```sh
-ssh root@example.org
+ssh root@{{<hl>}}example.org{{</hl>}}
 ```
 
 This command will attempt to log into your server. It should prompt you
@@ -73,7 +73,7 @@ paste (with required changes) but I will also explain what the lines do.
 Create a file in `/etc/nginx/sites-available` by doing this:
 
 ```sh
-nano /etc/nginx/sites-available/mywebsite
+nano /etc/nginx/sites-available/{{<hl>}}mywebsite{{</hl>}}
 ```
 
 Note that \"nano\" is a command line text editor. You will now be able
@@ -88,8 +88,8 @@ this** will be different depending on what you want to call your site.
 server {
         listen 80 ;
         listen [::]:80 ;
-        server_name landchad.net ;
-        root /var/www/landchad ;
+        server_name {{<hl>}}example.org{{</hl>}} ;
+        root /var/www/{{<hl>}}mysite{{</hl>}} ;
         index index.html index.htm index.nginx-debian.html ;
         location / {
                 try_files $uri $uri/ =404 ;
@@ -129,14 +129,14 @@ ahead and create a little page that will appear on when someone looks up
 the domain.
 
 ```sh
-mkdir /var/www/landchad
+mkdir /var/www/{{<hl>}}mysite{{</hl>}}
 ```
 
 Now let\'s create and index file inside of that directory which will
 appear when the website is accessed:
 
 ```sh
-nano /var/www/landchad/index.html
+nano /var/www/{{<hl>}}mysite{{</hl>}}/index.html
 ```
 
 I\'ll add the following basic content, but you can add whatever you
@@ -155,7 +155,7 @@ Once you save that file, we can enable it making a link to it in the
 `sites-enabled` directory:
 
 ```sh
-ln -s /etc/nginx/sites-available/mywebsite /etc/nginx/sites-enabled
+ln -s /etc/nginx/sites-available/{{<hl>}}mywebsite{{</hl>}} /etc/nginx/sites-enabled
 ```
 
 Now we can just `reload` or `restart` to make `nginx` service the new

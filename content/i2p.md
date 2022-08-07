@@ -73,7 +73,7 @@ code. Instead, paste this:
 ```nginx
 server {
 	listen 127.0.0.1:8080 ;
-	root /var/www/example ;
+	root /var/www/{{<hl>}}example{{</hl>}} ;
 	index index.html ;
 }
 ```

@@ -65,7 +65,7 @@ The `-l` option should put us in `git`'s home directory, but you can `cd
 Now you can create the bare repository with
 
 ```sh
-git init --bare my-repo.git
+git init --bare {{<hl>}}my-repo.git{{</hl>}}
 ```
 
 By convention, bare repository names end with \".git\". (A bare repository is
@@ -104,7 +104,7 @@ How that we've set that up, we can push a repository we have on our computer to
 that newly created bare repo. First, on our local computer, we run a command like this:
 
 ```sh
-git remote add origin git@example.org:my-repo.git
+git remote add origin git@{{<hl>}}example.org{{</hl>}}:{{<hl>}}my-repo.git{{</hl>}}
 ```
 
 Note some of the things you will change:
@@ -116,7 +116,7 @@ Note some of the things you will change:
 Once you run that command successfully to add a new remote repository, and also assuming you change `origin` to let's say the more unique `personal`, you can push your local git server as expected:
 
 ```sh
-git push personal master
+git push {{<hl>}}personal{{</hl>}} master
 ```
 
 That's all a git server is! Very simple.

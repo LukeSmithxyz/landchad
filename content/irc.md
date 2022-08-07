@@ -147,7 +147,7 @@ Change the server name to your server\'s domain name.
 # server configuration
 server:
     # server name
-    name: "example.org"
+    name: "{{<hl>}}example.org{{</hl>}}"
 ```
 
 ### Network password {#configuring-password}
@@ -172,7 +172,7 @@ the `#` before the `password:` line):
 
 ```yaml
 # password to login to the server, generated using `ergo genpasswd`:
-password: "<your hashed password>"
+password: "{{<hl>}}your hashed password{{</hl>}}"
 ```
 
 ### Message of the day (MotD) {#configuring-motd}
