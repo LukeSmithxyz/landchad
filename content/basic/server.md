@@ -57,9 +57,9 @@ protection and also has some cheaper \$3.50 servers.**
 
 {{< img alt="server type" src="/pix/server-type.png" link="/pix/server-type.png" >}}
 
-I especially recommend **Debian 10** for an operating system for your
+I especially recommend **Debian 11** for an operating system for your
 server. Debian is the \"classic\" server OS and as such, **I make my
-guides on this site for Debian 10**. If you use another OS, just know
+guides on this site for Debian 11**. If you use another OS, just know
 that your millage may vary in terms of you might need to change some
 instructions here minorly.
 

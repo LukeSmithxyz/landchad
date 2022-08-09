@@ -10,6 +10,7 @@ This site is compiled and organized with Hugo, using [this very simple theme](ht
 
 ## Submission guidelines
 
+- Guides should be made for the most recent stable version of Debian. (Now Debian 11.)
 - Follow the general style of pre-existing articles.
 - use the root user (i.e. no `sudo`) unless there is a specific need.
 - do not preface commands with `$` or `#` or anything.
