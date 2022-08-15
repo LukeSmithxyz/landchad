@@ -20,8 +20,6 @@ that can be accessed using a domain over HTTPS. Features include:
 
 ## Installation
 
-"For the installation procedure, use a sudoer login to run the scripts. If you install from root, take into account that the scripts are creating a searx, a filtron and a morty user. In the installation procedure these new created users do need read access to the clone of searx, which is not the case if you clone into a folder below /root." - SearXNG Docs
-
 Install the required packages.
 
 ```sh
@@ -38,17 +36,24 @@ ufw allow 80
 ufw allow 443
 ```
 
-Clone the SearXNG Repository.
+First we will create a user for SearX.
+
+```
+useradd -mr -d "/usr/local/searxng" -c 'Privacy-respecting metasearch engine' -s /bin/bash searxng
+```
+Although the auto-install script below we create this user itself, we can go ahead and make it to give the cloned repository the correct permissions.
+
+Now we clone the SearXNG Repository into the `searx` user's home.
 
 ```sh
-git clone https://github.com/searxng/searxng searxng
-cd searxng
+git clone https://github.com/searxng/searxng /usr/local/searxng/searxng-src
+cd /usr/local/searxng/searxng-src
 ```
 
 Installing SearXNG.
 
 ```sh
-sudo -H ./utils/searxng.sh install all
+./utils/searxng.sh install all
 ```
 
 ## Configure Nginx
@@ -64,7 +69,7 @@ server {
     listen [::]:80;
 
     # Your server name
-    server_name searx.example.org;
+    server_name searx.{{<hl>}}example.org{{</hl>}} ;
 
     # If you want to log user activity, comment these
     access_log /dev/null;
