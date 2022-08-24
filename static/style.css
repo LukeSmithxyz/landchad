@@ -154,7 +154,7 @@ aside.callout  {
 
 /* This "@media" block defines rules that will only be applied when the minimum
  * width of the screen is 55em or greater. In essence, they are settings that
- * only apply on normal weide screens, but *not* phones and low res monitors.
+ * only apply on normal widescreens, but *not* phones and low res monitors.
  * Since we have more room on widescreens, we change a couple things. */
 
 @media (min-width: 55em) {
