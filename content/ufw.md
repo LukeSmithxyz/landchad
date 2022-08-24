@@ -103,7 +103,7 @@ ports, so whenever you install a new service like this you will have to
 tell `ufw` to enable the desired port:
 
 ```sh
-ufw allow 1985
+ufw allow 1965
 ```
 
 ### Websites: HTTP and HTTPS
