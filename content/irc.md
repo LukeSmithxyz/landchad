@@ -46,10 +46,10 @@ Once you have selected the correct package, copy its URL and replace the
 release url with the package URL (still as the `ergo` user):
 
 ```sh
-wget "https://github.com/ergochat/ergo/releases/download/v2.7.0/ergo-2.7.0-linux-x86_64.tar.gz"
-tar -xf ergo-2.7.0-linux-x86_64.tar.gz
-mv ergo-2.7.0-linux-x86_64/*
-rm -r ergo-2.7.0-linux-x86_64*
+wget "https://github.com/ergochat/ergo/releases/download/v2.10.0/ergo-2.10.0-linux-x86_64.tar.gz"
+tar -xf ergo-2.10.0-linux-x86_64.tar.gz
+mv ergo-2.10.0-linux-x86_64/*
+rm -r ergo-2.10.0-linux-x86_64*
 ```
 
 Executing `ls -l` should now yield something like this:
