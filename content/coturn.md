@@ -106,6 +106,7 @@ Congratulations! You\'ve successfully setup a Coturn server!
 
 ------------------------------------------------------------------------
 
-*Written by [Denshi.](https://denshi.org) Donate Monero
-[here](https://denshi.org/donate.html)
-[\[QR\]](https://denshi.org/images/monero.jpg)*
+*Written by [Denshi.](https://denshi.org)
+
+Donate Monero at 48dnPpGgo8WernVJp5VhvhaX3u9e46NujdYA44u8zuMdETNC5jXiA9S7JoYMM6qRt1ZcKpt1J3RZ3JPuMyXetmbHH7Mnc9C
+[\[QR\]](https://denshi.org/images/xmr.png)*
