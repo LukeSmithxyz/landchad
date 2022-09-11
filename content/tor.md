@@ -113,7 +113,7 @@ Make sure to update Tor on a regular basis by running:
 
 #### Note:
 
-You do [not]{.underline} need to run certbot for an ssl certificate.
+You do **<u>not</u>** need to run certbot for an ssl certificate.
 HTTP over tor is plenty secure!
 
 **Contributor** - [tomfasano.net](https://tomfasano.net)
