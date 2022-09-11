@@ -142,14 +142,14 @@ from a search engine. You don\'t need to add all of the below meta tags
 to pass the audit, only add what\'s necessary.
 
 ```html
-// Instructions for web scrapers
+<!--- Instructions for web scrapers --->
 <meta name="robots" content="index, follow">
 
-<meta name="description" content="your website description>">
+<meta name="description" content="your website description">
 <meta name="keywords" content="your, keywords, here">
-<meta name="author" content="your name>">
+<meta name="author" content="your name">
 
-// Facebook specific standard, but many websites use this so it has become almost standard to include
+<!--- Facebook specific standard, but many websites use this so it has become almost standard to include --->
 <meta property="og:site_name" content="Site Name">
 <meta name="twitter:domain" property="twitter:domain" content="example.org">
 <meta name="og:title" property="og:title" content="Site Name">
@@ -157,20 +157,20 @@ to pass the audit, only add what\'s necessary.
 <meta name="twitter:description" property="twitter:description" content="your website description">
 <meta name="og:image" content="https://link-to-an-image-that-represents-your-site">
 
-// below is for twitter sharing previews, you can test this at:
-// cards-dev.twitter.com
+<!--- below is for twitter sharing previews
+you can test this at cards-dev.twitter.com --->
 <meta property="twitter:card" content="https://link-to-an-image-that-represents-your-site">
 <meta name="twitter:image:src" property="twitter:image:src" content="https://link-to-an-image-that-represents-your-site">
 <meta name="twitter:image" property="twitter:image" content="https://link-to-an-image-that-represents-your-site">
-<meta name="og:image:alt" property="og:image:alt" content="alt text for your image>">
+<meta name="og:image:alt" property="og:image:alt" content="alt text for your image">
 
 <meta property="og:url" content="example.org">
 <meta property="og:type" content="website">
 
-// If you have accounts on twitter or facebook that are relevant to your site
+<!--- If you have accounts on twitter or facebook that are relevant to your site --->
 <meta property="fb:admins" content="facebook group" >
 <meta name="twitter:site" property="twitter:site" content="@yourTwitterHandle">
-<meta name="twitter:creator" property="twitter:creator" content="@yourTwitterHandle>">
+<meta name="twitter:creator" property="twitter:creator" content="@yourTwitterHandle">
 ```
 
 
