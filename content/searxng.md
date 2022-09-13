@@ -75,6 +75,15 @@ server {
     access_log /dev/null;
     error_log  /dev/null;
 
+    # X-Frame-Options (XFO) header set to DENY
+    add_header X-Frame-Options "DENY";
+
+    # HTTP Strict Transport Security (HSTS) header
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+
+    # Content Security Policy (CSP)
+    add_header Content-Security-Policy "default-src 'self';";
+
     location / {
         uwsgi_pass unix:///usr/local/searxng/run/socket;
 
