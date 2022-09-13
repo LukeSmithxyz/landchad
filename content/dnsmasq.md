@@ -3,6 +3,7 @@ title: "Dnsmasq"
 icon: 'dnsmasq.svg'
 tags: ['service']
 short_desc: "Host your own DNS server to block ads and social media."
+date: 2022-09-13
 ---
 
 [Dnsmasq](https://dnsmasq.org) is a libre DNS and DHCP system that allows anyone to run a DNS server to resolve domains.
