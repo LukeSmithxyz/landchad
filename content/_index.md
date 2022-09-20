@@ -1,5 +1,6 @@
 ---
 title: 'LandChad.net'
+layout: single
 ---
 
 This is LandChad.net, a site dedicated to turning internet peasants into Internet Landlords by showing them how to setup websites, email servers, chat servers and everything in between.
