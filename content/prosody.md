@@ -270,3 +270,9 @@ Remember that MUCs are kept on a separate subdomain that we created and
 should\'ve gotten a certificate for above, for example,
 `chat.example.org`. Chatrooms are created and referred to in the
 following format: `#chatroomname@chat.example.org`.
+
+### Note on firewalls and opening ports
+
+If you use a firewall, you should open ports 5222 and 5281. The first one is needed for clients to be able to connect to your server. The second is only necessary if you are using the ‘http_upload' module for file sharing.
+
+A complete list of ports used by Prosody can be found [here] (https://prosody.im/doc/ports).
