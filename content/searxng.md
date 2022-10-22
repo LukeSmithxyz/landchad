@@ -23,7 +23,7 @@ that can be accessed using a domain over HTTPS. Features include:
 Install the required packages.
 
 ```sh
-apt install git nginx -y
+apt install git nginx nginx-extras -y
 ```
 
 Open http and https ports.
