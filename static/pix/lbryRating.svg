@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="178" height="20">
+    <linearGradient id="b" x2="0" y2="100%">
+        <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+        <stop offset="1" stop-opacity=".1"/>
+    </linearGradient>
+    <mask id="a">
+        <rect width="178" height="20" rx="3" fill="#fff"/>
+    </mask>
+    <g mask="url(#a)">
+        <rect width="59" height="20" fill="#555"/>
+        <rect x="59" width="119" height="20" fill="#C43C35"/>
+        <rect width="178" height="20" fill="url(#b)"/>
+    </g>
+    
+    <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+        <text x="40.5" y="15" fill="#010101" fill-opacity=".3">LBRY</text>
+        <text x="40.5" y="14">LBRY</text>
+        <text x="117.5" y="15" fill="#010101" fill-opacity=".3">Privacy Grade E</text>
+        <text x="117.5" y="14">Privacy Grade E</text>
+    </g>
+    
+    <svg x="5" y="1" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+        <defs>
+            <linearGradient id="a">
+                <stop offset="0" stop-color="#c8c8c8" stop-opacity="0"/>
+                <stop offset=".367" stop-color="#c8c8c8" stop-opacity="0"/>
+                <stop offset=".934" stop-color="#c8c8c8" stop-opacity=".196"/>
+                <stop offset="1" stop-color="#c8c8c8" stop-opacity=".196"/>
+            </linearGradient>
+        </defs>
+        <g transform="translate(-50 -338.221)">
+            <rect ry="1.5" rx="1.5" y="339.221" x="50" height="3" width="16" fill="#46a546"/>
+            <rect width="14.08" height="3" x="50" y="343.221" rx="1.5" ry="1.5" fill="#f89406"/>
+            <rect ry="1.5" rx="1.5" y="347.221" x="50" height="3" width="15.36" fill="#c43c35"/>
+            <rect width="9.6" height="3" x="50" y="351.221" rx="1.5" ry="1.5" fill="#999"/>
+        </g>
+    </svg>
+</svg>
