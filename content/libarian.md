@@ -39,7 +39,7 @@ We have now installed go
 Now we have to install the dependencies
 
 ```sh
-apt install nodejs npm git
+apt install nodejs npm git wget
 ```
 ## Installing and building Librarian
 Now we have to download the source code for librarian
