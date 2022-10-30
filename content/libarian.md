@@ -58,12 +58,27 @@ vim config.toml
 ```
 For most people the default config shuld be fine
 ### Running Librarian
-Now we have to run librarian, we have to send the output to /dev/null as it outputs an active log to the terminal
 
-That makes it so you can't use the terminal while the program is running.
+To run librarian we have to create a systemd service
 
 ```sh
-./librarian >> /dev/null &
+vim /etc/systemd/system/librarian.service
+```
+Then we have to paste the following
+
+```ini
+# Contents of /etc/systemd/system/librarian.service
+[Unit]
+Description=Librarian
+After=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+ExecStart=/root/librarian/librarian
+
+[Install]
+WantedBy=multi-user.target
 ```
 ## NGINX
 Now we have to set up a reverse proxy on nginx
