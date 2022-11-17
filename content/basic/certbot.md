@@ -5,7 +5,7 @@ tags: ['basic']
 ---
 Once you have a website, it is extremely important to enable encrypted
 connections over HTTPS/SSL. You might have no idea what that means, but
-it\'s easy to do now that we\'ve [set our web server up](nginx.html).
+it\'s easy to do now that we\'ve [set our web server up](/basic/nginx/).
 
 Certbot is a program that automatically creates and deploys the
 certificates that allow encrypted connections. It used to be painful
