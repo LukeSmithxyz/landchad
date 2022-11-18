@@ -36,6 +36,7 @@ dig @localhost example.org
 ```
 
 This command should return the A DNS records for `example.org`.
+
 It is therefore important that we allow port 53 through the firewall, so we can use this as our dns server.
 
 ```sh
