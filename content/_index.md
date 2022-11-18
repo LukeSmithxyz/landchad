@@ -37,6 +37,26 @@ This is the basic "course." Follow these quick tutorials and you'll have a fully
 
 Host your own services, social media and more.
 
+## Setup an Email Server
+
+<div>
+
+<div class=left>
+
+This is the email "course". Follow these modules to learn how to setup an email server headache free.
+
+⏳ This entire "email course" may take **about an hour**. The approval for opening email ports with your VPS should take **no less than a day**.
+
+</div>
+
+<div class=right>
+
+{{< mail >}}
+
+</div>
+<br>
+</div>
+
 ## Maintaining a Server
 
 Tips and articles on mastering your server and learning about GNU/Linux systems administration.

@@ -1,0 +1,9 @@
+<ol class=ll>
+{{range.Site.RegularPages.ByWeight.Reverse}}{{ if in .Params.tags "mail" }}<li>
+<a href="{{.Permalink}}">
+{{ with .Params.icon }}<img src="pix/{{ . }}">{{ end }}
+<span class=title>{{.Title}}</span>
+{{ with .Params.short_desc }}<span class=desc>{{ . }}</span>{{ end }}</a><span style="display:none">{{.Params.Tags}}</span>
+</li>{{ end }}{{ end }}
+</ol>
+

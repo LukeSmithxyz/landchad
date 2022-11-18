@@ -1,7 +1,9 @@
 ---
-title: "Setting up a Postfix SMTP server"
-draft: true
+title: "Sending and Receiving Email"
+tags: ['mail']
+weight: 6
 ---
+
 The first step to setting up an email server is having an SMTP server.
 SMTP sends and receives email. Whether we want a full email server or
 just the ability to send automated email by script, we will need SMTP,
@@ -20,10 +22,13 @@ ports by default**. VPS providers do this to prevent spammers from using
 their services.
 
 If you want to start an email server, therefore, go to your VPS\'s site
-and open a ticket or make a request to open up email ports. This is a
+and open a ticket or make a request to open up email ports, notably port `25`. This is a
 simple process that requires nothing too special. One of the wagies at
 your VPS will kindly do the needful and open your ports for you. Note
-that this is not the same as unblocking a port with [ufw](ufw.html).
+that this is not the same as unblocking a port with [ufw](ufw.html),
+which still needs to be done for SMTP to work.
+
+    ufw allow 25,587 proto tcp
 
 ## Installation
 
@@ -35,13 +40,13 @@ mail programs we will use.
 Installing Postfix for the first time will give us some graphical
 options.
 
-![SMTP Postfix internet site choice](pix/smtp-01.png)
+{{< img alt="SMTP Postfix internet site choice" src="/pix/smtp-01.png" link="/pix/smtp-01.png" >}}
 
 When asked for a \"mail name\", give your full domain name from which
-you would like mail to come and go, e.g. [example.org]{.dfn} or
-[landchad.net]{.dfn}.
+you would like mail to come and go, e.g. **example.org** or
+**landchad.net**
 
-![SMTP Postfix fully qualified domain name](pix/smtp-02.png)
+{{< img alt="SMTP Postfix fully qualified domain name" src="/pix/smtp-02.png" link="/pix/smtp-02.png" >}}
 
 ## Test the email
 
@@ -53,7 +58,7 @@ command like that below.
 
     This is the text." | mail -s "Email from the server" your@emailaddress.com
 
-And that is simply enough the command your server can run to send mail.
+This type of command is sufficient enough for your server to send mail.
 Note that we use the `-s` option to specify the email\'s subject while
 we pipe the email content into the `mail` command via standard input. In
 this example I use a quoted multiline email as an example.
@@ -65,6 +70,5 @@ major email provider, there is **very high** chance of the message you
 sent above being marked as spam or not appearing at all!
 
 Don\'t worry, we\'ll take care of that in the next two articles where we
-set up rDNS and OpenDKIM to validate the emails you send.
-
-[[Next: rDNS and PTR Records](rdns.html)]{.next}
+set up rDNS with your VPS provider and various other DNS
+records to validate the emails you send.
