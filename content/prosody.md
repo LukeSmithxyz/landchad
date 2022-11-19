@@ -16,10 +16,23 @@ server.
 
 ## Installation
 
-Prosody is in the Debian repositories, so we can easily install it on
-our server with the following command:
+In order to get the most up-to-date version of Prosody, add the Prosody
+[apt repository](https://prosody.im/download/package_repository):
 
 ```sh
+printf "deb http://packages.prosody.im/debian %s main" "$(lsb_release -sc)" | sudo tee /etc/apt/sources.list.d/prosody.list
+```
+
+To prevent unauthenticated package errors, install the Prosody keyfile:
+
+```sh
+wget https://prosody.im/files/prosody-debian-packages.key -O /etc/apt/trusted.gpg.d/prosody.gpg
+```
+
+You can now update your package database and install Prosody.
+
+```sh
+apt update
 apt install prosody
 ```
 
@@ -206,6 +219,12 @@ import them into Prosody.
 ```sh
 prosodyctl --root cert import /etc/letsencrypt/live/
 ```
+
+**Warning:** If you're using Prosody 0.11.x or earlier, certificates for XMPP services
+won't also work for HTTP domains automatically. You will have to configure an
+[HTTPS certificate](https://prosody.im/doc/http#https_certificate) if you want
+encryption on Prosody's HTTP subdomains. If you [installed Prosody](#Installation)
+from the Prosody apt repo, you should be on 0.12.x, so no need to configure HTTPS certs seperately.
 
 Note that you might get an error that a certificate has not been found
 if your `muc` subdomain and your main domain share a certificate. It
