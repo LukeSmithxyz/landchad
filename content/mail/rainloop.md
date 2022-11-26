@@ -33,7 +33,7 @@ Then we will download the community version of Rainloop, unzip it into
 an appropriate directory and fix all of the file permissions:
 
 ```sh
-curl -L "https://www.rainloop.net/repository/webmail/rainloop-community-latest.zip" -o "rainloop.zip"
+curl -L "https://www.rainloop.net/repository/webmail/rainloop-latest.zip" -o "rainloop.zip"
 unzip rainloop.zip -d /var/www/mail
 chown -R www-data: /var/www/mail
 ```
