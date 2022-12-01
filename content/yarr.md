@@ -50,7 +50,7 @@ Description=Yarr
 
 [Service]
 Environment=HOME=/home/landchad
-ExecStart=/usr/bin/env yarr -addr 0.0.0.0:7070 -auth-file=/home/landchad/.config/yarr/auth.conf -db=/home/landchad/.config/yarr/feed.sql -log-file=/home/landchad>/.config/yarr/access.log
+ExecStart=/usr/bin/env yarr -addr 0.0.0.0:7070 -auth-file=/home/landchad/.config/yarr/auth.conf -db=/home/landchad/.config/yarr/feed.sql -log-file=/home/landchad/.config/yarr/access.log
 Restart=on-failure
 
 [Install]
