@@ -19,18 +19,32 @@
 <main>
 <header><h1>{{ with .Params.icon }}<img src="/pix/{{ . }}" class=titleicon>{{ end }}{{ .Title }}</h1></header>
 <article>{{ with .Params.img }}<img src="/pix/{{ . }}" class=titleimg>{{ end }}
-{{ block "main" . }}
+{{ block "main" . -}}
 {{ .Content }}
-{{ end }}
-{{ if .Param "nextprev" }}{{ partial "nextprev.html" . -}}{{ end -}}
-{{ if .Param "taglist" }}{{ partial "taglist.html" . }}{{ end -}}
+{{- end -}}
 </article>
+{{- if in .Params.tags "basic" -}}
+{{ with .NextInSection }}
+<a class=next href="{{ .RelPermalink }}">Next: {{ .Title }}</a>
+{{- end }}
+{{- with .PrevInSection }}
+<span class=prev>Or Previous: <a href="{{ .RelPermalink }}">{{ .Title }}</a></span>
+{{- end -}}
+{{- end }}
+{{ if in .Params.tags "mail" -}}
+{{ with .NextInSection -}}
+<a class=next href="{{ .RelPermalink }}">Next: {{ .Title }}</a>
+{{- end -}}
+{{- with .PrevInSection }}
+<span class=prev>Or Previous: <a href="{{ .RelPermalink }}">{{ .Title }}</a></span>
+{{- end -}}
+{{- end }}
 </main>
-{{ block "footer" . }}
+{{ block "footer" . -}}
 <footer>
 	<a href="{{ .Site.BaseURL }}">{{ .Site.BaseURL }}</a>
 	{{- if .Param "showrss" }}<br><br><a href="/index.xml"><img src="/rss.svg" style="max-height:1.5em" alt="RSS Feed" title="Subscribe via RSS for updates."></a>{{ end }}
 </footer>
-{{ end }}
+{{- end }}
 </body>
 </html>
