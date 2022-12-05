@@ -1,7 +1,7 @@
 ---
 title: "Setting up an E-mail Inbox"
 tags: ['mail']
-weight: 3
+date: 2022-12-04
 ---
 In the article on [SMTP and Postfix](/mail/smtp), we set up a simple
 Postfix server that we could use to programatically send mail with the

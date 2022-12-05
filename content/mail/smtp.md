@@ -1,7 +1,7 @@
 ---
 title: "Sending and Receiving Email"
 tags: ['mail']
-weight: 6
+date: 2022-12-01
 ---
 
 The first step to setting up an email server is having an SMTP server.

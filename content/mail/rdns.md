@@ -1,7 +1,7 @@
 ---
 title: "Setup rDNS"
 tags: ['mail']
-weight: 5
+date: 2022-12-02
 ---
 While [DNS records](dns.html) refer a domain name to the IP address
 where the the website is hosted, there is also rDNS (reverse DNS) and

@@ -1,7 +1,7 @@
 ---
 title: "Harden your E-mail Server"
 tags: ['mail']
-weight: 2
+date: 2022-12-05
 ---
 
 ## Hardening Postfix

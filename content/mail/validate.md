@@ -1,7 +1,7 @@
 ---
 title: "Validate Email with DNS Records"
 tags: ['mail']
-weight: 4
+date: 2022-12-03
 ---
 Email is a lot like real-life mail. You can send email to anyone, but
 you can also write whatever return address you\'d like. That is, it\'s
