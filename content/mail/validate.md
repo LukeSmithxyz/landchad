@@ -1,14 +1,13 @@
 ---
-title: "Validating your emails with OpenDKIM"
-draft: true
-tags: ['email']
+title: "Validate Email with DNS Records"
+tags: ['mail']
+weight: 4
 ---
 Email is a lot like real-life mail. You can send email to anyone, but
 you can also write whatever return address you\'d like. That is, it\'s
 pretty easy to pretend to be someone else via mail, and that was
 originally the case with email as well: email is just text, and you
 could just change your `From:` address to any email address you wanted!
-
 DKIM (Domain Keys Identified Mail) helps solve this issue.
 
 OpenDKIM will generate a public/private cryptographic key pair for your
@@ -101,6 +100,7 @@ OpenDKIM server, which will be running on port `12301`, as a milter
 (mail filter). This is easy to do with the four commands below:
 
 ```sh
+postconf -e "myhostname = $(cat /etc/mailname)"
 postconf -e "milter_default_action = accept"
 postconf -e "milter_protocol = 6"
 postconf -e "smtpd_milters = inet:localhost:12301"
@@ -185,3 +185,35 @@ This is the text." | mail -s "Email from the server" your@emailaddress.com
 You can also go to [this site](https://appmaildev.com/en/dkim), which
 will help you troubleshoot any other DKIM problems if you mistyped
 something.
+
+## DMARC
+
+DMARC (Domain-based Message Authentication Protocol) is a protocol designed
+to give email domain owners the ability to protect their domain from
+unauthorized use.
+
+Add the dmarc user:
+
+    useradd -m -G mail dmarc
+
+Open up your registrar or DNS settings again, and make a new TXT record like
+we did with DKIM, except now use the output from the following command:
+
+    echo "_dmarc.$(cat /etc/mailname)"
+    echo "v=DMARC1; p=reject; rua=mailto:dmarc@$(cat /etc/mailname); fo=1"
+
+The first line is the Host field. The latter is the TXT value.
+
+### Sender Policy Framework
+
+Saving the easiest for last, we should add a TXT record for SPF,
+an email-authentication standard used to prevent spammers from sending messages
+that appear to come from a spoofed domain.
+
+    cat /etc/mailname
+    echo "v=spf1 mx a:mail.$(cat /etc/mailname) -all"
+
+The output of `cat /etc/mailname` is the Host field. The output of the second command is the TXT value.
+
+Again, you can check [that site](https://appmaildev.com/en/spf)
+to make sure your DKIM, DMARC, and SPF entries are valid. That's it!

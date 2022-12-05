@@ -1,7 +1,7 @@
 ---
-title: "rDNS and PTR Records"
-draft: true
-tags: ['email']
+title: "Setup rDNS"
+tags: ['mail']
+weight: 5
 ---
 While [DNS records](dns.html) refer a domain name to the IP address
 where the the website is hosted, there is also rDNS (reverse DNS) and

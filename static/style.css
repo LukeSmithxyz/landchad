@@ -236,6 +236,7 @@ aside.callout  {
 	margin: auto ;
 	display: block ;
 	font-weight: bold ;
+	padding: 1em ;
 }
 
 .prev:before {
@@ -253,7 +254,7 @@ aside.callout  {
 	margin: auto ;
 	display: block ;
 	font-weight: bold ;
-	padding: 0 1em 1em 1em ;
+	padding: 1em ;
 }
 
 #servicelist {
