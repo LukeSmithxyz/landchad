@@ -47,6 +47,7 @@ whatever is appropriate for your server).
 server {
 
     listen 80;
+    listen [::]:80;
 
     server_name mail.example.org ;
     root /var/www/mail;
