@@ -28,7 +28,7 @@ chown -R www-data:www-data /var/www/dokuwiki
 
 ## Nginx Configuration
 
-Create a file named `/etc/nginx/sites-available/dokuwiki` using your favorite text editor and add the following lines, based on the configuration [here](https://www.dokuwiki.org/install:nginx). **Remember to change `wiki.example.org` to your website's name.** Also, pay attention to the lines containing `client_max_body_size`, which determines the maximum file size upload, and the first `location` line, because it needs to be commented during the installation and uncommented when it's done.
+Create a file named `/etc/nginx/sites-available/dokuwiki` using your favorite text editor and add the following lines, based on the configuration [here](https://www.dokuwiki.org/install:nginx). **Remember to change `wiki.example.org` to your website's name.** Also, pay attention to the lines containing `client_max_body_size`, which determines the maximum file size allowed for uploads, and the first `location` line, because it needs to be commented during the installation and uncommented when it's done.
 
 ```nginx
 server {
