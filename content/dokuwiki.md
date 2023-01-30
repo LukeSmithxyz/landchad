@@ -2,6 +2,7 @@
 title: "DokuWiki"
 icon: 'dokuwiki.svg'
 tags: ['service']
+date: 2023-01-30
 short_desc: 'A simple wiki with clean syntax and no databases.'
 ---
 
@@ -14,7 +15,7 @@ Although DokuWiki is available on the main debian repos, it is outdated and has 
 First, install the dependencies.
 
 ```sh
-apt install nginx php php-fpm php-xml php-mbstring php-zip php-intl php-gd 
+apt install nginx php php-fpm php-xml php-mbstring php-zip php-intl php-gd
 ```
 
 Now, get the tarball.
@@ -35,26 +36,26 @@ server {
     listen 80;
     listen [::]:80;
     server_name wiki.example.org;
- 
+
     # Maximum file upload size is 4MB - change accordingly if needed
     client_max_body_size 4M;
     client_body_buffer_size 128k;
- 
+
     root /var/www/dokuwiki;
     index doku.php;
- 
+
     #Remember to comment the below out when you're installing, and uncomment it when done.
     #location ~ /(conf/|bin/|inc/|vendor/|install.php) { deny all; }
- 
+
     #Support for X-Accel-Redirect
     location ~ ^/data/ { internal ; }
- 
+
     location ~ ^/lib.*\.(js|css|gif|png|ico|jpg|jpeg)$ {
         expires 365d;
     }
- 
+
     location / { try_files $uri $uri/ @dokuwiki; }
- 
+
     location @dokuwiki {
         # rewrites "doku.php/" out of the URLs if you set the userwrite setting to .htaccess in dokuwiki config page
         rewrite ^/_media/(.*) /lib/exe/fetch.php?media=$1 last;
@@ -62,7 +63,7 @@ server {
         rewrite ^/_export/([^/]+)/(.*) /doku.php?do=export_$1&id=$2 last;
         rewrite ^/(.*) /doku.php?id=$1&$args last;
     }
- 
+
     location ~ \.php$ {
         try_files $uri $uri/ /doku.php;
         include fastcgi_params;
@@ -89,7 +90,7 @@ certbot --nginx
 Restart nginx and php in order for the changes to take effect.
 
 ```sh
-systemctl restart nginx && systemctl restart php7.4-fpm 
+systemctl restart nginx && systemctl restart php7.4-fpm
 ```
 
 Finally, go to `wiki.yourwebsite.com/install.php` to finish the installation process. Read up [the documentation](https://www.dokuwiki.org/installer) in order to understand what each of those itens mean.
