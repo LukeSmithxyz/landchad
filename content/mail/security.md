@@ -16,9 +16,9 @@ Use some regular expressions to prevent some meta data like a client's ip addres
 from being leaked.
 
     echo "/^Received:.*/     IGNORE
-    /^X-Originating-IP:/    IGNORE"
+    /^X-Originating-IP:/    IGNORE
     /^User-Agent:/        IGNORE
-    /^X-Mailer:/        IGNORE >> /etc/postfix/header_checks
+    /^X-Mailer:/        IGNORE" >> /etc/postfix/header_checks
 
 Add this file to the postfix configuration:
 
