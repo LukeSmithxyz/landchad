@@ -128,9 +128,8 @@ nameserver  {{<hl>}}your_servers_public_ip{{</hl>}}
 Generally this should be an intuitive process on most router interfaces,
 and most OS' will let you edit the DNS in their respective network settings.
 
-------------------------------------------------------------------------
+---
 
-*Written by [Denshi.](https://denshi.org)
-
-Donate Monero at 48dnPpGgo8WernVJp5VhvhaX3u9e46NujdYA44u8zuMdETNC5jXiA9S7JoYMM6qRt1ZcKpt1J3RZ3JPuMyXetmbHH7Mnc9C
-[\[QR\]](https://denshi.org/images/xmr.png)*
+Written by [Denshi.](https://denshi.org)
+Donate Monero at:
+`48dnPpGgo8WernVJp5VhvhaX3u9e46NujdYA44u8zuMdETNC5jXiA9S7JoYMM6qRt1ZcKpt1J3RZ3JPuMyXetmbHH7Mnc9C`
