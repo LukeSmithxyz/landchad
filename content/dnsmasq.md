@@ -37,6 +37,12 @@ dig @localhost example.org
 
 This command should return the A DNS records for `example.org`.
 
+It is therefore important that we allow port 53 through the firewall, so we can use this as our dns server.
+
+```sh
+ufw allow 53
+```
+
 We can configure Dnsmasq to listen on the public internet by editing its config file, `/etc/dnsmasq.conf`.
 In this file, you'll find this line, commented out:
 
