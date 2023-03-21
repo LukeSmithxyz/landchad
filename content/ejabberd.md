@@ -17,10 +17,26 @@ Ejabberd presumes that you have already created all the **required and optional 
 Depending on the usecase, you may need any or all of the following domains for XMPP functionality:
 
 -   **example.org** - Your XMPP hostname
--   **conference.example.org** - For Multi User Chats (MUCs)
--   **upload.example.org** - For file upload support
--   **proxy.example.org** - For SOCKS5 proxy support
--   **pubsub.example.org** - For publish-subscribe support (A fancier RSS)
+-   **conference.example.org** - For `mod_muc`, Multi User Chats (MUCs)
+-   **upload.example.org** - For `mod_http_upload`, file upload support
+-   **proxy.example.org** - For `mod_proxy65`, SOCKS5 proxy support
+-   **pubsub.example.org** - For `mod_pubsub`, publish-subscribe support (A fancier RSS)
+
+Only the **example.org** domain is required for basic, private chat usage.
+If you do **not** wish to use a certain domain, just disable it's associated module and ejabberd won't complain when it can't find it's associated certificate.
+For example, if you don't want [Publish-Subscribe](https://xmpp.org/extensions/xep-0060.html) support, just comment out the `mod_pubsub` config in `/etc/ejabberd.yml`:
+
+```yml
+##  mod_pubsub:
+##    access_createnode: pubsub_createnode
+##    plugins:
+##      - flat
+##      - pep
+##    force_node_config:
+##      ## Avoid buggy clients to make their bookmarks public
+##      storage:bookmarks:
+##        access_model: whitelist
+```
 
 This guide will assume **all these subdomains** have been created.
 
@@ -213,15 +229,36 @@ sql_server: "localhost"
 sql_database: "{{<hl>}}ejabberd{{</hl>}}"
 sql_username: "{{<hl>}}ejabberd{{</hl>}}"
 sql_password: "{{<hl>}}psql_password{{</hl>}}"
-```
 
-Once you've ensured your database name, username and password are all correct, enable SQL storage for `mod_mam`:
+default_db: sql
+```
+That line at the end sets **every module's database** to default to the `sql` backend. This includes the `mod_mam` module, so all our data is being stored with PostgreSQL.
+
+### Voice and Video Calls
+
+Ejabberd supports the **TURN** and **STUN** protocols to allow internet users behind NATs to perform voice and video calls with other XMPP users. **This is enabled by default using [ejabberd_stun](https://docs.ejabberd.im/admin/configuration/listen#ejabberd-stun-1).**
+
+**However,** if you plan on running ejabberd alongside **other applications** that require TURN and STUN, such as Matrix, then you'll have to setup your own external TURN server using Coturn.
+
+#### Setup with Coturn and `mod_stun_disco`
+
+Firstly, setup a TURN and STUN server with [Coturn,](/coturn) using an **authentication secret.**
+
+Then, edit `mod_stun_disco` to contain the appropriate information for
+your turnserver:
 
 ```yml
-mod_mam:
-  ## (Other parameters above)
-  db_type: sql
+  mod_stun_disco:
+    secret: "{{<hl>}}your_auth_secret{{</hl>}}"
+    services:
+      -
+        host: {{<hl>}}turn.example.org{{</hl>}}
+        type: stun
+      -
+        host: {{<hl>}}turn.example.org{{</hl>}}
+        type: turn
 ```
+
 
 ## Using ejabberd
 
@@ -251,31 +288,6 @@ After signing in with the admin credentials, you will be able to manage
 your ejabberd server from this web interface:
 
 {{< img src="/pix/ejabberd-admin.webp" >}}
-
-## TURN & STUN for Calls
-
-Ejabberd supports the **TURN** and **STUN** protocols to allow internet users behind NATs to perform voice and video calls with other XMPP users. **This is enabled by default using [ejabberd_stun](https://docs.ejabberd.im/admin/configuration/listen#ejabberd-stun-1).**
-
-**However,** if you plan on running ejabberd alongside **other applications** that require TURN and STUN, such as Matrix, then you'll have to setup your own external TURN server using Coturn.
-
-### Setup with Coturn and `mod_stun_disco`
-
-Firstly, setup a TURN and STUN server with [Coturn,](/coturn) using an **authentication secret.**
-
-Then, edit `mod_stun_disco` to contain the appropriate information for
-your turnserver:
-
-```yml
-  mod_stun_disco:
-    secret: "{{<hl>}}your_auth_secret{{</hl>}}"
-    services:
-      -
-        host: {{<hl>}}turn.example.org{{</hl>}}
-        type: stun
-      -
-        host: {{<hl>}}turn.example.org{{</hl>}}
-        type: turn
-```
 
 ## Further Configuration
 
