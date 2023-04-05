@@ -128,13 +128,13 @@ server {
     gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
     gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/wasm application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
     client_body_buffer_size 512k;
-    add_header Referrer-Policy                      "no-referrer"   always;
-    add_header X-Content-Type-Options               "nosniff"       always;
-    add_header X-Download-Options                   "noopen"        always;
-    add_header X-Frame-Options                      "SAMEORIGIN"    always;
-    add_header X-Permitted-Cross-Domain-Policies    "none"          always;
-    add_header X-Robots-Tag                         "none"          always;
-    add_header X-XSS-Protection                     "1; mode=block" always;
+    add_header Referrer-Policy                      "no-referrer"        always;
+    add_header X-Content-Type-Options               "nosniff"            always;
+    add_header X-Download-Options                   "noopen"             always;
+    add_header X-Frame-Options                      "SAMEORIGIN"         always;
+    add_header X-Permitted-Cross-Domain-Policies    "none"               always;
+    add_header X-Robots-Tag                         "noindex, nofollow"  always;
+    add_header X-XSS-Protection                     "1; mode=block"      always;
     fastcgi_hide_header X-Powered-By;
     index index.php index.html /index.php$request_uri;
     location = / {
