@@ -25,14 +25,22 @@ So let\'s register your domain name!
 
 ## How
 
-Domains can be registered at any accredited <dfn>registrar</dfn>. In this
-guide, I will use the registrar
-[Epik](https://www.epik.com/?affid=we2ro7sa6) because it is one of the
-more high quality and easy to use. The guides on this site will use
-Epik, but if you choose to register your domain with one of the [many,
-many other registrars](https://www.icann.org/en/accredited-registrars),
-you can still do most of what Epik does, albeit options and settings
-might appear in different menus.
+Domains can be registered at any accredited <dfn>registrar</dfn> and there are
+[a lot to choose from](https://www.icann.org/en/accredited-registrars). Some major names are
+[Host Gator](https://www.hostgator.com/domains),
+[Blue Host](https://www.bluehost.com/domains),
+[Name Cheap](https://www.namecheap.com/domains/) or
+[Dream Host](https://www.dreamhost.com/domains/).
+
+There are also sites that are more private like [Njalla](https://njal.la/) and
+[Cheap Privacy](https://cheapprivacy.ru/), which register a domain for you
+under their name, but still allow you access to it. (Normally all websites must
+be registered with the ICANN with a real name and address, but these sites
+allow you to bypass that.)
+
+Choosing a registrar is not permanent, and you can transfer domains to a
+different registrar if get a better deal later, so in most cases, you can just
+choose one and let's head on...
 
 ### Basic info about domain names
 
@@ -49,8 +57,7 @@ might appear in different menus.
 
 ### Looking for domain names
 
-Let\'s go to [Epik\'s site](https://www.epik.com/?affid=we2ro7sa6) and
-you can search for domain names.
+Let\'s go to our registrar's site and you can search for domain names.
 
 You can look for whatever domain name you want. Domains that are already
 bought and owned by someone else might have the option to \"Backorder,\"

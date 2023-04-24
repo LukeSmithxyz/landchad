@@ -119,10 +119,9 @@ systemctl reload postfix
 
 ## Adding the DNS record!
 
-We are only one step away from having functioning OpenDKIM. We must add
-the DKIM public key to our server\'s DNS settings, so go ahead and open
-up [your registrar\'s site](https://www.epik.com/?affid=we2ro7sa6) or
-wherever your site\'s DNS settings are.
+We are only one step away from having functioning OpenDKIM. We must add the
+DKIM public key to our server\'s DNS settings, so go ahead and open up your
+registrar\'s site or wherever your site\'s DNS settings are.
 
 The public key is found in the file `/etc/postfix/dkim/mail.txt`, but it
 will display as multiple lines and multiple quoted strings, which is
@@ -145,9 +144,8 @@ host we put it for is `mail._domainkey`.
 
 {{< img alt="Adding the OpenDKIM TXT entry in DNS settings" src="/pix/dkim-01.png" link="/pix/dkim-01.png" >}}
 
-On my registrar, Epik, this is how it is input, but on some registrars,
-it may be required to include your domain name as well as
-`mail._domainkey.example.org`.
+On my registrar, this is how it is input, but on some registrars, it may be
+required to include your domain name as well as `mail._domainkey.example.org`.
 
 If you have your own DNS server, add a TXT entry as follows:
 

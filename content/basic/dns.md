@@ -10,30 +10,28 @@ can connect the two using DNS records. DNS (domain name system) records
 are usually put into your registrar and direct people looking up your
 website to the server where your website and other things will be.
 
-Get your IPv4/IPv6 addresses from Vultr and put them into A/AAAA records
-on Epik. Simple process, takes a minute, but here\'s a guide with a
-million images just so you know.
+Get your IPv4/IPv6 addresses from your VPS provider and put them into A/AAAA
+records on your registrar. Simple process, takes a minute, but here\'s a guide
+with a million images just so you know.
 
 ## Open up your Registrar
 
-As before, we will be using
-[Epik](https://www.epik.com/?affid=we2ro7sa6) as a registrar and
-[Vultr](https://www.vultr.com/?ref=8384069-6G) as a server host. Go
-ahead and log into your accounts on both. Open up Epik, or your
-registrar, and click on your domain and then a choice for \"DNS
-records.\" This is the screen you\'ll want to see on Epik.
+As before, we will be using any registrar of your choice and
+[Vultr](https://www.vultr.com/?ref=8384069-6G) as a server host. Go ahead and
+log into your accounts on both. Open up your registrar, or your registrar, and
+click on your domain and then a choice for \"DNS records.\" You'll want to see
+something like this on your registrar's site.
 
-{{< img alt="Blank Epik DNS records" src="/pix/dns-epik.png" link="/pix/dns-epik.png" >}}
+{{< img alt="Blank records" src="/pix/dns-epik.png" link="/pix/dns-epik.png" >}}
 
-Note that we are on the \"External Hosts (A, AAAA)\" tab by default.
-Epik sometimes adds records to this page once you buy a domain. If they
-did, you can go ahead and delete them so they look clean like the
-picture above.
+Note that we are on the \"External Hosts (A, AAAA)\" tab by default. There may
+be default settings set by your registrar. If there are, you can go ahead and
+delete them so they look clean like the picture above.
 
 **All we have to do now is get our IP addresses from Vultr and add new
 DNS records that will send connections to our server.**
 
-Keep the Epik tab open and open Vultr and we will copy-and-paste our IP
+Keep the registrar tab open and open Vultr and we will copy-and-paste our IP
 addresses in.
 
 ## Find your server\'s IP addresses
@@ -45,8 +43,8 @@ attach to it). That is my **IPv4** address.
 
 {{< img src="/pix/dns-ipv4.png" alt="See the IPv4 address?" link="/pix/dns-ipv4.png" >}}
 
-Copy your IPv4 address and on Epik, click the \"Add Record\" record
-button and add two A entries pasting in your IPv4 address like I\'ve
+Copy your IPv4 address and on your registrar's site, click the \"Add Record\"
+record button and add two A entries pasting in your IPv4 address like I\'ve
 done for mine here.
 
 {{< img src="/pix/dns-ipv4-done.png" alt="IPv4 complete" link="/pix/dns-ipv4-done.png" >}}
@@ -74,8 +72,8 @@ Now just click on the **IPv6** submenu to reveal your IPv6 address.
 {{< img alt="The IPv6 address" src="/pix/dns-ipv6.png" link="/pix/dns-ipv6.png" >}}
 
 That ugly looking sequence of numbers and letters with colons in between
-(`2001:19f0:5:ccc:5400:03ff:fe58:324a`) is my **IPv6** address. Yours
-will look something like it. Now let\'s put it into Epik. This time, be
+(`2001:19f0:5:ccc:5400:03ff:fe58:324a`) is my **IPv6** address. Yours will look
+something like it. Now let\'s put it into your registrar's site. This time, be
 sure to select to put in AAAA records as below:
 
 {{< img src="/pix/dns-ipv6-done.png" alt="IPv6 complete" link="/pix/dns-ipv6-done.png" >}}
