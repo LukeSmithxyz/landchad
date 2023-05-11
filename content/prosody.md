@@ -64,7 +64,7 @@ The second line is important because it prevents non-admins from creating and sq
 
 Read more about the `muc` plugin on the Prosody documentation page [here](https://prosody.im/doc/modules/mod_muc).
 
-### Enabling chat histories
+### Enabling Chat Histories
 
 By default, Prosody will send out messages received only to the first available clients.
 That means that if you have your desktop client turned off and your cell phone receives a message,
@@ -104,8 +104,9 @@ As you will notice, you need another subdomain for this. We will add an ssl cert
 You will also need to go back to `modules_enabled` and uncomment the `http_files` module.
 This is used to actually serve the files to users.
 
-And the last part of the setup is to enable the built in proxy server.
-This helps with file transfers for devices behind a NAT, and unless you are using XMPP in a LAN, you probably need this.
+### Proxy Support
+
+This helps with file transfers for devices behind a NAT, and unless you are using XMPP in a LAN, you **probably need this.**
 Enable the proxy by adding the following line to the config:
 
 ```cfg
@@ -153,6 +154,28 @@ sql = {
 ```
 
 (This is assuming you've installed the `postgresql` package, and setup a database named `prosody` with a user named `prosody` as the owner.)
+
+### Voice and Video Calling
+
+Prosody supports XMPP voice and video calls through an external TURN and STUN server.
+
+First, follow the guide on installing and setting up [coturn,](/coturn) setting  **only a shared secret** for authentication.
+
+Then, uncomment the `turn_external` module in the modules section in `prosody.cfg.lua`.
+
+```cfg
+"turn_external";
+```
+
+Finally, specify the host and credentials lower in the config:
+
+```cfg
+-- Specify the address of the TURN service (you may use the same domain as XMPP)
+turn_external_host = "{{<hl>}}turn.example.org{{</hl>}}"
+
+-- This secret must be set to the same value in both Prosody and the TURN server
+turn_external_secret = "{{<hl>}}your shared secret{{</hl>}}"
+```
 
 ### Other things to check
 

@@ -151,12 +151,41 @@ registration_shared_secret: {{<hl>}}???{{</hl>}}
 Then, run the following command to register a user:
 
 ```sh
-cd /etc/matrix-synapse
-
-register_new_matrix_user -c homeserver.yaml http://localhost:8008
+register_new_matrix_user -c /etc/matrix-synapse/homeserver.yaml
 ```
 
 This command will prompt you for a username, password and whether to make the user an admin or not.
+
+### Voice and Video Calls
+
+For native voice and video call support, the Synapse homserver needs to interface with a working **TURN and STUN Server.**
+
+First, follow the guide on installing and setting up [coturn](/coturn), setting either a shared secret or username-password pair for authentication.
+
+Then, in `/etc/matrix-synapse/homeserver.yaml`, edit the configuration as follows:
+
+```yaml
+turn_uris: [ "turn:{{<hl>}}turn.example.org{{</hl>}}?transport=udp", "turn:{{<hl>}}turn.example.org{{</hl>}}?transport=tcp" ]
+
+## This is how long call credentials are valid. Lessen to prevent abuse.
+turn_user_lifetime: 86400000
+
+## Keep this enabled unless for security reasons.
+turn_allow_guests: True
+```
+
+If you're using a shared secret, add the following config:
+
+```yaml
+turn_shared_secret: "{{<hl>}}your secret here{{</hl>}}"
+```
+
+Otherwise, add this config if you're using username-password pairs:
+
+```yaml
+turn_username: "{{<hl>}}turnserver_username{{</hl>}}"
+turn_password: "{{<hl>}}turnserver_password{{</hl>}}"
+```
 
 ### URL Previews
 
@@ -166,7 +195,7 @@ To enable server-generated previews of webpages, change this line to true in `/e
 url_preview_enabled: true
 ```
 
-And make sure to uncomment the `url_preview_ip_range_blacklist:` section; Otherwise, Synapse will refuse to start up again! 
+And **make sure to uncomment** the `url_preview_ip_range_blacklist:` section; Otherwise, Synapse will refuse to start up again! 
 
 ### Federation
 

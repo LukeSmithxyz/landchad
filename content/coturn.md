@@ -102,6 +102,11 @@ systemctl restart coturn
 
 At this stage, you should look in your application's own guide on how to set the TURN and STUN server settings. Configure it to point at **turn.example.org** and use either your **username and password pair** or your super-secure **authentication secret.** 
 
+- [How to configure TURN on ejabberd](/ejabberd#voice-and-video-calls)
+- [How to configure TURN on Prosody](/prosody#voice-and-video-calls)
+- [How to configure TURN on Matrix Synapse](/matrix#voice-and-video-calls)
+- [How to configure TURN on Matrix Dendrite](/dendrite#voice-and-video-calls)
+
 Congratulations! You've successfully setup a Coturn server!
 
 ---
