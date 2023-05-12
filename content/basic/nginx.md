@@ -51,7 +51,7 @@ apt install nginx
 The first command checks for packages that can be updated and the second
 command installs any updates.
 
-The third command installs `nginx` (pronounced Engine-X) which is the
+The third command installs `nginx` (pronounced Engine-X), which is the
 web server we\'ll be using, along with some other programs.
 
 ### Our nginx configuration file
@@ -115,7 +115,7 @@ in `/var/www/`. Name the directory in that whatever you want.
 a website, say `landchad.net`, you are actually going to a file at
 `landchad.net/index.html`. That\'s all that is. Note that that this in
 concert with the line above mean that `/var/www/landchad/index.html`, a
-file on our computer that we\'ll create will be the main page of our
+file on our computer that we\'ll create, will be the main page of our
 website.
 
 Lastly, the `location` block is really just telling the server how to
@@ -125,14 +125,14 @@ powerful, but this is all we need them for now.
 ### Create the directory and index for the site
 
 We\'ll actually start making a \"real\" website later, but let\'s go
-ahead and create a little page that will appear on when someone looks up
+ahead and create a little page that will appear when someone looks up
 the domain.
 
 ```sh
 mkdir /var/www/{{<hl>}}mysite{{</hl>}}
 ```
 
-Now let\'s create and index file inside of that directory which will
+Now let\'s create an index file inside of that directory, which will
 appear when the website is accessed:
 
 ```sh
@@ -167,7 +167,7 @@ systemctl reload nginx
 
 ## The Firewall {#firewall}
 
-Vultr and some other VPS automatically install and enable `ufw`, a
+Vultr and some other VPSes automatically install and enable `ufw`, a
 firewall program. This will block basically everything by default, so we
 have to change that. If you don\'t have `ufw` installed, you can skip
 this section.
@@ -185,7 +185,7 @@ encrypted connections. We will certainly need that for the next page.
 <aside>
 
 As you add more services to your website, they might need you to open more ports, but that will be mentioned on individual articles.
-(It should be noted that some local services only running for other services on your machine, so you *don't* need to open ports for every process running locally, *only* those that directly interact with the internet, although it's common to run those through NginX for simplicity and security.)
+(It should be noted that some local services run only for other services on your machine, so you *don't* need to open ports for every process running locally, *only* those that directly interact with the internet, although it's common to run those through Nginx for simplicity and security.)
 
 </aside>
 
@@ -201,7 +201,7 @@ Uncomment it, and reload Nginx.
 Remember to [keep your server software up to
 date](maintenance.html#update) to get the latest security fixes!
 
-## We now have running website!
+## We now have a running website!
 
 At this point you can now type in your website in your browser and this
 webpage will appear!
