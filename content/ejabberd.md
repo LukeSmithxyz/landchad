@@ -191,6 +191,11 @@ PostgreSQL is available in the Debian repositories:
 apt install postgresql
 ```
 
+In addition, you will have to install the **appropriate headers for Erlang,** the language ejabberd is written in, so it can actually interact with the PostgreSQL server:
+```sh
+apt install erlang-p1-pgsql
+```
+
 Start the PostgreSQL daemon to begin using it:
 
 ```sh
