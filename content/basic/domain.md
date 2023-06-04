@@ -32,25 +32,25 @@ Domains can be registered at any accredited <dfn>registrar</dfn> and there are
 [Name Cheap](https://www.namecheap.com/domains/) or
 [Dream Host](https://www.dreamhost.com/domains/).
 
-There are also sites that are more private like [Njalla](https://njal.la/) and
+There are also sites that are more private, like [Njalla](https://njal.la/) and
 [Cheap Privacy](https://cheapprivacy.ru/), which register a domain for you
 under their name, but still allow you access to it. (Normally all websites must
 be registered with the ICANN with a real name and address, but these sites
 allow you to bypass that.)
 
 Choosing a registrar is not permanent, and you can transfer domains to a
-different registrar if get a better deal later, so in most cases, you can just
+different registrar if you get a better deal later, so in most cases, you can just
 choose one and let's head on...
 
 ### Basic info about domain names
 
--   Domain names usually require a *very* small year fee to keep
+-   Domain names usually require a *very* small yearly fee to keep
     registered, usually around \$12 for most generic TLDs. There are
     some \"specialty\" TLDs that are more expensive, but `.com`, `.xyz`
     and other basic TLDs are that cheap.
 -   Once you own a domain, it is yours as long as you pay the yearly
     fee, but you can also sell it to someone for however much you want.
--   Domain names do not hold your data or your website, instead, you add
+-   Domain names do not hold your data or your website; instead, you add
     \"DNS settings\" that direct people connecting to your domain to
     your IP address. The purpose of a domain name is so that people
     don\'t have to remember your IP address to find your website!
