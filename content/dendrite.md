@@ -118,10 +118,10 @@ Now download the Dendrite repository using `git` and change directory to it:
 git clone https://github.com/matrix-org/dendrite
 cd dendrite
 ```
-Finally, run the `./build.sh` script to compile Dendrite:
+Finally, compile Dendrite using `go build`:
 
 ```sh
-./build.sh
+go build -o bin/ ./cmd/...
 ```
 
 *This might take a few minutes,* but once the process is finished you should find the final Dendrite programs populating the `bin/` directory.
@@ -231,7 +231,7 @@ chown -R dendrite:dendrite /opt/dendrite
 
 ### Setting up a systemd Service
 
-Now setup a **systemd service** to run Dendrite automatically for you. Make sure to set the `WorkingDirectory` to the directory where your Dendrite repository is located!
+Now setup a **systemd service** in `/etc/systemd/system/dendrite.service` to run Dendrite automatically for you. Make sure to set the `WorkingDirectory` to the directory where your Dendrite repository is located!
 
 ```systemd
 [Unit]

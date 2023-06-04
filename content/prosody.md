@@ -96,13 +96,10 @@ apt install prosody-modules
 Then we can add the following line to you prosody config file to enable file uploads:
 
 ```cfg
-Component "uploads.example.org" "http_upload"
+Component "{{<hl>}}uploads.example.org{{</hl>}}" "http_file_share"
 ```
 
 As you will notice, you need another subdomain for this. We will add an ssl certficate for this later.
-
-You will also need to go back to `modules_enabled` and uncomment the `http_files` module.
-This is used to actually serve the files to users.
 
 ### Proxy Support
 
@@ -110,7 +107,7 @@ This helps with file transfers for devices behind a NAT, and unless you are usin
 Enable the proxy by adding the following line to the config:
 
 ```cfg
-Component "proxy.example.org" "proxy65"
+Component " {{<hl>}}proxy.example.org{{</hl>}}" "proxy65"
 ```
 
 As you can see, another subdomain is needed. We will add ssl certificates for this later.
@@ -120,26 +117,45 @@ At this point, file sharing is now setup and ready to be used. Although there ar
 A big concern with file sharing is large files, seeing as all files shared over XMPP will be stored on your server. This can become a problem when many (and large) files are being shared. We can put a cap on large files by adding the following line to our config:
 
 ```cfg
-http_upload_file_size_limit = 20971520
+http_file_share_file_size_limit = 20971520
 ```
 
 This puts a 20MB cap on all files being shared. The value is specified in bytes. You can also specify after how long files should be deleted by adding the following line:
 
 ```cfg
-http_upload_expire_after = 60 * 60 * 24 * 7
+http_file_share_expire_after = 60 * 60 * 24 * 7
 ```
 
 The value is specified in seconds. The above line will make prosody delete files after a week.
 
-If it is for some reason neccessary, you can also manually invoke expiry with the following command:
-
-```cfg
-prosodyctl mod_http_upload expire
-```
-
 ### Database Setup
 
-Prosody includes the `internal` and `sql` storage backends by default. If you wish to run Prosody with PostgreSQL, edit the following lines:
+Prosody includes the `internal` and `sql` storage backends by default. 
+If you wish to run Prosody with PostgreSQL, begin by installing the PostgreSQL:
+
+```sh
+apt install postgresql
+```
+
+Then start the daemon:
+
+```sh
+systemctl restart postgresql
+```
+
+Now create a user named `prosody` to manage your database:
+
+```sh
+su -c "createuser --pwprompt prosody" postgres
+```
+
+And finally, create the actual database:
+
+```sh
+su -c "psql -c 'CREATE DATABASE prosody OWNER prosody;'" postgres
+```
+
+Finally, in `/etc/prosody/prosody.cfg.lua`, edit the following lines:
 
 ```cfg
 storage = "sql"
@@ -152,8 +168,6 @@ sql = {
     host = "localhost"
 }
 ```
-
-(This is assuming you've installed the `postgresql` package, and setup a database named `prosody` with a user named `prosody` as the owner.)
 
 ### Voice and Video Calling
 
@@ -194,14 +208,14 @@ Obviously, we want to have client-to-server and server-to-server encryption. Now
 **If you have multi-user chat enabled, be sure to get a certificate for that subdomain as well.** Include the `--nginx` option assuming you have an Nginx server running.
 
 ```sh
-certbot -d chat.example.org --nginx
+certbot -d {{<hl>}}chat.example.org{{</hl>}} --nginx
 ```
 
 **If you have file sharing enabled, be sure to get a certificate for those subdomains as well.**
 
 ```sh
-certbot -d uploads.example.org --nginx
-certbot -d proxy.example.org --nginx
+certbot -d {{<hl>}}uploads.example.org{{</hl>}} --nginx
+certbot -d {{<hl>}}proxy.example.org{{</hl>}} --nginx
 ```
 
 Once you have the certificates for encryption, run the following to import them into Prosody.
@@ -219,7 +233,7 @@ Note that you might get an error that a certificate has not been found if your `
 Let's manually create the admin user we prepared for above. Note that you can indeed do this in your XMPP client if you have not disabled registration, but this is how it is done on the command line:
 
 ```sh
-prosodyctl adduser chad@example.org
+prosodyctl adduser {{<hl>}}chad@example.org{{</hl>}}
 ```
 
 This will prompt you to create a password as well.
@@ -259,6 +273,6 @@ Remember that MUCs are kept on a separate subdomain that we created and should'v
 
 ### Note on firewalls and opening ports
 
-If you use a firewall, you should open ports 5222 and 5281. The first one is needed for clients to be able to connect to your server. The second is only necessary if you are using the `http_upload` module for file sharing.
+If you use a firewall, you should open ports 5222 and 5281. The first one is needed for clients to be able to connect to your server. The second is only necessary if you are using the `http_file_share` module for file sharing, as 5281 is the port for serving content over HTTPS.
 
 A complete list of ports used by Prosody can be found [here](https://prosody.im/doc/ports).
