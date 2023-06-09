@@ -204,7 +204,7 @@ ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/
 ## Installing Nextcloud Itself
 
 We should have all the moving pieces in place now, so we can download and
-install Nextcloud itself. First, download the latest-25 Nextcloud version and we will extract into `/var/www/` and ensure Nginx has the authority to use it.
+install Nextcloud itself. First, download the latest Nextcloud 25 version and we will extract into `/var/www/` and ensure Nginx has the authority to use it.
 
 ```sh
 wget https://download.nextcloud.com/server/releases/latest-25.tar.bz2
