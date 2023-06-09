@@ -74,7 +74,7 @@ below and change some of the placeholders as you wish:
 
 ```mysql
 CREATE DATABASE nextcloud;
-GRANT ALL ON nextcloud.* TO 'username'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL ON nextcloud.* TO '<your_username>'@'localhost' IDENTIFIED BY '<your_password>';
 FLUSH PRIVILEGES;
 EXIT;
 ```
@@ -94,7 +94,7 @@ In `/etc/nginx/sites-available/` we need to make a new configuration for
 Nextcloud (example: `/etc/nginx/sites-available/nextcloud`).
 
 
-Add the following content [based of Nextcloud's recommendations](https://docs.nextcloud.com/server/latest/admin_manual/installation/nginx.html) to the file, **remembering to replace `nextcloud.example.org` with your Nextcloud domain**.
+Add the following content [based of Nextcloud's recommendations](https://docs.nextcloud.com/server/25/admin_manual/installation/nginx.html) to the file, **remembering to replace `nextcloud.example.org` with your Nextcloud domain**.
 
 ```nginx
 upstream php-handler {
@@ -204,11 +204,11 @@ ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/
 ## Installing Nextcloud Itself
 
 We should have all the moving pieces in place now, so we can download and
-install Nextcloud itself. First, download the latest Nextcloud version and we will extract into `/var/www/` and ensure Nginx has the authority to use it.
+install Nextcloud itself. First, download the latest-25 Nextcloud version and we will extract into `/var/www/` and ensure Nginx has the authority to use it.
 
 ```sh
-wget https://download.nextcloud.com/server/releases/latest.tar.bz2
-tar -xjf latest.tar.bz2 -C /var/www
+wget https://download.nextcloud.com/server/releases/latest-25.tar.bz2
+tar -xjf latest-25.tar.bz2 -C /var/www
 chown -R www-data:www-data /var/www/nextcloud
 chmod -R 755 /var/www/nextcloud
 ```
