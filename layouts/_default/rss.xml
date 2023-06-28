@@ -1,0 +1,3 @@
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+{{ printf "<?xml-stylesheet href=\"/rss.xsl\" type=\"text/xsl\"?>" | safeHTML }}
+{{ with .Render "themes/lugo/layouts/_default/rss.xml" }}{{ slicestr . 56 | safeHTML }}{{ end }}
