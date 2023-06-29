@@ -88,9 +88,7 @@
                   </i>
                 </small>
               </p>
-              <p>
-                <xsl:value-of select="description"/>
-              </p>
+              <br/>
             </xsl:for-each>
           </article>
         </main>

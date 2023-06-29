@@ -7,3 +7,6 @@ theme = 'lugo'
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+[params]
+  rssStylesheet = "/rss.xsl"
