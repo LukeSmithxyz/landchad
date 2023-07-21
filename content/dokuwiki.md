@@ -69,7 +69,7 @@ server {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param REDIRECT_STATUS 200;
-        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
         # fastcgi_pass unix:/var/run/php5-fpm.sock; #old php version
     }
 }
