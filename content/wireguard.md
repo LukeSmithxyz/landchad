@@ -1,8 +1,9 @@
 ---
-title: "Wireguard"
-date: 2022-07-26
-icon: 'wireguard.svg'
-tags: ['service']
+title: Wireguard
+date: 2022-07-26T00:00:00.000Z
+icon: wireguard.svg
+tags:
+  - service
 short_desc: "Fast, Modern, Secure VPN Tunnel"
 ---
 
@@ -16,6 +17,7 @@ As an example, we'll be using a virtual 172.16.0.0/24 network, but any private i
 ## Installation
 
 ### On the Server
+
 Install the WireGuard management tools:
 
     apt install wireguard
@@ -29,6 +31,7 @@ Run the following command to apply the change:
     sysctl -w net.ipv4.ip_forward=1
 
 ### On the Client
+
 Use your package manager to install the WireGuard Management Tools.
 On Arch and Fedora based distros the package is `wireguard-tools`. For Debian based, it's listed above.
 
@@ -36,7 +39,6 @@ Create the public and private keys for your machine:
 
     sudo bash -c "umask 077 ; wg genkey > /etc/wireguard/client_priv.key"
     sudo bash -c "wg pubkey < /etc/wireguard/client_priv.key > /etc/wireguard/client_pub.key"
-
 
 ### Back to the Server
 
@@ -106,6 +108,7 @@ there's a good chance you're behind a corporate firewall. Read on.
 ## WebSocket Tunnel
 
 #### Note on TLS
+
 If your server hosts a website with https, you won't be able to use port 443 to
 obfuscate your WireGuard packets as TLS traffic. You may use some other innocuous
 port, but there's no guarantee you'll punch through the picky firewall.
@@ -145,7 +148,7 @@ Download and install wstunnel and a helper script:
     wget https://github.com/erebe/wstunnel/releases/download/v4.0/wstunnel-x64-linux
     sudo mv wstunnel-x64-linux /usr/local/bin/wstunnel
     sudo chmod +x /usr/local/bin/wstunnel
-    wget https://codeberg.org/onasaft/sbx/raw/branch/main/vpn/wstunnel.sh
+    wget https://raw.githubusercontent.com/jnsgruk/wireguard-over-wss/master/wstunnel.sh
     sudo mv wstunnel.sh /etc/wireguard/wstunnel.sh
     sudo chmod +x /etc/wireguard/wstunnel.sh
 
