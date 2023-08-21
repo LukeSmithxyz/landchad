@@ -175,7 +175,7 @@ You now need to register some users in [Prosody](/prosody), you
 can do so manually using `prosodyctl`:
 
 ```sh
-prosodyctl register &ltusername> meet.example.org &ltpassword>
+prosodyctl register <username> meet.example.org <password>
 ```
 
 Finally, restart `prosody`, `jicofo`, and `jitsi-videobridge2`:
