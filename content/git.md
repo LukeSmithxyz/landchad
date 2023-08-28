@@ -100,7 +100,7 @@ chown git:git -R /var/git/.ssh	# Make the created directory and contents to be o
 
 ### Syncing a new repository with your server
 
-How that we've set that up, we can push a repository we have on our computer to
+Now that we've set that up, we can push a repository we have on our computer to
 that newly created bare repo. First, on our local computer, we run a command like this:
 
 ```sh
