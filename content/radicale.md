@@ -49,6 +49,12 @@ Execute the following command to add a new user to Radicale.
 htpasswd -B -c /etc/radicale/users username
 ```
 
+To create additional users, htpasswd is used again but without the additional modifier. 
+
+```sh
+htpasswd -B /etc/radicale/users username2
+```
+
 As Radicale stands now it is fully functional and after starting it by
 executing its binary, can be accessed under example.org:5232. But there
 are two additional things we can do to make using and managing Radicale
