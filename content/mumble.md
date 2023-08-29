@@ -15,7 +15,7 @@ The server can also be run [behind Tor](https://gitlab.torproject.org/legacy/tra
 
 Mumble has a Debian repository for client and server, however it's very outdated so we are going to build the server instead.
 
-**I suggest to build both binaries on your local machine and [transfer the `mumble-server` to your remote server using `spc`](#extra).**
+**I suggest to build both binaries on your local machine and [transfer the `mumble-server` to your remote server using `scp`](#extra).**
 
 
 Install dependencies:
@@ -64,6 +64,12 @@ Create a folder in `/etc/` move your config files there.
 
 ```sh
 mkdir /etc/mumble && mv mumble-server.ini /etc/mumble
+```
+
+By default, mumble-server uses port 64738, so make sure to open that port on your firewall (if you're using one), or whatever other port you selected on your configuration file. If you're using `ufw` as your firewall, the command is:
+
+```sh
+ufw allow 64738
 ```
 
 Now we can run the server passing the config and a superuser password that can be used to connect and authenticate as an administrator from any client
@@ -115,6 +121,10 @@ Click on `Ok`, select your server from the list and click `Connect`.
 
 **Now you are connected to your very own Mumble server as a SuperUser!**
 
+Now, you will want to setup a regular user to be an administrator of the server. Follow the [official documentation](https://wiki.mumble.info/wiki/Murmurguide#Becoming_Administrator_and_Registering_a_User) in order to do that, it is well-explained, so I won't repeat it here.
+
+Also, you might want to take a look at the [options for your config file](https://wiki.mumble.info/wiki/Murmurguide#Set_Up_Server), since mumble let's you set up a good amount of things, including a server password, a welcome message, and how to make your server public for the whole internet to see.
+
 ---
 
 ## Extra
@@ -124,7 +134,7 @@ Click on `Ok`, select your server from the list and click `Connect`.
 Move your binary to the folder `~` of your remote server.
 
 ```sh
-spc <your_binary> root@<your_server_ip>:~
+scp <your_binary> root@<your_server_ip>:~
 ```
 
 ---

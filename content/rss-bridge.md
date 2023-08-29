@@ -25,7 +25,7 @@ setup Fail2Ban. There\'s a great tutorial on how to do this [which can be read h
 Next we\'ll install the required packages:
 
 ```sh
-apt install -y curl unzip nginx certbot php-fpm php-mysql php-cli php7.4-mbstring php7.4-curl php7.4-xml php7.4-sqlite3 php7.4-json
+apt install -y curl unzip nginx certbot php-fpm php-mysql php-cli php-mbstring php-curl php-xml php-sqlite3 php-json
 ```
 
 We now have to create the website configuration file. Create/open the a
@@ -49,7 +49,7 @@ server {
 
     location ~ \.php$ {
             include snippets/fastcgi-php.conf;
-            fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+            fastcgi_pass unix:/var/run/php/php-fpm.sock;
     }
 
     location ~ /\.ht {

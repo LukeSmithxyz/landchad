@@ -90,7 +90,7 @@ certbot --nginx
 Restart nginx and php in order for the changes to take effect.
 
 ```sh
-systemctl restart nginx && systemctl restart php7.4-fpm
+systemctl restart nginx && systemctl restart php8.2-fpm
 ```
 
 Finally, go to `wiki.yourwebsite.com/install.php` to finish the installation process. Read up [the documentation](https://www.dokuwiki.org/installer) in order to understand what each of those itens mean.

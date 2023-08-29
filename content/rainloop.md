@@ -26,7 +26,7 @@ First we will install the required packages for Rainloop with the
 following command:
 
 ```sh
-apt-get install php7.4 php7.4-common php7.4-curl php7.4-xml php7.4-fpm php7.4-json php7.4-dev php7.4-mysql unzip -y
+apt-get install php php-common php-curl php-xml php-fpm php-json php-dev php-mysql unzip -y
 ```
 
 Then we will download the community version of Rainloop, unzip it into
@@ -65,7 +65,7 @@ server {
         fastcgi_index index.php;
         fastcgi_split_path_info ^(.+\.php)(.*)$;
         fastcgi_keep_conn on;
-        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
         include /etc/nginx/fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     }
