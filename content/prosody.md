@@ -254,7 +254,7 @@ Once your server is set up, you just need an XMPP client to use your new and sec
 -   Windows: [Gajim](https://gajim.org/) also runs on Windows.
 -   Android: [Conversations.im](https://conversations.im/) or
     [snikket](https://snikket.org/)
--   Mac/iOS: [Monal IM](https://monal.im/) or
+-   Mac/iOS: [Monal IM](https://monal-im.org/) or
     [Siskin](https://siskin.im/) for iOS alone
 -   command-line (GNU/Linux, MacOS, Windows):
     [Profanity](https://profanity-im.github.io/)
@@ -265,7 +265,7 @@ Install whichever of these clients you want on your computer or phone and you ca
 
 ### Account addresses
 
-XMPP account addressed look just like email addresses: `username@example.org`. You can message any account on any XMPP server on the internet with that format.
+XMPP account addresses look just like email addresses: `username@example.org`. You can message any account on any XMPP server on the internet with that format.
 
 ### Note on MUCs (multi-user chats)
 
