@@ -124,7 +124,7 @@ Click on `Ok`, select your server from the list and click `Connect`.
 Move your binary to the folder `~` of your remote server.
 
 ```sh
-spc <your_binary> root@<your_server_ip>:~
+scp <your_binary> root@<your_server_ip>:~
 ```
 
 ---
