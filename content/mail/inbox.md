@@ -39,7 +39,7 @@ We also need two little DNS records set on your domain registrar's site/DNS serv
 
 ## Configuring Dovecot
 
-Dovecot\'s configuration file is in `/etc/dovecot/docevot.conf`. If you
+Dovecot\'s configuration file is in `/etc/dovecot/dovecot.conf`. If you
 open that file, you will see this line: `!include conf.d/*.conf` which adds
 all the `.conf` files in `/etc/dovecot/conf.d/` to the Dovecot
 configuration.
