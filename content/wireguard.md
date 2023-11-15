@@ -171,5 +171,3 @@ Start WireGuard again:
     sudo wg-quick up myvpn
 
 To disconnect, type `down` instead of `up`. And just like that, you now host a WireGuard VPN server!
-
-**Contributor** - [tomfasano.net](https://tomfasano.net)
