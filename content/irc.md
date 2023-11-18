@@ -534,7 +534,7 @@ persistent:
 
 # connection information for MySQL (currently only used for persistent history):
 mysql:
-    enabled: false
+    enabled: true
     host: "localhost"
     port: 3306
     # if socket-path is set, it will be used instead of host:port
