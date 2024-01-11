@@ -107,7 +107,7 @@ This helps with file transfers for devices behind a NAT, and unless you are usin
 Enable the proxy by adding the following line to the config:
 
 ```cfg
-Component " {{<hl>}}proxy.example.org{{</hl>}}" "proxy65"
+Component "{{<hl>}}proxy.example.org{{</hl>}}" "proxy65"
 ```
 
 As you can see, another subdomain is needed. We will add ssl certificates for this later.
@@ -117,7 +117,7 @@ At this point, file sharing is now setup and ready to be used. Although there ar
 A big concern with file sharing is large files, seeing as all files shared over XMPP will be stored on your server. This can become a problem when many (and large) files are being shared. We can put a cap on large files by adding the following line to our config:
 
 ```cfg
-http_file_share_file_size_limit = 20971520
+http_file_share_size_limit = 20971520
 ```
 
 This puts a 20MB cap on all files being shared. The value is specified in bytes. You can also specify after how long files should be deleted by adding the following line:
