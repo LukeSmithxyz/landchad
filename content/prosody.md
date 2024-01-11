@@ -87,13 +87,7 @@ With this we can bring XMPP to the level of other popular instant messaging appl
 It is extremely easy to setup.
 This part is optional, but it can make XMPP more normie-friendly if you plan on moving family members and friends over to XMPP.
 
-First we need to install extra prosody modules. Run the following command:
-
-```sh
-apt install prosody-modules
-```
-
-Then we can add the following line to you prosody config file to enable file uploads:
+Add the following line to your prosody config file to enable file uploads:
 
 ```cfg
 Component "{{<hl>}}uploads.example.org{{</hl>}}" "http_file_share"
@@ -134,7 +128,7 @@ Prosody includes the `internal` and `sql` storage backends by default.
 If you wish to run Prosody with PostgreSQL, begin by installing the PostgreSQL:
 
 ```sh
-apt install postgresql
+apt install postgresql lua-dbi-postgresql
 ```
 
 Then start the daemon:
