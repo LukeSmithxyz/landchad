@@ -87,13 +87,7 @@ With this we can bring XMPP to the level of other popular instant messaging appl
 It is extremely easy to setup.
 This part is optional, but it can make XMPP more normie-friendly if you plan on moving family members and friends over to XMPP.
 
-First we need to install extra prosody modules. Run the following command:
-
-```sh
-apt install prosody-modules
-```
-
-Then we can add the following line to you prosody config file to enable file uploads:
+Add the following line to your prosody config file to enable file uploads:
 
 ```cfg
 Component "{{<hl>}}uploads.example.org{{</hl>}}" "http_file_share"
@@ -107,7 +101,7 @@ This helps with file transfers for devices behind a NAT, and unless you are usin
 Enable the proxy by adding the following line to the config:
 
 ```cfg
-Component " {{<hl>}}proxy.example.org{{</hl>}}" "proxy65"
+Component "{{<hl>}}proxy.example.org{{</hl>}}" "proxy65"
 ```
 
 As you can see, another subdomain is needed. We will add ssl certificates for this later.
@@ -117,7 +111,7 @@ At this point, file sharing is now setup and ready to be used. Although there ar
 A big concern with file sharing is large files, seeing as all files shared over XMPP will be stored on your server. This can become a problem when many (and large) files are being shared. We can put a cap on large files by adding the following line to our config:
 
 ```cfg
-http_file_share_file_size_limit = 20971520
+http_file_share_size_limit = 20971520
 ```
 
 This puts a 20MB cap on all files being shared. The value is specified in bytes. You can also specify after how long files should be deleted by adding the following line:
@@ -134,7 +128,7 @@ Prosody includes the `internal` and `sql` storage backends by default.
 If you wish to run Prosody with PostgreSQL, begin by installing the PostgreSQL:
 
 ```sh
-apt install postgresql
+apt install postgresql lua-dbi-postgresql
 ```
 
 Then start the daemon:
