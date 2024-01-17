@@ -218,7 +218,7 @@ and `ip6` mechanisms. If you don't include them, some email hosts (most
 notoriously gmail) will not accept mail from your server.
 
 The `IP4` and `IP6` values should be the same as what you set your [PTR
-records](../rdns.html) to.
+records](../rdns) to.
 
 The output of `cat /etc/mailname` is the Host field. The output of the second command is the TXT value.
 
