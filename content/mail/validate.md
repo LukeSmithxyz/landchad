@@ -209,9 +209,22 @@ an email-authentication standard used to prevent spammers from sending messages
 that appear to come from a spoofed domain.
 
     cat /etc/mailname
-    echo "v=spf1 mx a:mail.$(cat /etc/mailname) -all"
+    IP4=<your VPS's IPv4 address>
+    IP6=<your VPS's IPv6 address>
+    echo "v=spf1 mx a:mail.$(cat /etc/mailname) ip4:$IP4 ip6:$IP6 -all"
+
+**Note**: previous versions of this guide didn't ask you to specify the `ip4`
+and `ip6` mechanisms. If you don't include them, some email hosts (most
+notoriously gmail) will not accept mail from your server.
+
+The `IP4` and `IP6` values should be the same as what you set your [PTR
+records](../rdns.html) to.
 
 The output of `cat /etc/mailname` is the Host field. The output of the second command is the TXT value.
 
 Again, you can check [that site](https://appmaildev.com/en/spf)
 to make sure your DKIM, DMARC, and SPF entries are valid. That's it!
+
+## Contribution
+
+- SPF mechanisms updated by Martin Chrzanowski \-- [website](https://m-chrzan.xyz), [donate](https://m-chrzan.xyz/donate.html)
