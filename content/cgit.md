@@ -53,8 +53,8 @@ server {
         fastcgi_param       SCRIPT_FILENAME /usr/lib/git-core/git-http-backend;
         fastcgi_param       PATH_INFO           $uri;
         fastcgi_param       GIT_HTTP_EXPORT_ALL 1;
-        fastcgi_param       GIT_PROJECT_ROOT    /srv/git;
-        fastcgi_param       HOME                /srv/git;
+        fastcgi_param       GIT_PROJECT_ROOT    /var/git;
+        fastcgi_param       HOME                /var/git;
         fastcgi_pass        unix:/run/fcgiwrap.socket;
     }
 
@@ -90,11 +90,11 @@ root-title={{<hl>}}Chad's git server{{</hl>}}
 root-desc={{<hl>}}A web interface to LandChad's git repositories, powered by Cgit{{</hl>}}
 
 # The location where git repos are stored on the server
-scan-path=/srv/git/
+scan-path=/var/git/
 ```
 
 This configuration assumes you followed the [git hosting guide](/git)
-and store your repositories on the `/srv/git/` directory.
+and store your repositories on the `/var/git/` directory.
 
 Cgit\'s configuration allows changing many settings, as documented on
 the cgitrc(5) manpage installed with Cgit.
