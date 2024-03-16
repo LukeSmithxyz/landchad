@@ -114,10 +114,10 @@ service auth {
 }
 
 protocol lda {
-  mail_plugins = \$mail_plugins sieve
+  mail_plugins = $mail_plugins sieve
 }
 protocol lmtp {
-  mail_plugins = \$mail_plugins sieve
+  mail_plugins = $mail_plugins sieve
 }
 plugin {
 	sieve = ~/.dovecot.sieve
