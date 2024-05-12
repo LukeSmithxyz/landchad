@@ -123,6 +123,22 @@ Once we\'ve done that, we will reload our SSH daemon:
 systemctl reload sshd
 ```
 
+### **Warning:**
+
+If you are using Debian 12, it is possible that your ssh configuration
+will be overridden by the default configuration added when creating
+the VPS, which will leave you vulnerable to brute force attacks. To
+prevent this, remove the configuration file using the following
+command:
+
+```sh
+rm /etc/ssh/sshd_config/50-cloud-init.conf
+```
+
+Also verify that the `/etc/ssh/ssh_config.d/` path is empty. If not,
+make sure that the configuration files in that folder are not
+overriding yours.
+
 ### We\'re done!
 
 Now you can log in quickly and password-less-ly to your server, despite
