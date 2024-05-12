@@ -125,7 +125,7 @@ systemctl reload sshd
 
 ### **Warning:**
 
-If you are using Debian 12, it is possible that your ssh configuration
+It is possible that your ssh configuration
 will be overridden by the default configuration added when creating
 the VPS, which will leave you vulnerable to brute force attacks. To
 prevent this, remove the configuration file using the following
