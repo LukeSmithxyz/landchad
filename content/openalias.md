@@ -60,17 +60,35 @@ The second entry has \"chad\" as the \"Host\"; this will allow people to
 send money to `chad@landchad.net`, i.e. this is how you allow people to
 connect a Monero address with an email address.
 
+### Enabling DNSSEC
+This should already work but addresses resolved in this manner can be
+spoofed on the way to your computer.
+
+Many GUIs will warn with something similar to \"OpenAlias Error, Address
+found, but the DNSSEC signatures could not be verified, so this address may
+be spoofed\".
+
+DNSSEC cryptographically signs your DNS entries allowing for clients to
+verify whether the returned address was changed on the way from the
+original nameserver to your machine.
+
+If your Domain Provider supports DNSSEC you should be able to simply toggle
+it on. For example on Epik this is just a separate tab on your domain just
+like DNS Records.
+
+{{<img alt="dnssec" src="/pix/openalias-02.png" link="/pix/openalias-02.png" >}}
+
 ### Checking to see if it works\...
 
 Let\'s check to see if it works. In the Monero wallet, we can now type
 in `landchad.net` as a recipient:
 
-{{< img alt="checking" src="/pix/openalias-02.png" link="/pix/openalias-02.png" >}}
+{{< img alt="checking" src="/pix/openalias-03.png" link="/pix/openalias-03.png" >}}
 
 And once we press the \"Resolve\" button, it automatically turns into
 that address we gave to the DNS!
 
-{{< img alt="It works!" src="/pix/openalias-03.png" link="/pix/openalias-03.png" >}}
+{{< img alt="It works!" src="/pix/openalias-04.png" link="/pix/openalias-04.png" >}}
 
 Now people can donate Monero to you without having to worry about QR
 codes or copying-and-pasting super-long public addresses!
@@ -89,13 +107,13 @@ oa1:btc recipient_address=bc1q9f3tmkhnxj8gduytdktlcw8yrnx3g028nzzsc5; recipient_
 
 Add the TXT entries in and save:
 
-{{< img alt="bitcoin openalias entries" src="/pix/openalias-04.png" link="/pix/openalias-04.png" >}}
+{{< img alt="bitcoin openalias entries" src="/pix/openalias-05.png" link="/pix/openalias-05.png" >}}
 
 And we can then check that it\'s working by trying to send money to
 `landchad.net` in Electrum. See that it automatically appends the
 address!
 
-{{< img alt="electrum resolves an openalias" src="/pix/openalias-05.png" link="/pix/openalias-05.png" >}}
+{{< img alt="electrum resolves an openalias" src="/pix/openalias-06.png" link="/pix/openalias-06.png" >}}
 
 And that\'s it. Now users can easily send your website or email address
 Bitcoin or Monero without having to worry about hard to read addresses
