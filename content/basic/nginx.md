@@ -33,7 +33,7 @@ for your password, and you can just copy or type in the password from
 Vultr\'s site.
 
 If you get an error here, you might not have done your [DNS
-settings](dns.html) right. Double check those. Note you can also replace
+settings](/basic/dns) right. Double check those. Note you can also replace
 the `example.org` with your IP address, but you\'ll want to fix your DNS
 settings soon.
 
