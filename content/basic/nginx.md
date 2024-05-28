@@ -199,7 +199,7 @@ someone could exploit it. Open the main Nginx config file
 Uncomment it, and reload Nginx.
 
 Remember to [keep your server software up to
-date](maintenance.html#update) to get the latest security fixes!
+date](/../maintenance#update) to get the latest security fixes!
 
 ## We now have a running website!
 
