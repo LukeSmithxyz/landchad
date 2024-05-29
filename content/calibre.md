@@ -94,7 +94,7 @@ server {
 }
 ```
 
-Issue a Let\'s Encrypt certificate. [Detailed instructions and additional information](/certbot).
+Issue a Let\'s Encrypt certificate. [Detailed instructions and additional information](/basic/certbot).
 
 ```sh
 certbot --nginx

@@ -25,7 +25,7 @@ If you want to start an email server, therefore, go to your VPS\'s site
 and open a ticket or make a request to open up email ports, notably port `25`. This is a
 simple process that requires nothing too special. One of the wagies at
 your VPS will kindly do the needful and open your ports for you. Note
-that this is not the same as unblocking a port with [ufw](ufw.html),
+that this is not the same as unblocking a port with [ufw](/../ufw),
 which still needs to be done for SMTP to work.
 
     ufw allow 25,587 proto tcp

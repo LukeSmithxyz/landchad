@@ -18,7 +18,7 @@ Because Matrix uses **HTTP** for transport over the SSL ports (443 and 8448), yo
 
 Depending on your setup, there are 2 different configurations to achieve this:
 
-1. Your *desired* domain (**example.org**) has an [A DNS record](http://localhost:1313/basic/dns/) that already poinst to your desired Matrix server, so you can configure this or add to your existing NGINX static site configuration to setup Matrix.
+1. Your *desired* domain (**example.org**) has an [A DNS record](/basic/dns/) that already poinst to your desired Matrix server, so you can configure this or add to your existing NGINX static site configuration to setup Matrix.
 
 2. You wish to use Matrix with your *desired* domain (**example.org**) but this domain's A record points to a different server, accessible through another domain (like **matrix.example.org**). In this case, look into [delegation.](https://matrix-org.github.io/synapse/latest/delegate.html)
  
