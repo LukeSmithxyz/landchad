@@ -122,7 +122,7 @@ server {
 
 Nginx will listen in port 8080, but i2pd will forward your port 8080 to the i2p site port 80. This way you don\'t have to deal with server names or anything like that.
 
-From here we are almost done, all we have to do is enable the site and reload nginx which is also covered in [the webserver tutorial](nginx.html#enable).
+From here we are almost done, all we have to do is enable the site and reload nginx which is also covered in [the webserver tutorial](/basic/nginx#enable).
 
 ### Update regularly!
 
