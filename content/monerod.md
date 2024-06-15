@@ -122,9 +122,9 @@ Edit `/etc/tor/torrc` and add the following:
 HiddenServiceDir /var/lib/tor/monerod
 
 # For wallets connecting over RPC:
-HiddenServicePort 18081 127.0.0.1:18081
+HiddenServicePort 18081 127.0.0.1:18181
 # For other nodes:
-HiddenServicePort 18083 127.0.0.1:18083
+HiddenServicePort 18083 127.0.0.1:18183
 ```
 
 Now restart Tor:
@@ -145,13 +145,13 @@ Edit `tunnels.conf` (Which may be located in `/home/i2p/.i2pd/` if you followed 
 [monerod]
 type = http
 host = 127.0.0.1
-port = 18083
+port = 18283
 keys = monerod.dat
 
 [monerod-rpc]
 type = http
 host = 127.0.0.1
-port = 18081
+port = 18281
 keys = monerod-rpc.dat
 ```
 
@@ -171,13 +171,13 @@ printf "%s.b32.i2p
 Then, in `/etc/monerod.conf`, add the following:
 
 ```sh
-# I2P config
-tx-proxy=i2p,127.0.0.1:4447
-anonymous-inbound={{<hl>}}your-i2p-address-here.b32.i2p{{</hl>}}:80,127.0.0.1:18083,16 # Maximum 16 simultaneous connections
-
 # Tor config
 tx-proxy=tor,127.0.0.1:9050,10
-anonymous-inbound={{<hl>}}your-tor-address-here.onion{{</hl>}}:18083,127.0.0.1:18083,16
+anonymous-inbound={{<hl>}}your-tor-address-here.onion{{</hl>}}:18083,127.0.0.1:18183,16
+
+# I2P config
+tx-proxy=i2p,127.0.0.1:4447
+anonymous-inbound={{<hl>}}your-i2p-address-here.b32.i2p{{</hl>}}:80,127.0.0.1:18283,16 # Maximum 16 simultaneous connections
 ```
 
 ## Running the Node
