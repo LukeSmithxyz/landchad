@@ -31,6 +31,8 @@ tar -xvjf linux64
 mv linux64/monero* /usr/bin/
 ```
 
+If the hardware you are using is not based on the amd64 architecture (like a Raspberry Pi), the monero project also [offers binaries](https://www.getmonero.org/downloads/) for other architectures on Linux, to download and install them simply change the last part of the link (linux64) and the archive name, e.g. for arm64 (linuxarm8). The fastest way to find out which one to use in Debian is with the `dpkg --print-architecture` command.
+
 ## Configuration
 
 By default, Monero comes with no sample configuration files. Create one in `/etc/monerod.conf` using a text editor, and enter the following details:
