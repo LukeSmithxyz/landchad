@@ -58,7 +58,7 @@ If you run `i2pd` with the configuration above, it will generate a random privat
 
 If you instead pre-generate a private key for your website, you can use brute-force computation to make a "vanity" address, such as the following:
 ```
-chadaor3jc08ht340c30mg5cf340j395gj095kuazj5tokipr34f.32.i2p
+{{<hl>}}chad{{</hl>}}aor3jc08ht340c30mg5cf340j395gj095kuazj5tokipr34f.32.i2p
 ```
 
 To accomplish this, a set of tools named `i2pd-tools` can be installed.
@@ -81,7 +81,7 @@ make -j$(nproc)
 
 This will build a variety of useful tools for i2p, with `vain` being the command of interest to generate an address:
 ```sh
-./vain chad
+./vain {{<hl>}}chad{{</hl>}}
 ```
 This command will begin running and output a new set of private keys named `private.dat` to the same directory it's ran from. Copy this file to your i2p configuration and you'll have your vanity address:
 
@@ -94,7 +94,7 @@ cp private.dat /var/lib/i2pd/example.dat
 I2P has various **registrars** that let users link their long I2P addresses to shorter, more memorable ones, like `example.i2p`. To actually register your site on one of these registrars, you will need an **authentication string.** Luckily, `i2pd-tools` includes such a tool in their repository:
 
 ```sh
-./regaddr private.dat example.2ip > auth_string.txt
+./regaddr private.dat {{<hl>}}example.2ip{{</hl>}} > {{<hl>}}auth_string.txt{{</hl>}}
 ```
 
 The command above will save the string to a file named `auth_string.txt`. You will have to place the text contained in that file on a registration page like [http://reg.i2p/add](http://reg.i2p/add) or [http://stats.i2p/i2p/addkey.html](http://stats.i2p/i2p/addkey.html).
@@ -121,7 +121,7 @@ From here, the steps are almost identical to setting up a normal website configu
 ```nginx
 server {
 	listen 127.0.0.1:8080 ;
-	root /var/www/example ;
+	root /var/www/{{<hl>}}example{{</hl>}} ;
 	index index.html ;
 }
 ```
