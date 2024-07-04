@@ -15,9 +15,24 @@ There are 2 main I2P implementations, I2P and i2pd, we are using i2pd in this gu
 
 ### Installing I2P
 
-i2pd is in most repos, in debian/ubuntu you can install it simply with
+We need to [add the i2pd repos to our system](https://repo.i2pd.xyz/) to get the latest version of i2pd:
+
+Install apt-transport-https and gpg package:
 
 ```sh
+apt install apt-transport-https gpg
+```
+
+Automatically add the repository with a script:
+
+```sh
+wget -q -O - https://repo.i2pd.xyz/.help/add_repo | bash -s -
+```
+
+After that you can install i2pd as any other software package:
+
+```sh
+apt update
 apt install i2pd
 ```
 
@@ -46,7 +61,7 @@ keys = example.dat
 
 If you run `i2pd` with the configuration above, it will generate a random private key (`example.dat`) for your website in `example.dat` with a matching address made up of 52 random characters, derived from this same key.
 
-If you instead pre-generate a private key for your website, you can use  brute-force computation to make a "vanity" address, such as the following:
+If you instead pre-generate a private key for your website, you can use brute-force computation to make a "vanity" address, such as the following:
 ```
 {{<hl>}}chad{{</hl>}}aor3jc08ht340c30mg5cf340j395gj095kuazj5tokipr34f.32.i2p
 ```
