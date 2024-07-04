@@ -47,6 +47,9 @@ data-dir={{<hl>}}/var/lib/monero{{</hl>}}
 log-file={{<hl>}}/var/log/monero/monero.log{{</hl>}}
 log-level=0
 
+# Slow but reliable db writes
+db-sync-mode=safe
+
 # 1048576 kB/s == 1GB/s; a raise from default 2048 kB/s; contribute more to p2p network
 limit-rate-up=1048576
 limit-rate-down=1048576
