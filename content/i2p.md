@@ -76,7 +76,7 @@ sh dependencies.sh
 
 Then compile using the `make` command:
 ```sh
-make -j$(nproc)
+make
 ```
 
 This will build a variety of useful tools for i2p, with `vain` being the command of interest to generate an address:
