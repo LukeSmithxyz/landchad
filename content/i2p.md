@@ -11,28 +11,36 @@ Now you have a website, why not offer it in a private alternative such as the In
 
 ## Setting up I2P
 
-There are 2 main I2P implementations, I2P and i2pd, we are using i2pd in this guide because it\'s easier to use in servers.
+There are 2 main I2P implementations, I2P and i2pd, we are using i2pd in this guide because it's easier to use on servers.
 
 ### Installing I2P
 
-i2pd is in most repos, in debian/ubuntu you can install it simply with
+We need to [add the i2pd repos to our system](https://repo.i2pd.xyz/) to get the latest version of i2pd:
+
+Install apt-transport-https and gpg package:
 
 ```sh
+apt install apt-transport-https gpg
+```
+
+Automatically add the repository with a script:
+
+```sh
+wget -q -O - https://repo.i2pd.xyz/.help/add_repo | bash -s -
+```
+
+After that you can install i2pd as any other software package:
+
+```sh
+apt update
 apt install i2pd
 ```
 
 ### Enabling I2P
 
-We are going to create a user for i2pd, because i2pd finds the configuration files in its home directory. And it\'s easier (and more tidy) to have it in a separate user:
+Next we have to configure the i2pd daemon, the configuration is located at `/etc/i2pd/`.
 
-```sh
-useradd -m i2p -s /bin/bash
-su -l i2p
-mkdir ~/.i2pd
-cd ~/.i2pd
-```
-
-Now that you\'re in \~/.i2pd, you have to create a file named \"tunnels.conf\". Which is the config file for every hidden service you\'re offering over I2P, the content should be like this:
+Edit the `tunnels.conf` file and add the following configuration to the file:
 
 ```systemd
 [example]
@@ -42,11 +50,13 @@ port = 8080
 keys = example.dat
 ```
 
+You can comment or remove the tunnels that are added by default in the configuration file.
+
 #### Optional: Generating a Vanity Address
 
-If you run `i2pd` with the configuration above, it will generate a random private key (`example.dat`) for your website in `example.dat` with a matching address made up of 52 random characters, derived from this same key.
+If you run `i2pd` with the configuration above, it will generate a random private key (`example.dat`) for your website at `/var/lib/i2pd/` with a matching address made up of 52 random characters, derived from this same key.
 
-If you instead pre-generate a private key for your website, you can use  brute-force computation to make a "vanity" address, such as the following:
+If you instead pre-generate a private key for your website, you can use brute-force computation to make a "vanity" address, such as the following:
 ```
 {{<hl>}}chad{{</hl>}}aor3jc08ht340c30mg5cf340j395gj095kuazj5tokipr34f.32.i2p
 ```
@@ -66,7 +76,7 @@ sh dependencies.sh
 
 Then compile using the `make` command:
 ```sh
-make -j$(nproc)
+make
 ```
 
 This will build a variety of useful tools for i2p, with `vain` being the command of interest to generate an address:
@@ -76,7 +86,7 @@ This will build a variety of useful tools for i2p, with `vain` being the command
 This command will begin running and output a new set of private keys named `private.dat` to the same directory it's ran from. Copy this file to your i2p configuration and you'll have your vanity address:
 
 ```sh
-cp private.dat /home/i2p/.i2pd/example.dat
+cp private.dat /var/lib/i2pd/example.dat
 ```
 
 #### Optional: Authentication Strings for Registrars
@@ -91,7 +101,7 @@ The command above will save the string to a file named `auth_string.txt`. You wi
 
 ### Getting your I2P Hostname
 
-Then, run `/usr/sbin/i2pd --daemon` to start i2pd and we can retreive our I2P hostname.
+Then, run the command `systemctl start i2pd` to start i2pd and `systemctl enable i2pd` to enable i2pd at startup, this will automatically generate our I2P hostname which we will now see.
 
 This can be done in lynx or a command-line browser by going to `http://127.0.0.1:7070/?page=i2p_tunnels` to get your I2P hostname.
 
@@ -99,14 +109,14 @@ You can also run these commands to find your hostname:
 
 ```sh
 printf "%s.b32.i2p
-" $(head -c 391 /home/i2p/.i2pd/example.dat |sha256sum|xxd -r -p | base32 |sed s/=//g | tr A-Z a-z)
+" $(head -c 391 /var/lib/i2pd/example.dat | sha256sum | xxd -r -p | base32 | sed s/=//g | tr A-Z a-z)
 ```
 
 *(If you've generated your own keys to obtain a vanity address, now's a good time to make sure i2pd is properly reading those keys by verifying the address is the same as the one generated with the `vain` command.)*
 
 ## Adding the Nginx Config
 
-From here, the steps are almost identical to setting up a normal websitenconfiguration file. Follow the steps as if you were making a new website on the webserver [tutorial](/basic/nginx) up until the server block of code. Instead, paste this:
+From here, the steps are almost identical to setting up a normal website configuration file. Follow the steps as if you were making a new website on the webserver [tutorial](/basic/nginx) up until the server block of code. Instead, paste this:
 
 ```nginx
 server {
@@ -118,9 +128,7 @@ server {
 
 #### Clarifications
 
-####
-
-Nginx will listen in port 8080, but i2pd will forward your port 8080 to the i2p site port 80. This way you don\'t have to deal with server names or anything like that.
+Nginx will listen on port 8080, but i2pd will forward your port 8080 to the i2p site port 80. This way you don't have to deal with server names or anything like that.
 
 From here we are almost done, all we have to do is enable the site and reload nginx which is also covered in [the webserver tutorial](/basic/nginx#enable).
 
@@ -129,7 +137,9 @@ From here we are almost done, all we have to do is enable the site and reload ng
 Make sure to update I2P on a regular basis by running:
 
 ```sh
-apt update && apt install i2pd
+apt update && apt upgrade
 ```
 
-**Contributor** - [qorg11](https://qorg11.net)
+**Contributors** 
+- [qorg11](https://qorg11.net)
+- [David Uhden](https://github.com/daviduhden)

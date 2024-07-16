@@ -31,6 +31,8 @@ tar -xvjf linux64
 mv linux64/monero* /usr/bin/
 ```
 
+If the hardware you are using is not based on the amd64 architecture (like a Raspberry Pi), the monero project also [offers binaries](https://www.getmonero.org/downloads/) for other architectures on Linux, to download and install them simply change the last part of the link (linux64) and the archive name, e.g. for arm64 (linuxarm8). The fastest way to find out which one to use in Debian is with the `dpkg --print-architecture` command.
+
 ## Configuration
 
 By default, Monero comes with no sample configuration files. Create one in `/etc/monerod.conf` using a text editor, and enter the following details:
@@ -44,6 +46,9 @@ By default, Monero comes with no sample configuration files. Create one in `/etc
 data-dir={{<hl>}}/var/lib/monero{{</hl>}}
 log-file={{<hl>}}/var/log/monero/monero.log{{</hl>}}
 log-level=0
+
+# Slow but reliable db writes
+db-sync-mode=safe
 
 # 1048576 kB/s == 1GB/s; a raise from default 2048 kB/s; contribute more to p2p network
 limit-rate-up=1048576
@@ -122,9 +127,9 @@ Edit `/etc/tor/torrc` and add the following:
 HiddenServiceDir /var/lib/tor/monerod
 
 # For wallets connecting over RPC:
-HiddenServicePort 18081 127.0.0.1:18081
+HiddenServicePort 18081 127.0.0.1:18181
 # For other nodes:
-HiddenServicePort 18083 127.0.0.1:18083
+HiddenServicePort 18083 127.0.0.1:18183
 ```
 
 Now restart Tor:
@@ -139,19 +144,19 @@ cat /var/lib/tor/monerod/hostname
 
 ### I2P
 
-Edit `tunnels.conf` (Which may be located in `/home/i2p/.i2pd/` if you followed [this](/i2p) guide) and add the following tunnels:
+Edit `tunnels.conf` (Which may be located in `/etc/i2pd/` if you followed [this](/i2p) guide) and add the following tunnels:
 
 ```systemd
 [monerod]
 type = http
 host = 127.0.0.1
-port = 18083
+port = 18283
 keys = monerod.dat
 
 [monerod-rpc]
 type = http
 host = 127.0.0.1
-port = 18081
+port = 18281
 keys = monerod-rpc.dat
 ```
 
@@ -171,13 +176,13 @@ printf "%s.b32.i2p
 Then, in `/etc/monerod.conf`, add the following:
 
 ```sh
-# I2P config
-tx-proxy=i2p,127.0.0.1:4447
-anonymous-inbound={{<hl>}}your-i2p-address-here.b32.i2p{{</hl>}}:80,127.0.0.1:18083,16 # Maximum 16 simultaneous connections
-
 # Tor config
 tx-proxy=tor,127.0.0.1:9050,10
-anonymous-inbound={{<hl>}}your-tor-address-here.onion{{</hl>}}:18083,127.0.0.1:18083,16
+anonymous-inbound={{<hl>}}your-tor-address-here.onion{{</hl>}}:18083,127.0.0.1:18183,16
+
+# I2P config
+tx-proxy=i2p,127.0.0.1:4447
+anonymous-inbound={{<hl>}}your-i2p-address-here.b32.i2p{{</hl>}}:80,127.0.0.1:18283,16 # Maximum 16 simultaneous connections
 ```
 
 ## Running the Node
