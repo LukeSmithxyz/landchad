@@ -87,7 +87,7 @@ mirror.
 
 Now we are almost done, all we have to do is enable the site and reload
 nginx which, is also covered in [the webserver
-tutorial](nginx.html#enable).
+tutorial](/basic/nginx#enable).
 
 ### Advertise your onion service
 
@@ -115,5 +115,3 @@ Make sure to update Tor on a regular basis by running:
 
 You do **<u>not</u>** need to run certbot for an ssl certificate.
 HTTP over tor is plenty secure!
-
-**Contributor** - [tomfasano.net](https://tomfasano.net)

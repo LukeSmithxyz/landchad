@@ -33,7 +33,7 @@ for your password, and you can just copy or type in the password from
 Vultr\'s site.
 
 If you get an error here, you might not have done your [DNS
-settings](dns.html) right. Double check those. Note you can also replace
+settings](/basic/dns) right. Double check those. Note you can also replace
 the `example.org` with your IP address, but you\'ll want to fix your DNS
 settings soon.
 
@@ -199,7 +199,7 @@ someone could exploit it. Open the main Nginx config file
 Uncomment it, and reload Nginx.
 
 Remember to [keep your server software up to
-date](maintenance.html#update) to get the latest security fixes!
+date](/../maintenance#update) to get the latest security fixes!
 
 ## We now have a running website!
 
