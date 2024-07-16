@@ -170,7 +170,7 @@ You can permanently change your hostname by changing it in
 `/etc/hostname` and rebooting, or you can just run
 `hostname example.org` to change it temporarily for testing. Either way,
 this will allow us to run the `mail` command as in [the SMTP
-article](smtp.html).
+article](../smtp).
 
 ```sh
 echo "Hi there.
