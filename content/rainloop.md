@@ -3,6 +3,7 @@ title: "Rainloop"
 tags: ['service']
 icon: 'rainloop.png'
 short_desc: 'A graphical website for accessing a mail server.'
+date: 2022-06-25
 ---
 
 

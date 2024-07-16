@@ -3,6 +3,7 @@ title: "Alps"
 tags: ['service']
 icon: 'alps.webp'
 short_desc: 'Alps is a simple and extensible webmail. It offers a web interface for IMAP, SMTP and other upstream servers.'
+date: 2024-07-16
 ---
 
 
@@ -46,7 +47,7 @@ Wants=network-online.target
 [Service]
 Restart=always
 Type=simple
-ExecStart=/usr/local/bin/alps -theme alps -addr 127.0.0.1:1323 -login-key yourloginkey imaps://mail.example.org:993 smtps://mail.example.org:465 
+ExecStart=/usr/local/bin/alps -theme alps -addr 127.0.0.1:1323 -login-key yourloginkey imaps://mail.example.org:993 smtps://mail.example.org:465
 WorkingDirectory=/opt/alps
 Environment="GOPATH=/opt/alps/.gopath"
 Environment="GOCACHE=/opt/alps/.gocache"

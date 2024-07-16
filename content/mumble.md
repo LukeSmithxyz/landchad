@@ -2,7 +2,7 @@
 title: "Mumble"
 icon: 'mumble.svg'
 tags: ['service']
-date: 2023-07-2
+date: 2023-07-02
 short_desc: 'Open Source, Low Latency, High Quality Voice Chat.'
 ---
 
@@ -35,7 +35,7 @@ Initialize all the submodules.
 git submodule update --init
 ```
 
-Create a build directory and run `cmake`. 
+Create a build directory and run `cmake`.
 Cmake will create all the necessary files to build the mumble-server and client.
 
 ```sh
@@ -93,7 +93,7 @@ root   127689  0.0  0.1 112956 22572 ?        Sl   19:19   0:00 ./mumble-server
 
 ## Connecting to your mumble-server as a SuperUser
 
-You will probably will be left with your `mumble` binary in the build folder on your local machine. 
+You will probably will be left with your `mumble` binary in the build folder on your local machine.
 
 Now you should make it executable and move it in the `/usr/bin` folder.
 
@@ -115,7 +115,7 @@ Click on the button `Add New...` and fill out the information need to connect to
 
 {{< img src="/pix/mumble/mumble-2.png" alt="add server window" >}}
 
-If you haven't edited the port, `64738` will be default one. 
+If you haven't edited the port, `64738` will be default one.
 
 Click on `Ok`, select your server from the list and click `Connect`.
 
