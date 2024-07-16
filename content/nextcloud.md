@@ -22,10 +22,10 @@ cloud experience (in the likes of Google Services, anyways).
 First, we install the dependencies:
 
 ```sh
-apt install -y nginx python3-certbot-nginx mariadb-server php7.4 php7.4-{fpm,bcmath,bz2,intl,gd,mbstring,mysql,zip,xml,curl}
+apt install -y nginx python3-certbot-nginx mariadb-server php php-{fpm,bcmath,bz2,intl,gd,mbstring,mysql,zip,xml,curl}
 ```
 
-*Optionally*, you can improve the performance of your Nextcloud server by adjusting the child processes that are used to execute PHP scripts. That way, more PHP scripts can be executed at once. Make the following adjustments to `/etc/php/7.4/fpm/pool.d/www.conf`:
+*Optionally*, you can improve the performance of your Nextcloud server by adjusting the child processes that are used to execute PHP scripts. That way, more PHP scripts can be executed at once. Make the following adjustments to `/etc/php/8.2/fpm/pool.d/www.conf`:
 
 ```systemd
 pm = dynamic
@@ -98,7 +98,7 @@ Add the following content [based of Nextcloud's recommendations](https://docs.ne
 
 ```nginx
 upstream php-handler {
-    server unix:/var/run/php/php7.4-fpm.sock;
+    server unix:/var/run/php/php-fpm.sock;
     server 127.0.0.1:9000;
 }
 map $arg_v $asset_immutable {
@@ -216,7 +216,7 @@ chmod -R 755 /var/www/nextcloud
 Start and enable php-fpm and reload nginx:
 
 ```sh
-systemctl enable php7.4-fpm --now
+systemctl enable php8.2-fpm --now
 systemctl reload nginx
 ```
 
