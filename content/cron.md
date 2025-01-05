@@ -13,13 +13,13 @@ will have already used cron when you set up Certbot, but we'll explain how they 
 You can schedule anything! Some examples of what you might have done
 already include:
 
--   `updatedb` to update your `locate` database to let you quicking search for files
+-   `updatedb` to update your `locate` database to let you quickly search for files
 -   `certbot` to update renewing of your https certs
 
 Some tasks that you might *want* to schedule may include:
 
 -   Package updates - if you really just want to leave your server alone
-    you can automated updating packages on your server
+    you can automate updating packages on your server
 -   Backups - you may want to backup certain files every day and some
     every week, this is possible with cron
 
@@ -33,7 +33,7 @@ user\'s crontab
 
 Once you have figured out the command you want to run you need to figure
 out how often you want to run it and when. I am going to schedule my
-system updates once a week on at 3:30 AM on Mondays.
+system updates once a week at 3:30 AM on Mondays.
 
 We now have to convert this time (Every Monday at 3:30 AM) into a cron
 time. Cron uses a simple but effective way of scheduling when to run
@@ -63,13 +63,13 @@ So for our Monday at 3:30 AM job we would do the following:
 -   `*` designates \"everything\". Our command above has a `*` in the
     day of month and month columns. This means it will run regardless of
     the day of the month or month.
--   The hour option uses 24 hour time. 3 = 3AM, while use 15 for 3PM.
+-   The hour option uses 24 hour time. 3 = 3AM, while we'd use 15 for 3PM.
 
 ### More examples
 
-Let\'s add another job, our backup job (for the purposes of this our
+Let\'s add another job, our backup job (for the purpose of this our
 backup command is just called `backup`). We want to run `backup` every
-evening at 11PM. Once we work out the timings for this we can add the to
+evening at 11PM. Once we work out the timings for this we can add this new job to
 the same file as the above by running `crontab -e` This would mean our
 full crontab would look like this:
 
@@ -151,8 +151,8 @@ important to at least know that system-wide jobs are often stored in the
 file directory. Some programs which need cronjobs will automatically
 install them in the following way.
 
-Run the command `ls /etc/cron*` you should see a list of directories and
-there contents. The directories should be something like the below:
+Run the command `ls /etc/cron*` and you should see a list of directories and
+their contents. The list of directories should look something like below:
 
 -   /etc/cron.d *This is a crontab like the ones that you create with*
     `crontab -e`
