@@ -56,6 +56,11 @@ Environment="GOCACHE=/opt/alps/.gocache"
 WantedBy=multi-user.target
 ```
 
+If you run Postfix and Dovecot on the same machine, you could change the `After` string to the following:
+```
+After=network.target postfix.service dovecot.service
+```
+
 Put that in `/etc/systemd/system/alps.service` and fill in your login key and your mail domain.
 
 Now, reload and start Alps.

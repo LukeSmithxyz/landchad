@@ -12,7 +12,7 @@ internet standard for calendars, todo-lists and contacts. Hosting your
 own calDAV server allows sharing calendars between mutliple devices.
 
 More information can be found on the projects offical website:
-[radicale.org](https://radicale.org/3.0.html).
+[radicale.org](https://radicale.org/v3.html).
 
 ## Installing Radicale
 

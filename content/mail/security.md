@@ -42,18 +42,20 @@ Go down to the `# Mail servers` line and paste this:
     enabled  = true
     port     = smtp,ssmtp,submission
     filter   = postfix
-    logpath  = /var/log/mail.log
+    logpath = %(postfix_log)s
+    backend = systemd
 
 
     [sasl]
 
     enabled  = true
     port     = smtp,ssmtp,submission,imap2,imap3,imaps,pop3,pop3s
-    filter   = postfix-sasl
+    filter   = postfix[mode=auth]
     # You might consider monitoring /var/log/mail.warn instead if you are
     # running postfix since it would provide the same log lines at the
     # "warn" level but overall at the smaller filesize.
-    logpath  = /var/log/mail.warn
+    logpath = %(postfix_log)s
+    backend = systemd
     maxretry = 1
     bantime  = 21600
 
@@ -62,7 +64,8 @@ Go down to the `# Mail servers` line and paste this:
     enabled = true
     port    = smtp,ssmtp,submission,imap2,imap3,imaps,pop3,pop3s
     filter  = dovecot
-    logpath = /var/log/mail.log
+    logpath = %(dovecot_log)s
+    backend = systemd
 
 This will only grant 2 login attempts and then block the requester for 6 hours. Now restart `fail2ban`:
 
