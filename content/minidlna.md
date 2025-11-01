@@ -13,7 +13,7 @@ short_desc: 'A very simple media server for DLNA and UPnP clients. Also known as
 The installation is done from the official Debian repositories.
 
 ```sh
-apt install mindlna
+apt install minidlna
 ```
 
 ## Configuration
@@ -193,3 +193,4 @@ Here is how the web page looks:
 
 ---
 Written by [Tudor Voie](https://tudorvoie.eu)
+
