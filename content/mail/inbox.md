@@ -47,83 +47,103 @@ configuration.
 One can edit each of these files individually to get the needed
 configuration, but to make things easy here, delete or backup the main
 configuration file and we will replace it with one single config file
-with all important settings in it. Make sure you change `ssl_cert`
-and `ssl_key` accordingly.
+with all important settings in it. Make sure you change `ssl_server_cert_file`
+and `ssl_server_key_file` accordingly.
 
 ``` wide
 # Note that in the dovecot conf, you can use:
-# %u for username
-# %n for the name in name@domain.tld
-# %d for the domain
-# %h the user's home directory
+# %{user} for full username (email address)
+# %{user|username} for the name part in name@domain.tld
+# %{user|domain} for the domain part
+# %{user|home} the user's home directory
+
+# Must be first non-comment line in Dovecot 2.4
+dovecot_config_version = 2.4
+# Must include storage version declaration
+dovecot_storage_version = 2.4
 
 # Connections between the mail client and Dovecot needs to be encrypted
 ssl = required
-ssl_cert = </etc/letsencrypt/live/mail.example.org/fullchain.pem
-ssl_key = </etc/letsencrypt/live/mail.example.org/privkey.pem
+ssl_server_cert_file = /etc/letsencrypt/live/mail.example.org/fullchain.pem
+ssl_server_key_file = /etc/letsencrypt/live/mail.example.org/privkey.pem
 ssl_min_protocol = TLSv1.2
 ssl_cipher_list = EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA256:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EDH+aRSA+AESGCM:EDH+aRSA+SHA256:EDH+aRSA:EECDH:!aNULL:!eNULL:!MEDIUM:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS:!RC4:!SEED
-ssl_prefer_server_ciphers = yes
-ssl_dh = </usr/share/dovecot/dh.pem
+ssl_server_prefer_ciphers = server
+ssl_server_dh_file = /usr/share/dovecot/dh.pem
 auth_mechanisms = plain login
-auth_username_format = %n
+auth_username_format = %{user|username}
 
-protocols = $protocols imap
+protocols {
+    imap = yes
+}
 
 # Search for valid users in /etc/passwd
-userdb {
+userdb passwd {
     driver = passwd
 }
-#Fallback: Use plain old PAM to find user passwords
-passdb {
+# Fallback: Use plain old PAM to find user passwords
+passdb pam {
     driver = pam
 }
 
 # Our mail for each user will be in ~/Mail, and the inbox will be ~/Mail/Inbox
-mail_location = maildir:~/Mail:INBOX=~/Mail/Inbox:LAYOUT=fs
+mail_driver = maildir
+mail_path = ~/Mail
+mailbox_list_layout = fs
 namespace inbox {
     inbox = yes
     mailbox Drafts {
-    special_use = \Drafts
-    auto = subscribe
-}
+        special_use = \Drafts
+        auto = subscribe
+    }
     mailbox Junk {
-    special_use = \Junk
-    auto = subscribe
-    autoexpunge = 30d
-}
+        special_use = \Junk
+        auto = subscribe
+        autoexpunge = 30d
+    }
     mailbox Sent {
-    special_use = \Sent
-    auto = subscribe
-}
+        special_use = \Sent
+        auto = subscribe
+    }
     mailbox Trash {
-    special_use = \Trash
-}
+        special_use = \Trash
+    }
     mailbox Archive {
-    special_use = \Archive
-}
+        special_use = \Archive
+    }
 }
 
-# Here we let Postfix use Dovecot's authetication system.
+# Here we let Postfix use Dovecot's authentication system.
 service auth {
-  unix_listener /var/spool/postfix/private/auth {
-    mode = 0660
-    user = postfix
-    group = postfix
-}
+    unix_listener /var/spool/postfix/private/auth {
+        mode = 0660
+        user = postfix
+        group = postfix
+    }
 }
 
 protocol lda {
-  mail_plugins = $mail_plugins sieve
+    mail_plugins {
+        sieve = yes
+    }
 }
 protocol lmtp {
-  mail_plugins = $mail_plugins sieve
+    mail_plugins {
+        sieve = yes
+    }
 }
-plugin {
-	sieve = ~/.dovecot.sieve
-	sieve_default = /var/lib/dovecot/sieve/default.sieve
-	sieve_dir = ~/.sieve
-	sieve_global_dir = /var/lib/dovecot/sieve/
+sieve_script personal {
+    driver = file
+    path = ~/.sieve
+    active_path = ~/.dovecot.sieve
+}
+sieve_script default {
+    sieve_script_type = global
+    path = /var/lib/dovecot/sieve/default.sieve
+}
+sieve_script global_dir {
+    sieve_script_type = global
+    path = /var/lib/dovecot/sieve/
 }
 ```
 
