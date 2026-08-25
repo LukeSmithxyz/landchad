@@ -55,6 +55,12 @@ To create additional users, htpasswd is used again but without the additional mo
 htpasswd -B /etc/radicale/users username2
 ```
 
+To share calendars, contacts, and reminders with another user create a symlink between the user collections. 
+
+```
+ln -s '/var/lib/radicale/collections/collection-root/{username1}/{collection_name} /var/lib/radicale/collections/collections-root/{username2}/
+```
+
 As Radicale stands now it is fully functional and after starting it by
 executing its binary, can be accessed under example.org:5232. But there
 are two additional things we can do to make using and managing Radicale
