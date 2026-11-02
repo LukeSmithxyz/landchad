@@ -73,6 +73,15 @@ Then get NGINX to reload your configuration. This configuration also enables
 cloning via HTTPS, so make sure to point the `fastcgi_param GIT_PROJECT_ROOT`
 to the directory where you store your repositories.
 
+## Configuring git
+
+To allow git-http-backend serve cloning requests via HTTPS for your repositories add following to your `/etc/gitconfig` assuming `/var/git` is folder containing said repositories
+
+```txt
+[safe]
+	directory=/var/git/*
+```
+
 ## Configuring cgit
 
 You\'ve got cgit up and running now, but you\'ll probably see it without
